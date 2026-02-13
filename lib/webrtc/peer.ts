@@ -108,7 +108,7 @@ export class P2PManager {
     // 연결 수락
     this.peer.on('connection', (conn) => {
       console.log('[P2P] Incoming connection from:', conn.peer);
-      this.setupConnectionEvents(conn);
+      this.setupConnectionEvents(conn, true); // incoming = true
     });
 
     // 에러 처리
@@ -133,7 +133,7 @@ export class P2PManager {
   /**
    * Data Connection 이벤트 핸들러 설정
    */
-  private setupConnectionEvents(conn: DataConnection) {
+  private setupConnectionEvents(conn: DataConnection, isIncoming: boolean = false) {
     const peerId = conn.peer;
 
     // 연결됨
@@ -141,7 +141,7 @@ export class P2PManager {
       console.log('[P2P] Connection opened:', peerId);
 
       // PIN 검증 수행
-      const verified = await this.performPinVerification(conn, peerId, false);
+      const verified = await this.performPinVerification(conn, peerId, isIncoming);
 
       if (!verified) {
         console.log('[P2P] PIN verification failed, closing connection:', peerId);

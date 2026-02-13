@@ -21,9 +21,21 @@ self.addEventListener('install', (event) => {
 
   event.waitUntil(
     (async () => {
-      const cache = await caches.open(STATIC_CACHE);
-      await cache.addAll(STATIC_ASSETS);
-      console.log('[SW] Static assets cached');
+      try {
+        const cache = await caches.open(STATIC_CACHE);
+        // 개별 요청으로 캐싱하여 실패해도 계속 진행
+        for (const asset of STATIC_ASSETS) {
+          try {
+            await cache.add(asset);
+            console.log('[SW] Cached:', asset);
+          } catch (err) {
+            console.warn('[SW] Failed to cache:', asset, err);
+          }
+        }
+        console.log('[SW] Static assets caching completed');
+      } catch (error) {
+        console.error('[SW] Install error:', error);
+      }
     })()
   );
 

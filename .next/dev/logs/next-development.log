@@ -643,3 +643,507 @@ Import traces:
 https://nextjs.org/docs/messages/module-not-found
 
 
+[01:18:57.861] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:18:57.867] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:18:57.878] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:18:57.880] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:20:49.081] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:20:49.084] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:20:49.091] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:20:49.094] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:00.414] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:00.427] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:00.430] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:00.442] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:39.796] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:39.798] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:39.808] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:21:39.810] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:22:03.354] Server  LOG     ✓ Compiled in 69ms
+[01:23:20.489] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:23:20.491] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:23:20.503] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:23:20.506] Server  ERROR   ⨯ ./family-messenger/app/page.tsx:11:1
+Module not found: Can't resolve '@/components/auth/ChangePinModal'
+   9 | import SecurityIndicator from '@/components/security/SecurityIndicator';
+  10 | import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+> 11 | import ChangePinModal from '@/components/auth/ChangePinModal';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+  13 | import { authSessionManager } from '@/lib/auth/session';
+  14 |
+
+Import map: aliased to relative './components/auth/ChangePinModal' inside of [project]/family-messenger
+
+
+Import traces:
+  Client Component Browser:
+    ./family-messenger/app/page.tsx [Client Component Browser]
+    ./family-messenger/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./family-messenger/app/page.tsx [Client Component SSR]
+    ./family-messenger/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:23:31.212] Server  LOG     ✓ Compiled in 28ms
+[01:24:32.120] Server  LOG     ✓ Compiled in 27ms
+[01:25:18.486] Server  LOG     ✓ Compiled in 70ms
