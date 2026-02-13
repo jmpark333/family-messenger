@@ -248,6 +248,37 @@ class FirebaseManager {
   }
 
   /**
+   * 브로드캐스트 메시지 전송 (WebRTC 시그널링용)
+   * TTL 1분으로 설정하여 자동 만료
+   */
+  async broadcastMessage(message: DataMessage): Promise<void> {
+    if (!this.familyId) {
+      console.warn('[FirebaseManager] Cannot broadcast: not joined to a family');
+      return;
+    }
+
+    const messagesPath = `families/${this.familyId}/messages`;
+    const messageRef = ref(this.database, messagesPath);
+    const newMessageRef = push(messageRef);
+
+    // 현재 시간에 1분을 더한 타임스탬프 계산
+    const ttlTimestamp = Date.now() + 60000; // 1 minute TTL
+
+    await set(newMessageRef, {
+      type: message.type || 'signal',
+      senderId: this.userId,
+      senderName: this.userName,
+      content: message.data,
+      timestamp: serverTimestamp(),
+      encrypted: message.encrypted || false,
+      // TTL: 1분 후 자동 삭제를 위한 타임스탬프
+      expiresAt: ttlTimestamp,
+    });
+
+    console.log('[FirebaseManager] Broadcast message sent with TTL:', message.type);
+  }
+
+  /**
    * 파괴
    */
   destroy(): void {
