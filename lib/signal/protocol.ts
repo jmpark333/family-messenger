@@ -19,7 +19,7 @@ export async function encryptMessage(
   // Web Crypto API로 키 임포트
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key.buffer as BufferSource,
     { name: 'AES-GCM', length: 256 },
     false,
     ['encrypt']
@@ -64,7 +64,7 @@ export async function decryptMessage(
   // Web Crypto API로 키 임포트
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key.buffer as BufferSource,
     { name: 'AES-GCM', length: 256 },
     false,
     ['decrypt']
