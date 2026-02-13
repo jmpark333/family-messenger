@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { validateInviteToken } from '@/lib/auth/token-validator';
 import { dbHelpers } from '@/lib/db';
+import { generateIdentityKeyPair } from '@/lib/signal/protocol';
 import type { FamilySchema } from '@/lib/db';
 
 interface Props {
@@ -35,14 +36,15 @@ export function JoinFamilyForm({ inviteToken: propToken }: Props) {
         return;
       }
 
-      // TODO: Verify with API, join family, key exchange (future enhancement)
+      // Generate key pair for E2E encryption
+      const keyPair = await generateIdentityKeyPair();
 
       // Save to IndexedDB
       await dbHelpers.saveFamily({
         id: validated.familyId,
         myMemberId: crypto.randomUUID(),
         myName: name,
-        keys: { publicKey: new Uint8Array() }, // placeholder
+        keys: keyPair,
         joinedAt: Date.now()
       });
 

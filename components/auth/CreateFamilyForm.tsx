@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { generateInviteUrl } from '@/lib/auth/url-generator';
 import { dbHelpers } from '@/lib/db';
+import { generateIdentityKeyPair } from '@/lib/signal/protocol';
 import type { FamilySchema } from '@/lib/db';
 
 export function CreateFamilyForm() {
@@ -27,11 +28,8 @@ export function CreateFamilyForm() {
       const familyId = crypto.randomUUID();
       const baseUrl = window.location.origin;
 
-      // Generate key pair (placeholder - will be implemented in Task 8)
-      const keyPair = {
-        publicKey: new Uint8Array(),
-        privateKey: new Uint8Array()
-      };
+      // Generate key pair for E2E encryption
+      const keyPair = await generateIdentityKeyPair();
 
       // Save to IndexedDB
       await dbHelpers.saveFamily({

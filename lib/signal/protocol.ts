@@ -7,6 +7,33 @@
 
 import type { EncryptedMessage } from '@/types';
 
+// ============ 키 생성 ============
+
+/**
+ * E2E 암호화를 위한 식별 키 쌍 생성
+ * X25519 키 교환 알고리즘 사용
+ */
+export async function generateIdentityKeyPair(): Promise<{
+  publicKey: Uint8Array;
+  privateKey: Uint8Array;
+}> {
+  const keyPair = await crypto.subtle.generateKey(
+    {
+      name: 'X25519',
+    },
+    true,
+    ['deriveKey', 'deriveBits']
+  );
+
+  const publicKeyBuffer = await crypto.subtle.exportKey('raw', keyPair.publicKey);
+  const privateKeyBuffer = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+
+  return {
+    publicKey: new Uint8Array(publicKeyBuffer),
+    privateKey: new Uint8Array(privateKeyBuffer),
+  };
+}
+
 // ============ 암호화 유틸리티 ============
 
 /**
