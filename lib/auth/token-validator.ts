@@ -12,7 +12,10 @@ export function validateInviteToken(encoded: string): InviteToken | null {
     }
 
     // Verify signature
-    const secret = process.env.FIREBASE_CONFIG || 'default-secret';
+    const secret = process.env.FIREBASE_CONFIG;
+    if (!secret) {
+      return null;
+    }
     const data = `${token.familyId}:${token.createdBy}:${token.createdAt}:${token.expiresAt}`;
     const expectedSignature = crypto
       .createHmac('sha256', secret)

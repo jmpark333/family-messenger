@@ -20,7 +20,10 @@ export function generateInviteUrl(familyId: string, createdBy: string, baseUrl: 
   };
 
   // HMAC signature
-  const secret = process.env.FIREBASE_CONFIG || 'default-secret';
+  const secret = process.env.FIREBASE_CONFIG;
+  if (!secret) {
+    throw new Error('FIREBASE_CONFIG environment variable is required for secure invite URL generation');
+  }
   const data = `${token.familyId}:${token.createdBy}:${token.createdAt}:${token.expiresAt}`;
   token.signature = crypto.createHmac('sha256', secret).update(data).digest('hex');
 
