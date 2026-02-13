@@ -7,18 +7,18 @@ import type { DataMessage } from '@/types';
 import ChatMessage from '@/components/chat/ChatMessage';
 import MessageInput from '@/components/chat/MessageInput';
 import SecurityIndicator from '@/components/security/SecurityIndicator';
+import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
+import ChangePinModal from '@/components/auth/ChangePinModal';
 import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
 import { authSessionManager } from '@/lib/auth/session';
-import ChangePinModal from '@/components/auth/ChangePinModal';
 
 export default function HomePage() {
-  const [isReady, setIsReady] = useState(false);
+  const [showPeerConnection, setShowPeerConnection] = useState(false);
   const [showChangePin, setShowChangePin] = useState(false);
 
   const {
     isAuthenticated,
     myPeerId,
-    myName,
     connectionStatus,
     messages,
     additionalPin,
@@ -53,15 +53,23 @@ export default function HomePage() {
     return () => { destroyP2PManager(); };
   }, []);
 
-  // 초기 설정이 안 된 경우
-  if (!isAuthenticated) {
-    return <InitialSetup onSetupComplete={() => setIsReady(true)} />;
-  }
-
   const handleChangePin = async (newPin: string) => {
     await authSessionManager.updateAdditionalPin(newPin);
     useChatStore.getState().updateAdditionalPin(newPin);
   };
+
+  const handleConnectPeer = async (peerId: string) => {
+    const p2pManager = getP2PManager();
+    if (p2pManager) {
+      await p2pManager.connectToPeer(peerId);
+      setShowPeerConnection(false);
+    }
+  };
+
+  // 초기 설정이 안 된 경우
+  if (!isAuthenticated) {
+    return <InitialSetup />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -83,6 +91,12 @@ export default function HomePage() {
               className="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               🔐 PIN 변경
+            </button>
+            <button
+              onClick={() => setShowPeerConnection(true)}
+              className="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              🔗 연결
             </button>
           </div>
         </div>
@@ -114,6 +128,13 @@ export default function HomePage() {
       <footer className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-4xl mx-auto p-4"><MessageInput /></div>
       </footer>
+
+      <PeerConnectionModal
+        isOpen={showPeerConnection}
+        onClose={() => setShowPeerConnection(false)}
+        myPeerId={myPeerId}
+        onConnect={handleConnectPeer}
+      />
 
       <ChangePinModal
         isOpen={showChangePin}
