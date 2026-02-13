@@ -75,7 +75,7 @@ async function encryptKey(data: Uint8Array, key: Uint8Array): Promise<Uint8Array
   const encrypted = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
     cryptoKey,
-    data
+    data as BufferSource
   );
 
   // IV + 암호화된 데이터 결합
@@ -106,7 +106,7 @@ async function decryptKey(encryptedData: Uint8Array, key: Uint8Array): Promise<U
   const decrypted = await crypto.subtle.decrypt(
     { name: 'AES-GCM', iv },
     cryptoKey,
-    ciphertext
+    ciphertext as BufferSource
   );
 
   return new Uint8Array(decrypted);
