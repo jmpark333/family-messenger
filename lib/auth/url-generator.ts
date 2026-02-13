@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 const INVITE_URL_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 

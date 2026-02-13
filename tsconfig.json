@@ -18,22 +18,38 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "paths": {
-    "@/*": ["./*"],
-    "@/lib/*": ["./lib/*"],
-    "@/components/*": ["./components/*"],
-    "@/stores/*": ["./stores/*"],
-    "@/styles/*": ["./styles/*"],
-    "@/types/*": ["./types/*"]
+    "@/*": [
+      "./*"
+    ],
+    "@/lib/*": [
+      "./lib/*"
+    ],
+    "@/components/*": [
+      "./components/*"
+    ],
+    "@/stores/*": [
+      "./stores/*"
+    ],
+    "@/styles/*": [
+      "./styles/*"
+    ],
+    "@/types/*": [
+      "./types/*"
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/**/*"
+    ".next/dev/**/*",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

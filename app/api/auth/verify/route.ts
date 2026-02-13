@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateInviteToken } from '@/lib/auth/token-validator';
-import { validateInvite } from '@/lib/auth/invite-service';
+import { validateInviteToken } from '../../../lib/auth/token-validator';
+import { validateInvite } from '../../../lib/auth/invite-service';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

@@ -1,5 +1,0 @@
-1:"$Sreact.fragment"
-2:I[264,["/_next/static/chunks/677a59de91831c17.js"],"ViewportBoundary"]
-3:I[264,["/_next/static/chunks/677a59de91831c17.js"],"MetadataBoundary"]
-4:"$Sreact.suspense"
-0:{"buildId":"GtSA452yfESxeyfdMD8f6","rsc":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"가족 메신저 - E2E 암호화"}],["$","meta","1",{"name":"description","content":"가족 3명만을 위한 완전 보안 메신저 - Signal Protocol E2E 암호화, P2P 통신"}],["$","link","2",{"rel":"manifest","href":"/manifest.json"}],["$","meta","3",{"name":"mobile-web-app-capable","content":"yes"}],["$","meta","4",{"name":"apple-mobile-web-app-title","content":"가족 메신저"}],["$","meta","5",{"name":"apple-mobile-web-app-status-bar-style","content":"default"}]]}]}]}],null]}],"loading":null,"isPartial":false}

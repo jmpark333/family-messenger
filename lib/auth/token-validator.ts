@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import type { InviteToken } from './url-generator';
 
 export function validateInviteToken(encoded: string): InviteToken | null {
