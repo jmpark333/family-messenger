@@ -40,6 +40,9 @@ export class P2PManager {
   private events: P2PEvents;
   private reconnectAttempts: Map<string, number> = new Map();
   private maxReconnectAttempts = 5;
+  private peerReady: boolean = false;
+  private peerReadyPromise!: Promise<boolean>;
+  private peerReadyResolve!: (value: boolean) => void;
 
   constructor(config: P2PConfig, events: P2PEvents) {
     this.config = config;
@@ -48,6 +51,11 @@ export class P2PManager {
     if (typeof window === 'undefined') {
       return; // SSR 방지
     }
+
+    // peer 준비 Promise 초기화
+    this.peerReadyPromise = new Promise<boolean>((resolve) => {
+      this.peerReadyResolve = resolve;
+    });
 
     this.init();
   }
@@ -86,6 +94,10 @@ export class P2PManager {
     // Peer가 준비됨
     this.peer.on('open', (peerId) => {
       console.log('[P2P] My Peer ID:', peerId);
+      this.peerReady = true;
+      if (this.peerReadyResolve) {
+        this.peerReadyResolve(true);
+      }
       useChatStore.getState().setMyInfo(peerId, '나');
     });
 
@@ -222,7 +234,22 @@ export class P2PManager {
    * 피어에 연결
    */
   connectToPeer(peerId: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      // Peer가 준비될 때까지 대기
+      if (!this.peerReady) {
+        console.log('[P2P] Waiting for peer to be ready...');
+        try {
+          const ready = await this.peerReadyPromise;
+          if (!ready) {
+            reject(new Error('Peer 초기화 실패'));
+            return;
+          }
+        } catch {
+          reject(new Error('Peer 초기화 실패'));
+          return;
+        }
+      }
+
       if (!this.peer) {
         reject(new Error('Peer가 초기화되지 않았습니다'));
         return;
