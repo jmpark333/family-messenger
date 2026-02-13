@@ -65,18 +65,37 @@ export default function MessageInput() {
             encrypted: true,
           };
 
-          const p2pManager = getP2PManager();
-          if (p2pManager) {
-            p2pManager.broadcast(message);
+          // 메시지 큐를 사용하여 전송 (오프라인 지원)
+          const messageQueue = getMessageQueue();
 
+          if (messageQueue) {
+            // 메시지 큐에 등록
+            messageQueue.enqueue(message);
+
+            // 로컬 메시지 목록에 추가 (상태: sending)
             useChatStore.getState().addMessage({
               id: message.id,
               senderId: myPeerId,
               content: `[파일] ${fileData.file.name}`,
               timestamp: Date.now(),
-              status: 'sent',
+              status: 'sending',
               encrypted: true,
             });
+          } else {
+            // 큐가 없는 경우 기존 방식으로 P2P 직접 전송
+            const p2pManager = getP2PManager();
+            if (p2pManager) {
+              p2pManager.broadcast(message);
+
+              useChatStore.getState().addMessage({
+                id: message.id,
+                senderId: myPeerId,
+                content: `[파일] ${fileData.file.name}`,
+                timestamp: Date.now(),
+                status: 'sent',
+                encrypted: true,
+              });
+            }
           }
         };
         reader.readAsDataURL(fileData.file);
@@ -102,18 +121,37 @@ export default function MessageInput() {
         encrypted: true,
       };
 
-      const p2pManager = getP2PManager();
-      if (p2pManager) {
-        p2pManager.broadcast(message);
+      // 메시지 큐를 사용하여 전송 (오프라인 지원)
+      const messageQueue = getMessageQueue();
 
+      if (messageQueue) {
+        // 메시지 큐에 등록
+        messageQueue.enqueue(message);
+
+        // 로컬 메시지 목록에 추가 (상태: sending)
         useChatStore.getState().addMessage({
           id: message.id,
           senderId: myPeerId,
           content: text,
           timestamp: Date.now(),
-          status: 'sent',
+          status: 'sending',
           encrypted: true,
         });
+      } else {
+        // 큐가 없는 경우 기존 방식으로 P2P 직접 전송
+        const p2pManager = getP2PManager();
+        if (p2pManager) {
+          p2pManager.broadcast(message);
+
+          useChatStore.getState().addMessage({
+            id: message.id,
+            senderId: myPeerId,
+            content: text,
+            timestamp: Date.now(),
+            status: 'sent',
+            encrypted: true,
+          });
+        }
       }
     }
 
