@@ -65,7 +65,7 @@ async function getDB(): Promise<IDBDatabase> {
 async function encryptKey(data: Uint8Array, key: Uint8Array): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key.buffer as BufferSource,
     { name: 'AES-GCM', length: 256 },
     false,
     ['encrypt']
@@ -97,7 +97,7 @@ async function decryptKey(encryptedData: Uint8Array, key: Uint8Array): Promise<U
 
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
-    key,
+    key.buffer as BufferSource,
     { name: 'AES-GCM', length: 256 },
     false,
     ['decrypt']
