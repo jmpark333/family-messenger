@@ -7,12 +7,13 @@ import type { DataMessage } from '@/types';
 import ChatMessage from '@/components/chat/ChatMessage';
 import MessageInput from '@/components/chat/MessageInput';
 import SecurityIndicator from '@/components/security/SecurityIndicator';
-import PeerConnection from '@/components/p2p/PeerConnection';
-import { QRCodeSVG as QRCode } from 'qrcode.react';
+import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
+import { authSessionManager } from '@/lib/auth/session';
+import ChangePinModal from '@/components/auth/ChangePinModal';
 
 export default function HomePage() {
   const [isReady, setIsReady] = useState(false);
-  const [showQR, setShowQR] = useState(false);
+  const [showChangePin, setShowChangePin] = useState(false);
 
   const {
     isAuthenticated,
@@ -20,7 +21,7 @@ export default function HomePage() {
     myName,
     connectionStatus,
     messages,
-    isSetupComplete,
+    additionalPin,
   } = useChatStore();
 
   const connectedPeers = useChatStore(selectConnectedPeers);
@@ -53,9 +54,14 @@ export default function HomePage() {
   }, []);
 
   // 초기 설정이 안 된 경우
-  if (!isSetupComplete) {
+  if (!isAuthenticated) {
     return <InitialSetup onSetupComplete={() => setIsReady(true)} />;
   }
+
+  const handleChangePin = async (newPin: string) => {
+    await authSessionManager.updateAdditionalPin(newPin);
+    useChatStore.getState().updateAdditionalPin(newPin);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -70,13 +76,21 @@ export default function HomePage() {
               <p className="text-xs text-gray-500 dark:text-gray-400">E2E 암호화 활성화</p>
             </div>
           </div>
-          <SecurityIndicator />
+          <div className="flex items-center gap-2">
+            <SecurityIndicator />
+            <button
+              onClick={() => setShowChangePin(true)}
+              className="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              🔐 PIN 변경
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-4 pb-32">
         <ConnectionStatus status={connectionStatus} peerCount={connectedPeers.length} />
-        
+
         <div className="message-list overflow-y-auto space-y-4" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           {messages.length === 0 ? (
             <div className="text-center py-12">
@@ -101,22 +115,11 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto p-4"><MessageInput /></div>
       </footer>
 
-      <PeerConnection
-        isOpen={showQR}
-        onClose={() => setShowQR(false)}
-        myPeerId={myPeerId}
-        onConnect={async (peerId) => {
-          const p2pManager = getP2PManager();
-          if (p2pManager) {
-            await p2pManager.connectToPeer(peerId);
-            setShowQR(false);
-          }
-        }}
+      <ChangePinModal
+        isOpen={showChangePin}
+        onClose={() => setShowChangePin(false)}
+        onChangePin={handleChangePin}
       />
-
-      <button onClick={() => setShowQR(true)} className="fixed bottom-24 right-4 w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-2xl">
-        ➕
-      </button>
     </div>
   );
 }
@@ -126,66 +129,122 @@ interface InitialSetupProps {
 }
 
 function InitialSetup({ onSetupComplete }: InitialSetupProps) {
-  const [step, setStep] = useState<'welcome' | 'create' | 'join'>('welcome');
-  const [familyKey, setFamilyKey] = useState('');
-  const [myName, setMyName] = useState('');
+  const [credentials, setCredentials] = useState({
+    id: '',
+    password: '',
+    additionalPin: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleCreateFamily = () => {
-    const mockKey = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-    setFamilyKey(mockKey);
-    setStep('create');
-  };
+  const handleLogin = async () => {
+    setError('');
+    setLoading(true);
 
-  const handleJoinFamily = () => setStep('join');
+    try {
+      // 1. ID/Password 검증
+      const isValid = await verifyCredentials(credentials.id, credentials.password);
 
-  const handleSetupComplete = () => {
-    useChatStore.getState().setSetupComplete(true);
-    useChatStore.getState().setMyInfo(crypto.randomUUID(), myName || '나');
-    useChatStore.getState().setAuthenticated(true);
-    onSetupComplete();
+      if (!isValid) {
+        setError('잘못된 ID 또는 비밀번호입니다');
+        setLoading(false);
+        return;
+      }
+
+      // 2. 추가비번 검증
+      const isPinValid = await verifyAdditionalPin(credentials.additionalPin);
+
+      if (!isPinValid) {
+        setError('잘못된 추가비번입니다');
+        setLoading(false);
+        return;
+      }
+
+      // 3. 세션 생성
+      const session = await authSessionManager.createSession(credentials);
+
+      // 4. 상태 저장
+      useChatStore.getState().setAuthCredentials(credentials);
+      useChatStore.getState().setMyInfo(session.peerId, '나');
+      useChatStore.getState().setAuthenticated(true);
+
+      onSetupComplete();
+    } catch {
+      setError('로그인 중 오류가 발생했습니다');
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full">
-        {step === 'welcome' && (
-          <div className="text-center space-y-6">
-            <div className="text-6xl">🏠</div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">가족 메신저에 오신 것을 환영합니다!</h1>
-            <p className="text-gray-600 dark:text-gray-400">가족 3명만을 위한 완전 보안 메신저를 시작해보세요.</p>
-            <div className="space-y-3">
-              <button onClick={handleCreateFamily} className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">🆕 새 가족 만들기</button>
-              <button onClick={handleJoinFamily} className="w-full py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">🔗 가족에 참여하기</button>
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-              <p>🔒 End-to-End 암호화</p>
-              <p>👨‍👩‍👧‍👦 P2P 직접 통신</p>
-              <p>🔐 사전 공유 키 인증</p>
-            </div>
-          </div>
-        )}
+        <div className="text-center space-y-6 mb-8">
+          <div className="text-6xl">🏠</div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">가족 메신저</h1>
+          <p className="text-gray-600 dark:text-gray-400">안전하게 가족과 대화하세요</p>
+        </div>
 
-        {step === 'create' && (
-          <div className="text-center space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">가족 키가 생성되었습니다!</h2>
-            <p className="text-gray-600 dark:text-gray-400">이 QR 코드를 가족원에게 보여주세요</p>
-            <div className="bg-white p-4 rounded-xl border-2 border-dashed border-gray-300">
-              <QRCode value={JSON.stringify({ key: familyKey, type: 'family-key' })} size={200} level="H" includeMargin={false} />
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">⚠️ 이 코드는 안전하게 보관하세요. 분실 시 재발급할 수 없습니다.</div>
-            <button onClick={handleSetupComplete} className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">시작하기</button>
+        <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              ID
+            </label>
+            <input
+              type="text"
+              value={credentials.id}
+              onChange={(e) => setCredentials({...credentials, id: e.target.value})}
+              className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              placeholder="ID 입력"
+              autoFocus
+            />
           </div>
-        )}
 
-        {step === 'join' && (
-          <div className="text-center space-y-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">가족 코드를 입력하세요</h2>
-            <input type="text" value={familyKey} onChange={(e) => setFamilyKey(e.target.value)} placeholder="가족 코드 입력" className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
-            <button onClick={handleSetupComplete} disabled={!familyKey} className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed">참여하기</button>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              비밀번호
+            </label>
+            <input
+              type="password"
+              value={credentials.password}
+              onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+              className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              placeholder="비밀번호 입력"
+            />
           </div>
-        )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              추가비번 (6자리)
+            </label>
+            <input
+              type="password"
+              value={credentials.additionalPin}
+              onChange={(e) => setCredentials({...credentials, additionalPin: e.target.value})}
+              className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              placeholder="추가비번 입력"
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm">
+              ⚠️ {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading || !credentials.id || !credentials.password || !credentials.additionalPin}
+            className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            {loading ? '로그인 중...' : '로그인'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400 space-y-1">
+          <p>🔒 End-to-End 암호화</p>
+          <p>👨‍👩‍👧‍👦 P2P 직접 통신</p>
+          <p>🔐 3단계 인증 보안</p>
+        </div>
       </div>
     </div>
   );

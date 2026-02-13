@@ -5,6 +5,7 @@ import {
   type FamilyKey,
   type TypingIndicator,
   type KeyExchangeData,
+  type AuthCredentials,
 } from '@/types';
 
 // Typing timeout (ms)
@@ -17,6 +18,8 @@ interface ChatStore {
   familyKey: FamilyKey | null;
   myPeerId: string;
   myName: string;
+  authCredentials: AuthCredentials | null;
+  additionalPin: string;
 
   // P2P 연결
   peers: Map<string, PeerInfo>;
@@ -38,6 +41,9 @@ interface ChatStore {
   // 인증
   setAuthenticated: (authenticated: boolean, key?: FamilyKey) => void;
   setMyInfo: (peerId: string, name: string) => void;
+  setAuthCredentials: (credentials: AuthCredentials) => void;
+  updateAdditionalPin: (newPin: string) => void;
+  clearAuth: () => void;
 
   // P2P 연결
   addPeer: (peer: PeerInfo) => void;
@@ -66,6 +72,8 @@ const initialState = {
   familyKey: null,
   myPeerId: '',
   myName: '',
+  authCredentials: null,
+  additionalPin: '',
   peers: new Map(),
   connectionStatus: 'disconnected' as const,
   messages: [],
@@ -90,6 +98,22 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set({
       myPeerId: peerId,
       myName: name,
+    }),
+
+  setAuthCredentials: (credentials) =>
+    set({
+      authCredentials: credentials,
+      additionalPin: credentials.additionalPin,
+    }),
+
+  updateAdditionalPin: (newPin) =>
+    set({ additionalPin: newPin }),
+
+  clearAuth: () =>
+    set({
+      authCredentials: null,
+      additionalPin: '',
+      isAuthenticated: false,
     }),
 
   // P2P 연결 액션

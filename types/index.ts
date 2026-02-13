@@ -47,7 +47,7 @@ export interface WebRTCConfig {
 
 export interface DataMessage {
   id: string;
-  type: 'text' | 'key-exchange' | 'typing' | 'presence' | 'encrypted';
+  type: 'text' | 'key-exchange' | 'typing' | 'presence' | 'encrypted' | 'auth-challenge' | 'auth-response';
   senderId: string;
   timestamp: number;
   data: any;
@@ -79,6 +79,33 @@ export interface FamilyKey {
   fingerprint: string; // SHA-256 hash for verification
   createdAt: number;
   expiresAt: number; // Optional: for key rotation
+}
+
+// ID/Password 인증 관련 타입
+export interface AuthCredentials {
+  id: string;
+  password: string;
+  additionalPin: string;
+}
+
+export interface AuthSession {
+  userId: string;
+  sessionKey: Uint8Array; // 자격증명에서 파생
+  additionalPinHash: string; // 추가비번 해시
+  peerId: string; // 자동 생성된 Peer ID
+  createdAt: number;
+}
+
+export interface AuthChallenge {
+  challengeId: string;
+  nonce: Uint8Array;
+  timestamp: number;
+}
+
+export interface AuthResponse {
+  challengeId: string;
+  pinHash: string;
+  timestamp: number;
 }
 
 export interface KeyExchangeData {

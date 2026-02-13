@@ -6,8 +6,9 @@
  */
 
 import Peer, { DataConnection, MediaConnection } from 'peerjs';
-import type { PeerInfo, DataMessage } from '@/types';
+import type { PeerInfo, DataMessage, AuthSession, AuthChallenge, AuthResponse } from '@/types';
 import { useChatStore } from '@/stores/chat-store';
+import { createAuthChallenge, createAuthResponse, verifyAuthResponse } from '@/lib/auth';
 
 // 공용 STUN 서버
 const ICE_SERVERS = [
@@ -43,6 +44,9 @@ export class P2PManager {
   private peerReady: boolean = false;
   private peerReadyPromise!: Promise<boolean>;
   private peerReadyResolve!: (value: boolean) => void;
+  private authSession: AuthSession | null = null;
+  private pendingChallenges: Map<string, AuthChallenge> = new Map();
+  private verifiedPeers: Set<string> = new Set();
 
   constructor(config: P2PConfig, events: P2PEvents) {
     this.config = config;
@@ -133,10 +137,21 @@ export class P2PManager {
     const peerId = conn.peer;
 
     // 연결됨
-    conn.on('open', () => {
+    conn.on('open', async () => {
       console.log('[P2P] Connection opened:', peerId);
+
+      // PIN 검증 수행
+      const verified = await this.performPinVerification(conn, peerId, false);
+
+      if (!verified) {
+        console.log('[P2P] PIN verification failed, closing connection:', peerId);
+        conn.close();
+        return;
+      }
+
       this.connections.set(peerId, conn);
       this.reconnectAttempts.delete(peerId);
+      this.verifiedPeers.add(peerId);
 
       // 피어 정보 저장
       const peerInfo: PeerInfo = {
@@ -153,7 +168,7 @@ export class P2PManager {
       this.events.onPeerConnected(peerInfo);
     });
 
-    // 메시지 수락
+    // 메시지 수신
     conn.on('data', (data) => {
       console.log('[P2P] Message received from:', peerId, data);
       this.handleIncomingData(peerId, data);
@@ -163,6 +178,8 @@ export class P2PManager {
     conn.on('close', () => {
       console.log('[P2P] Connection closed:', peerId);
       this.connections.delete(peerId);
+      this.verifiedPeers.delete(peerId);
+      this.pendingChallenges.delete(peerId);
       useChatStore.getState().removePeer(peerId);
       this.events.onPeerDisconnected(peerId);
     });
@@ -204,6 +221,14 @@ export class P2PManager {
             connected: true,
           });
           break;
+
+        case 'auth-challenge':
+          this.handleAuthChallenge(peerId, message.data);
+          break;
+
+        case 'auth-response':
+          this.handleAuthResponse(peerId, message.data);
+          break;
       }
     } catch (error) {
       console.error('[P2P] Error handling incoming data:', error);
@@ -227,6 +252,141 @@ export class P2PManager {
       // 최종 실패
       console.error(`[P2P] Failed to reconnect to ${peerId} after ${attempts} attempts`);
       this.events.onError(new Error(`연결 실패: ${peerId}`));
+    }
+  }
+
+  /**
+   * PIN 검증 수행 (Challenge-Response)
+   */
+  private async performPinVerification(
+    conn: DataConnection,
+    peerId: string,
+    isIncoming: boolean
+  ): Promise<boolean> {
+    const myPin = useChatStore.getState().additionalPin;
+    if (!myPin) {
+      console.error('[P2P] No additional PIN set');
+      return false;
+    }
+
+    if (isIncoming) {
+      // 수신 연결: 상대방이 챌린지를 보낼 때까지 대기
+      return new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          console.log('[P2P] Auth challenge timeout');
+          resolve(false);
+        }, 30000);
+
+        const handler = (data: any) => {
+          const message = data as DataMessage;
+          if (message.type === 'auth-challenge') {
+            clearTimeout(timeout);
+            conn.off('data', handler);
+
+            // 응답 전송
+            createAuthResponse(message.data, myPin)
+              .then((response) => {
+                conn.send({
+                  id: crypto.randomUUID(),
+                  type: 'auth-response',
+                  senderId: this.getMyPeerId()!,
+                  timestamp: Date.now(),
+                  data: response
+                } as DataMessage);
+                resolve(true);
+              })
+              .catch(() => resolve(false));
+          }
+        };
+
+        conn.on('data', handler);
+      });
+    } else {
+      // 발신 연결: 챌린지 전송 후 응답 대기
+      const challenge = await createAuthChallenge();
+      this.pendingChallenges.set(peerId, challenge);
+
+      conn.send({
+        id: crypto.randomUUID(),
+        type: 'auth-challenge',
+        senderId: this.getMyPeerId()!,
+        timestamp: Date.now(),
+        data: challenge
+      } as DataMessage);
+
+      return new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          this.pendingChallenges.delete(peerId);
+          resolve(false);
+        }, 30000);
+
+        const handler = (data: any) => {
+          const message = data as DataMessage;
+          if (message.type === 'auth-response') {
+            clearTimeout(timeout);
+            conn.off('data', handler);
+
+            verifyAuthResponse(
+              message.data,
+              challenge,
+              myPin
+            ).then((verified) => {
+              this.pendingChallenges.delete(peerId);
+              resolve(verified);
+            });
+          }
+        };
+
+        conn.on('data', handler);
+      });
+    }
+  }
+
+  /**
+   * 인증 챌린지 수신 처리
+   */
+  private async handleAuthChallenge(peerId: string, challenge: AuthChallenge) {
+    const conn = this.connections.get(peerId);
+    if (!conn) return;
+
+    const myPin = useChatStore.getState().additionalPin;
+    if (!myPin) {
+      console.error('[P2P] No additional PIN set');
+      return;
+    }
+
+    try {
+      const response = await createAuthResponse(challenge, myPin);
+      conn.send({
+        id: crypto.randomUUID(),
+        type: 'auth-response',
+        senderId: this.getMyPeerId()!,
+        timestamp: Date.now(),
+        data: response
+      } as DataMessage);
+    } catch (error) {
+      console.error('[P2P] Error creating auth response:', error);
+    }
+  }
+
+  /**
+   * 인증 응답 수신 처리
+   */
+  private async handleAuthResponse(peerId: string, response: AuthResponse) {
+    const challenge = this.pendingChallenges.get(peerId);
+    if (!challenge) {
+      console.warn('[P2P] No pending challenge for peer:', peerId);
+      return;
+    }
+
+    const myPin = useChatStore.getState().additionalPin;
+    const verified = await verifyAuthResponse(response, challenge, myPin);
+
+    if (verified) {
+      console.log('[P2P] PIN verification successful for peer:', peerId);
+      this.verifiedPeers.add(peerId);
+    } else {
+      console.warn('[P2P] PIN verification failed for peer:', peerId);
     }
   }
 
