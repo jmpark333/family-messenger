@@ -3,8 +3,8 @@
  * 오프라인 지원 및 캐싱 전략
  */
 
-const CACHE_NAME = 'family-messenger-v1';
-const STATIC_CACHE = 'family-messenger-static-v1';
+const CACHE_NAME = 'family-messenger-v2';
+const STATIC_CACHE = 'family-messenger-static-v2';
 
 // 캐싱할 정적 자원
 const STATIC_ASSETS = [

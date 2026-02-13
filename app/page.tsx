@@ -1,74 +1,93 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useChatStore, selectConnectedPeers, selectTypingUsers } from '@/stores/chat-store';
-import { initP2PManager, destroyP2PManager, getP2PManager } from '@/lib/webrtc/peer';
+import { useChatStore, selectOnlineUsers, selectTypingUsers } from '@/stores/chat-store';
+import { initFirebaseManager, destroyFirebaseManager, getFirebaseManager } from '@/lib/firebase/firebase-manager';
 import type { DataMessage } from '@/types';
 import ChatMessage from '@/components/chat/ChatMessage';
 import MessageInput from '@/components/chat/MessageInput';
-import SecurityIndicator from '@/components/security/SecurityIndicator';
-import PeerConnectionModal from '@/components/p2p/PeerConnectionModal';
-import ChangePinModal from '@/components/auth/ChangePinModal';
 import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
 import { authSessionManager } from '@/lib/auth/session';
 
 export default function HomePage() {
-  const [showPeerConnection, setShowPeerConnection] = useState(false);
-  const [showChangePin, setShowChangePin] = useState(false);
+  const store = useChatStore();
 
   const {
     isAuthenticated,
-    myPeerId,
-    connectionStatus,
+    myUserId,
+    familyId,
+    isFirebaseConnected,
     messages,
-    additionalPin,
-  } = useChatStore();
+    authCredentials,
+  } = store;
 
-  const connectedPeers = useChatStore(selectConnectedPeers);
+  const onlineUsers = useChatStore(selectOnlineUsers);
   const typingUsers = useChatStore(selectTypingUsers);
 
-  // P2P 관리자 초기화
+  // 로컬에서 전송한 메시지 ID 추적 (중복 방지)
+  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
+
+  // Firebase 관리자 초기화
   useEffect(() => {
-    const p2pManager = initP2PManager(
-      { debug: true },
+    const firebaseManager = initFirebaseManager(
       {
-        onPeerConnected: (peer) => console.log('[Page] Peer connected:', peer),
-        onPeerDisconnected: (peerId) => console.log('[Page] Peer disconnected:', peerId),
         onMessage: (message) => {
-          console.log('[Page] onMessage received - type:', message.type, 'senderId:', message.senderId, 'data:', message.data);
+          console.log('[Page] Firebase message received:', message);
           if (message.type === 'text') {
-            console.log('[Page] Adding text message to chat store');
-            useChatStore.getState().addMessage({
-              id: message.id,
-              senderId: message.senderId,
-              content: message.data,
-              timestamp: message.timestamp,
-              status: 'delivered',
-              encrypted: message.encrypted || false,
-            });
-          } else {
-            console.log('[Page] Message type not text, ignoring:', message.type);
+            // 내가 보낸 메시지는 무시 (로컬에서 이미 표시됨)
+            if (message.senderId !== myUserId) {
+              // 중복 방지: sentIds에 있으면 무시
+              if (!sentIds.has(message.id)) {
+                useChatStore.getState().addMessage({
+                  id: message.id,
+                  senderId: message.senderId,
+                  content: message.data,
+                  timestamp: message.timestamp,
+                  status: 'delivered',
+                  encrypted: message.encrypted || false,
+                });
+              }
+            }
           }
         },
-        onError: (error) => console.error('P2P error:', error),
+        onPresenceChange: (userId, online) => {
+          console.log('[Page] Presence change:', userId, online);
+          const store = useChatStore.getState();
+          if (online) {
+            store.addUser({
+              id: userId,
+              name: '',
+              publicKey: new Uint8Array(0),
+              fingerprint: '',
+              connected: true,
+              lastSeen: Date.now(),
+            });
+          } else {
+            store.updateUser(userId, { connected: false });
+          }
+        },
+        onTypingChange: (userId, isTyping) => {
+          console.log('[Page] Typing change:', userId, isTyping);
+          useChatStore.getState().setTyping(userId, isTyping);
+        },
+        onError: (error) => console.error('Firebase error:', error),
       }
     );
 
-    return () => { destroyP2PManager(); };
+    return () => { destroyFirebaseManager(); };
   }, []);
 
-  const handleChangePin = async (newPin: string) => {
-    await authSessionManager.updateAdditionalPin(newPin);
-    useChatStore.getState().updateAdditionalPin(newPin);
-  };
-
-  const handleConnectPeer = async (peerId: string) => {
-    const p2pManager = getP2PManager();
-    if (p2pManager) {
-      await p2pManager.connectToPeer(peerId);
-      setShowPeerConnection(false);
+  // 로그인 후 Firebase 가족 참여
+  useEffect(() => {
+    if (isAuthenticated && authCredentials?.id && myUserId) {
+      const firebaseManager = getFirebaseManager();
+      if (firebaseManager) {
+        console.log('[Page] Joining Firebase family:', authCredentials.id);
+        firebaseManager.joinFamily(authCredentials.id, myUserId, '나');
+        useChatStore.getState().setFirebaseConnected(true);
+      }
     }
-  };
+  }, [isAuthenticated, authCredentials, myUserId]);
 
   // 초기 설정이 안 된 경우
   if (!isAuthenticated) {
@@ -85,29 +104,32 @@ export default function HomePage() {
             </div>
             <div>
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">가족 메신저</h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">E2E 암호화 활성화</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Firebase 실시간 메신저</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <SecurityIndicator />
+            <div className={`px-3 py-2 text-sm rounded-lg ${isFirebaseConnected ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'}`}>
+              {isFirebaseConnected ? '🟢 온라인' : '⚫ 오프라인'}
+            </div>
             <button
-              onClick={() => setShowChangePin(true)}
-              className="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              onClick={() => {
+                const firebaseManager = getFirebaseManager();
+                if (firebaseManager && confirm('모든 대화 내용을 삭제하시겠습니까?')) {
+                  firebaseManager.clearMessages();
+                  useChatStore.getState().clearMessages();
+                  setSentIds(new Set());
+                }
+              }}
+              className="px-3 py-2 text-sm bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
             >
-              🔐 PIN 변경
-            </button>
-            <button
-              onClick={() => setShowPeerConnection(true)}
-              className="px-3 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-            >
-              🔗 연결
+              🗑️ 지우기
             </button>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-4 pb-32">
-        <ConnectionStatus status={connectionStatus} peerCount={connectedPeers.length} />
+        <ConnectionStatus isConnected={isFirebaseConnected} onlineCount={onlineUsers.length} />
 
         <div className="message-list overflow-y-auto space-y-4" style={{ maxHeight: 'calc(100vh - 300px)' }}>
           {messages.length === 0 ? (
@@ -118,7 +140,7 @@ export default function HomePage() {
             </div>
           ) : (
             messages.map((message) => (
-              <ChatMessage key={message.id} message={message} isMine={message.senderId === myPeerId} />
+              <ChatMessage key={message.id} message={message} isMine={message.senderId === myUserId} />
             ))
           )}
           {typingUsers.length > 0 && (
@@ -132,19 +154,6 @@ export default function HomePage() {
       <footer className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-4xl mx-auto p-4"><MessageInput /></div>
       </footer>
-
-      <PeerConnectionModal
-        isOpen={showPeerConnection}
-        onClose={() => setShowPeerConnection(false)}
-        myPeerId={myPeerId}
-        onConnect={handleConnectPeer}
-      />
-
-      <ChangePinModal
-        isOpen={showChangePin}
-        onClose={() => setShowChangePin(false)}
-        onChangePin={handleChangePin}
-      />
     </div>
   );
 }
@@ -190,8 +199,8 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
 
       // 4. 상태 저장
       useChatStore.getState().setAuthCredentials(credentials);
-      useChatStore.getState().setMyInfo(session.peerId, '나');
-      useChatStore.getState().setAuthenticated(true);
+      useChatStore.getState().setMyInfo(credentials.id, '나');
+      useChatStore.getState().setAuthenticated(true, credentials.id);
 
       onSetupComplete?.();
     } catch {
@@ -206,21 +215,22 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
         <div className="text-center space-y-6 mb-8">
           <div className="text-6xl">🏠</div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">가족 메신저</h1>
-          <p className="text-gray-600 dark:text-gray-400">안전하게 가족과 대화하세요</p>
+          <p className="text-gray-600 dark:text-gray-400">어디서든 가족과 대화하세요</p>
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              ID
+              가족 ID
             </label>
             <input
               type="text"
               value={credentials.id}
               onChange={(e) => setCredentials({...credentials, id: e.target.value})}
               className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              placeholder="ID 입력"
+              placeholder="가족 ID 입력"
               autoFocus
+              autoComplete="username"
             />
           </div>
 
@@ -234,6 +244,7 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
               onChange={(e) => setCredentials({...credentials, password: e.target.value})}
               className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="비밀번호 입력"
+              autoComplete="current-password"
             />
           </div>
 
@@ -247,6 +258,7 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
               onChange={(e) => setCredentials({...credentials, additionalPin: e.target.value})}
               className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 focus:outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="추가비번 입력"
+              autoComplete="new-password"
             />
           </div>
 
@@ -266,9 +278,9 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
         </form>
 
         <div className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400 space-y-1">
-          <p>🔒 End-to-End 암호화</p>
-          <p>👨‍👩‍👧‍👦 P2P 직접 통신</p>
-          <p>🔐 3단계 인증 보안</p>
+          <p>🔥 Firebase 실시간 동기화</p>
+          <p>🌍 어디서든 접속 가능</p>
+          <p>👨‍👩‍👧‍👦 같은 가족 ID로 자동 연결</p>
         </div>
       </div>
     </div>
@@ -276,27 +288,24 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
 }
 
 interface ConnectionStatusProps {
-  status: 'disconnected' | 'connecting' | 'connected';
-  peerCount: number;
+  isConnected: boolean;
+  onlineCount: number;
 }
 
-function ConnectionStatus({ status, peerCount }: ConnectionStatusProps) {
-  const statusConfig = {
-    disconnected: { color: 'bg-secure-red', text: '연결 안됨' },
-    connecting: { color: 'bg-secure-yellow', text: '연결 중...' },
-    connected: { color: 'bg-secure-green', text: '연결됨' },
-  };
-  const config = statusConfig[status];
+function ConnectionStatus({ isConnected, onlineCount }: ConnectionStatusProps) {
+  const config = isConnected
+    ? { color: 'bg-green-500', text: '연결됨' }
+    : { color: 'bg-red-500', text: '연결 안됨' };
 
   return (
     <div className="mb-4 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={`w-3 h-3 rounded-full ${config.color} ${status === 'connected' ? 'animate-pulse' : ''}`} />
+          <div className={`w-3 h-3 rounded-full ${config.color} ${isConnected ? 'animate-pulse' : ''}`} />
           <span className="font-medium text-gray-900 dark:text-white">{config.text}</span>
         </div>
         <div className="text-sm text-gray-600 dark:text-gray-400">
-          {peerCount > 0 ? `가족원 ${peerCount}명과 연결됨` : '가족원을 기다리는 중...'}
+          {onlineCount > 0 ? `온라인 ${onlineCount}명` : '가족원을 기다리는 중...'}
         </div>
       </div>
     </div>

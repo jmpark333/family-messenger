@@ -27,7 +27,7 @@
   }
 
   .message-sent {
-    @apply bg-primary-500 text-white ml-auto;
+    @apply bg-primary-500 text-white;
   }
 
   .message-received {
