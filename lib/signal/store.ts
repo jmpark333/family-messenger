@@ -239,7 +239,7 @@ export class SecureKeyStore {
     const tx = db.transaction(STORE_SESSIONS, 'readwrite');
     const store = tx.objectStore(STORE_SESSIONS);
 
-    const serializedState = JSON.stringify(session.state);
+    const serializedState = JSON.stringify((session as any).state);
 
     await new Promise<void>((resolve, reject) => {
       const request = store.put({
@@ -269,8 +269,8 @@ export class SecureKeyStore {
         }
 
         resolve({
-          ...request.result,
-          state: JSON.parse(request.result.state),
+          ...(request.result as any),
+          state: JSON.parse((request.result as any).state),
         });
       };
 
