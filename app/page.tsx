@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useChatStore, selectOnlineUsers, selectTypingUsers } from '@/stores/chat-store';
+import { useChatStore, selectOnlineUsers, selectTypingUsers } from '../stores/chat-store';
 import { initFirebaseManager, destroyFirebaseManager, getFirebaseManager } from '../lib/firebase/firebase-manager';
-import type { DataMessage } from '@/types';
-import ChatMessage from '@/components/chat/ChatMessage';
-import MessageInput from '@/components/chat/MessageInput';
-import { verifyCredentials, verifyAdditionalPin } from '@/lib/auth';
-import { authSessionManager } from '@/lib/auth/session';
+import type { DataMessage } from '../types';
+import ChatMessage from '../components/chat/ChatMessage';
+import MessageInput from '../components/chat/MessageInput';
+import { verifyCredentials, verifyAdditionalPin } from '../lib/auth';
+import { authSessionManager } from '../lib/auth/session';
 
 export default function HomePage() {
   const store = useChatStore();
