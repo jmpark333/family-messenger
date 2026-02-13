@@ -71,13 +71,13 @@ export async function decryptMessage(
   );
 
   // 복호화
-  const decrypted = await crypto.subtle.decrypt(
+  const decryptedBytes = await crypto.subtle.decrypt(
     { name: 'AES-GCM', iv: new Uint8Array(ciphertext.slice(0, 12)) },
     cryptoKey,
     encrypted
   );
 
   // 텍스트로 변환
-  const decrypted = new TextDecoder().decode(decrypted);
+  const decrypted = new TextDecoder().decode(decryptedBytes);
   return decrypted;
 }
