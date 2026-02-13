@@ -1,6 +1,10 @@
 import Dexie, { Table } from 'dexie';
 import type { MessageSchema, FileAttachment, FamilySchema, MemberSchema } from './schema';
 
+/**
+ * Family Messenger IndexedDB 데이터베이스 클래스
+ * Dexie를 사용하여 IndexedDB를 추상화합니다.
+ */
 export class FamilyMessengerDB extends Dexie {
   messages!: Table<MessageSchema, string>;
   files!: Table<FileAttachment, string>;
@@ -21,69 +25,205 @@ export class FamilyMessengerDB extends Dexie {
 
 export const db = new FamilyMessengerDB();
 
-// Helper functions
+/**
+ * 데이터베이스 헬퍼 함수들
+ * 모든 작업은 에러 처리와 함께 제공됩니다.
+ */
 export const dbHelpers = {
   // Messages
+
+  /**
+   * 메시지를 IndexedDB에 추가합니다.
+   * @param message - 저장할 메시지 객체
+   * @throws {Error} 데이터베이스 저장 실패 시 (quota exceeded, transaction error 등)
+   */
   async addMessage(message: MessageSchema): Promise<void> {
-    await db.messages.add(message);
-  },
-
-  async getMessages(limit: number = 100, before?: number): Promise<MessageSchema[]> {
-    let query = db.messages.orderBy('timestamp').reverse();
-    if (before) {
-      query = query.filter(m => m.timestamp < before);
+    try {
+      await db.messages.add(message);
+    } catch (error) {
+      throw new Error(`메시지 저장 실패: ${error}`);
     }
-    return query.limit(limit).toArray();
   },
 
+  /**
+   * 지정된 개수의 최신 메시지를 가져옵니다.
+   * @param limit - 가져올 메시지 개수 (기본값: 100)
+   * @param before - 이 시간보다 이전의 메시지만 가져옵니다 (옵션)
+   * @returns 내림차순으로 정렬된 메시지 목록
+   * @throws {Error} 데이터베이스 조회 실패 시
+   */
+  async getMessages(limit: number = 100, before?: number): Promise<MessageSchema[]> {
+    try {
+      let query = db.messages.orderBy('timestamp').reverse();
+      if (before) {
+        query = query.filter(m => m.timestamp < before);
+      }
+      return await query.limit(limit).toArray();
+    } catch (error) {
+      throw new Error(`메시지 조회 실패: ${error}`);
+    }
+  },
+
+  /**
+   * 메시지의 상태를 업데이트합니다.
+   * @param id - 업데이트할 메시지 ID
+   * @param status - 새로운 상태 ('pending' | 'sent' | 'delivered' | 'failed')
+   * @throws {Error} 데이터베이스 업데이트 실패 시
+   */
   async updateMessageStatus(id: string, status: MessageSchema['status']): Promise<void> {
-    await db.messages.update(id, { status });
+    try {
+      await db.messages.update(id, { status });
+    } catch (error) {
+      throw new Error(`메시지 상태 업데이트 실패: ${error}`);
+    }
   },
 
+  /**
+   * 모든 메시지를 삭제합니다.
+   * @throws {Error} 데이터베이스 삭제 실패 시
+   */
   async clearMessages(): Promise<void> {
-    await db.messages.clear();
+    try {
+      await db.messages.clear();
+    } catch (error) {
+      throw new Error(`메시지 전체 삭제 실패: ${error}`);
+    }
   },
 
   // Files
+
+  /**
+   * 파일 첨부 정보를 추가합니다.
+   * @param file - 저장할 파일 첨부 객체
+   * @throws {Error} 데이터베이스 저장 실패 시
+   */
   async addFile(file: FileAttachment): Promise<void> {
-    await db.files.add(file);
+    try {
+      await db.files.add(file);
+    } catch (error) {
+      throw new Error(`파일 정보 저장 실패: ${error}`);
+    }
   },
 
+  /**
+   * ID로 파일 첨부 정보를 조회합니다.
+   * @param id - 조회할 파일 ID
+   * @returns 파일 첨부 정보 또는 undefined (존재하지 않는 경우)
+   * @throws {Error} 데이터베이스 조회 실패 시
+   */
   async getFile(id: string): Promise<FileAttachment | undefined> {
-    return db.files.get(id);
+    try {
+      return await db.files.get(id);
+    } catch (error) {
+      throw new Error(`파일 정보 조회 실패: ${error}`);
+    }
   },
 
   // Family
+
+  /**
+   * 가족 정보를 저장합니다 (있으면 업데이트).
+   * @param family - 저장할 가족 정보 객체
+   * @throws {Error} 데이터베이스 저장 실패 시
+   */
   async saveFamily(family: FamilySchema): Promise<void> {
-    await db.family.put(family);
+    try {
+      await db.family.put(family);
+    } catch (error) {
+      throw new Error(`가족 정보 저장 실패: ${error}`);
+    }
   },
 
+  /**
+   * 저장된 가족 정보를 조회합니다.
+   * @returns 가족 정보 또는 undefined (저장된 정보가 없는 경우)
+   * @throws {Error} 데이터베이스 조회 실패 시
+   */
   async getFamily(): Promise<FamilySchema | undefined> {
-    return db.family.toCollection().first();
+    try {
+      return await db.family.toCollection().first();
+    } catch (error) {
+      throw new Error(`가족 정보 조회 실패: ${error}`);
+    }
   },
 
+  /**
+   * 가족 정보를 삭제합니다.
+   * @throws {Error} 데이터베이스 삭제 실패 시
+   */
   async clearFamily(): Promise<void> {
-    await db.family.clear();
+    try {
+      await db.family.clear();
+    } catch (error) {
+      throw new Error(`가족 정보 삭제 실패: ${error}`);
+    }
   },
 
   // Members
+
+  /**
+   * 멤버 정보를 추가하거나 업데이트합니다.
+   * @param member - 저장할 멤버 정보 객체
+   * @throws {Error} 데이터베이스 저장 실패 시
+   */
   async addMember(member: MemberSchema): Promise<void> {
-    await db.members.put(member);
+    try {
+      await db.members.put(member);
+    } catch (error) {
+      throw new Error(`멤버 정보 저장 실패: ${error}`);
+    }
   },
 
+  /**
+   * ID로 멤버 정보를 조회합니다.
+   * @param id - 조회할 멤버 ID
+   * @returns 멤버 정보 또는 undefined (존재하지 않는 경우)
+   * @throws {Error} 데이터베이스 조회 실패 시
+   */
   async getMember(id: string): Promise<MemberSchema | undefined> {
-    return db.members.get(id);
+    try {
+      return await db.members.get(id);
+    } catch (error) {
+      throw new Error(`멤버 정보 조회 실패: ${error}`);
+    }
   },
 
+  /**
+   * 멤버 정보를 부분적으로 업데이트합니다.
+   * @param id - 업데이트할 멤버 ID
+   * @param updates - 업데이트할 필드들
+   * @throws {Error} 데이터베이스 업데이트 실패 시
+   */
   async updateMember(id: string, updates: Partial<MemberSchema>): Promise<void> {
-    await db.members.update(id, updates);
+    try {
+      await db.members.update(id, updates);
+    } catch (error) {
+      throw new Error(`멤버 정보 업데이트 실패: ${error}`);
+    }
   },
 
+  /**
+   * 모든 멤버 정보를 조회합니다.
+   * @returns 멤버 목록
+   * @throws {Error} 데이터베이스 조회 실패 시
+   */
   async getAllMembers(): Promise<MemberSchema[]> {
-    return db.members.toArray();
+    try {
+      return await db.members.toArray();
+    } catch (error) {
+      throw new Error(`멤버 목록 조회 실패: ${error}`);
+    }
   },
 
+  /**
+   * 모든 멤버 정보를 삭제합니다.
+   * @throws {Error} 데이터베이스 삭제 실패 시
+   */
   async clearMembers(): Promise<void> {
-    await db.members.clear();
+    try {
+      await db.members.clear();
+    } catch (error) {
+      throw new Error(`멤버 전체 삭제 실패: ${error}`);
+    }
   }
 };
