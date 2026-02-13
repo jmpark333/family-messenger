@@ -7,9 +7,45 @@ import {
   type KeyExchangeData,
   type AuthCredentials,
 } from '@/types';
+import { dbHelpers } from '@/lib/db';
+import type { MessageSchema } from '@/lib/db';
 
 // Typing timeout (ms)
 const TYPING_TIMEOUT = 3000;
+
+/**
+ * ChatMessage을 MessageSchema로 변환하는 헬퍼 함수
+ */
+function chatMessageToSchema(message: ChatMessage): MessageSchema {
+  return {
+    id: message.id,
+    senderId: message.senderId,
+    senderName: message.senderId, // senderId를 senderName으로 사용 (나중에 peer info에서 조회 가능)
+    content: message.content,
+    timestamp: message.timestamp,
+    type: 'text', // ChatMessage는 기본적으로 text
+    encrypted: message.encrypted,
+    status: message.status === 'sending' ? 'pending' :
+            message.status === 'sent' ? 'sent' :
+            message.status === 'delivered' ? 'delivered' : 'failed',
+  };
+}
+
+/**
+ * MessageSchema를 ChatMessage로 변환하는 헬퍼 함수
+ */
+function schemaToChatMessage(schema: MessageSchema): ChatMessage {
+  return {
+    id: schema.id,
+    senderId: schema.senderId,
+    content: schema.content,
+    timestamp: schema.timestamp,
+    status: schema.status === 'pending' ? 'sending' :
+            schema.status === 'sent' ? 'sent' :
+            schema.status === 'delivered' ? 'delivered' : 'read',
+    encrypted: schema.encrypted,
+  };
+}
 
 interface ChatStore {
   // ============ State ============
@@ -55,6 +91,8 @@ interface ChatStore {
   addMessage: (message: ChatMessage) => void;
   updateMessageStatus: (messageId: string, status: ChatMessage['status']) => void;
   clearMessages: () => void;
+  loadMessages: (limit?: number) => Promise<void>;
+  saveMessage: (message: ChatMessage) => Promise<void>;
 
   // 타이핑
   setTyping: (userId: string, isTyping: boolean) => void;
@@ -162,6 +200,35 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   clearMessages: () =>
     set({ messages: [] }),
+
+  loadMessages: async (limit = 100) => {
+    try {
+      const messageSchemas = await dbHelpers.getMessages(limit);
+      const messages = messageSchemas.map(schemaToChatMessage);
+      set({ messages });
+    } catch (error) {
+      console.error('Failed to load messages from IndexedDB:', error);
+      // 에러가 발생해도 빈 배열로 설정하여 앱이 계속 작동하도록 함
+      set({ messages: [] });
+    }
+  },
+
+  saveMessage: async (message) => {
+    try {
+      const messageSchema = chatMessageToSchema(message);
+      await dbHelpers.addMessage(messageSchema);
+      // 메시지를 상태에 추가
+      set((state) => ({
+        messages: [...state.messages, message],
+      }));
+    } catch (error) {
+      console.error('Failed to save message to IndexedDB:', error);
+      // 에러가 발생해도 메모리 상태에는 메시지를 추가
+      set((state) => ({
+        messages: [...state.messages, message],
+      }));
+    }
+  },
 
   // 타이핑 액션
   setTyping: (userId, isTyping) => {
