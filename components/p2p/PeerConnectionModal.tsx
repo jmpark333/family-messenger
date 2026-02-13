@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { QRCodeSVG as QRCode } from 'qrcode.react';
 import { useChatStore } from '@/stores/chat-store';
+import { getP2PManager } from '@/lib/webrtc/peer';
 
 interface PeerConnectionModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface PeerConnectionModalProps {
 export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConnect }: PeerConnectionModalProps) {
   const [peerIdInput, setPeerIdInput] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const [error, setError] = useState('');
 
   const resetForm = () => {
@@ -22,13 +24,46 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
     setIsConnecting(false);
   };
 
-  const handleConnect = async () => {
-    if (!peerIdInput.trim()) {
+  const handleTestConnection = async () => {
+    const testPeerId = peerIdInput.trim();
+    if (!testPeerId) {
       setError('Peer ID를 입력하세요');
       return;
     }
 
-    if (peerIdInput === myPeerId) {
+    if (testPeerId === myPeerId) {
+      setError('자기 자신에게는 테스트할 수 없습니다');
+      return;
+    }
+
+    setIsTesting(true);
+    setError('');
+
+    try {
+      const p2pManager = getP2PManager();
+      if (!p2pManager) {
+        throw new Error('P2P 관리자가 초기화되지 않았습니다');
+      }
+
+      // 연결 가능성 테스트 - peer.connect()로 직접 시도
+      // 성공하면 연결 가능, 실패하면 peer-unavailable 에러
+      await p2pManager.connectToPeer(testPeerId);
+      setError('테스트 성공! 연결이 가능합니다. 연결을 누르세요.');
+      setTimeout(() => setIsTesting(false), 2000);
+    } catch (err) {
+      setError((err as Error).message || '테스트 실패: 상대방을 확인할 수 없습니다');
+      setIsTesting(false);
+    }
+  };
+
+  const handleConnect = async () => {
+    const connectPeerId = peerIdInput.trim();
+    if (!connectPeerId) {
+      setError('Peer ID를 입력하세요');
+      return;
+    }
+
+    if (connectPeerId === myPeerId) {
       setError('자기 자신에게는 연결할 수 없습니다');
       return;
     }
@@ -37,7 +72,7 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
     setError('');
 
     try {
-      await onConnect(peerIdInput.trim());
+      await onConnect(connectPeerId);
       onClose();
       resetForm();
     } catch (err) {
@@ -123,6 +158,25 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
                 ⚠️ {error}
               </div>
             )}
+
+            {/* 연결 테스트 버튼 */}
+            <button
+              onClick={handleTestConnection}
+              disabled={!peerIdInput.trim() || isConnecting || isTesting}
+              className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 mb-2"
+            >
+              {isTesting ? (
+                <>
+                  <span className="animate-spin">⏳</span>
+                  <span>테스트 중...</span>
+                </>
+              ) : (
+                <>
+                  <span>🔍</span>
+                  <span>연결 테스트</span>
+                </>
+              )}
+            </button>
 
             {/* 연결 버튼 */}
             <button
