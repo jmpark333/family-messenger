@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useChatStore, selectOnlineUsers, selectTypingUsers } from '@/stores/chat-store';
-import { initFirebaseManager, destroyFirebaseManager, getFirebaseManager } from '@/lib/firebase/firebase-manager';
+import { initFirebaseManager, destroyFirebaseManager, getFirebaseManager } from '../lib/firebase/firebase-manager';
 import type { DataMessage } from '@/types';
 import ChatMessage from '@/components/chat/ChatMessage';
 import MessageInput from '@/components/chat/MessageInput';
