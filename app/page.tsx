@@ -32,10 +32,12 @@ export default function HomePage() {
     const p2pManager = initP2PManager(
       { debug: true },
       {
-        onPeerConnected: (peer) => console.log('Peer connected:', peer),
-        onPeerDisconnected: (peerId) => console.log('Peer disconnected:', peerId),
+        onPeerConnected: (peer) => console.log('[Page] Peer connected:', peer),
+        onPeerDisconnected: (peerId) => console.log('[Page] Peer disconnected:', peerId),
         onMessage: (message) => {
+          console.log('[Page] onMessage received - type:', message.type, 'senderId:', message.senderId, 'data:', message.data);
           if (message.type === 'text') {
+            console.log('[Page] Adding text message to chat store');
             useChatStore.getState().addMessage({
               id: message.id,
               senderId: message.senderId,
@@ -44,6 +46,8 @@ export default function HomePage() {
               status: 'delivered',
               encrypted: message.encrypted || false,
             });
+          } else {
+            console.log('[Page] Message type not text, ignoring:', message.type);
           }
         },
         onError: (error) => console.error('P2P error:', error),

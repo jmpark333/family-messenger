@@ -197,6 +197,8 @@ export class P2PManager {
   private handleIncomingData(peerId: string, data: any) {
     try {
       const message: DataMessage = data;
+      console.log('[P2P] handleIncomingData - type:', message.type, 'from:', peerId, 'data:', data);
+      console.log('[P2P] is peer verified?', this.verifiedPeers.has(peerId));
 
       // 피어의 lastSeen 업데이트
       useChatStore.getState().updatePeer(peerId, {
@@ -206,7 +208,11 @@ export class P2PManager {
       // 메시지 타입별 처리
       switch (message.type) {
         case 'text':
+          console.log('[P2P] Processing text message, calling onMessage callback');
+          this.events.onMessage(message);
+          break;
         case 'encrypted':
+          console.log('[P2P] Processing encrypted message, calling onMessage callback');
           this.events.onMessage(message);
           break;
 
@@ -447,12 +453,15 @@ export class P2PManager {
    */
   sendToPeer(peerId: string, message: DataMessage): boolean {
     const conn = this.connections.get(peerId);
+    console.log('[P2P] sendToPeer - peerId:', peerId, 'connected:', !!conn, 'open:', conn?.open);
+
     if (!conn || !conn.open) {
       console.error('[P2P] No connection to peer:', peerId);
       return false;
     }
 
     try {
+      console.log('[P2P] Sending message type:', message.type, 'to:', peerId);
       conn.send(message);
       return true;
     } catch (error) {
@@ -467,7 +476,7 @@ export class P2PManager {
   broadcast(message: DataMessage): void {
     const store = useChatStore.getState();
     const peers = Array.from(store.peers.values()).filter((p) => p.connected);
-
+    console.log('[P2P] broadcast - type:', message.type, 'connected peers:', peers.length);
     for (const peer of peers) {
       this.sendToPeer(peer.id, message);
     }
