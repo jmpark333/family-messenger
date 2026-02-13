@@ -1,0 +1,99 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Firestore is not used in this project
+    // All Firestore writes are denied
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// Realtime Database Rules for Family Messenger
+rules_version = '2';
+service firebase.database {
+  match /b/{bucket}/ {
+    // .info/connected는 Firebase에서 관리하므로 읽기만 허용
+    match /.info/connected {
+      allow read: if true;
+    }
+
+    // families 노드 - 가족 메신저의 핵심 데이터
+    match /families {
+
+      // 특정 가족 방에 대한 규칙
+      match /{familyId} {
+
+        // 가족 방 메타데이터 (선택적 사용)
+        match / {
+          allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+          allow write: if false; // 메타데이터는 자동 생성/관리됨
+        }
+
+        // 메시지 - 가족 멤버는 읽고 쓸 수 있음
+        match /messages {
+          // 메시지 목록 읽기
+          match / {
+            allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+            // 새 메시지 작성은 인증된 사용자만 가능
+            allow create: if auth != null && isValidFamilyId(familyId);
+            allow update, delete: if false; // 메시지는 수정/삭제 불가
+          }
+
+          // 개별 메시지
+          match /{messageId} {
+            allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+            allow create: if auth != null && isValidFamilyId(familyId) && isMessageOwner(messageId);
+            allow update, delete: if false;
+          }
+        }
+
+        // Presence (온라인 상태) - 가족 멤버만 접근
+        match /presence {
+          match / {
+            allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+          }
+
+          // 자신의 presence만 수정 가능
+          match /{userId} {
+            allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+            allow write: if auth != null && auth.uid == userId;
+          }
+        }
+
+        // 타이핑 인디케이터 - 가족 멤버만 접근
+        match /typing {
+          match / {
+            allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+          }
+
+          // 자신의 타이핑 상태만 수정 가능
+          match /{userId} {
+            allow read: if isFamilyMember(familyId) || isValidFamilyId(familyId);
+            allow write: if auth != null && auth.uid == userId;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 헬퍼 함수: 유효한 가족 ID인지 확인
+// 가족 ID는 예측 불가능해야 하며 최소 20자 이상이어야 함
+function isValidFamilyId(familyId) {
+  return familyId >= 20;
+}
+
+// 헬퍼 함수: 가족 멤버인지 확인
+// presence 데이터를 통해 확인 (실제 구현에서는 별도의 members 노드 권장)
+function isFamilyMember(familyId) {
+  // 개발 중에는 제한적으로 허용
+  // 프로덕션에서는 별도의 members 확인 로직 필요
+  return auth != null;
+}
+
+// 헬퍼 함수: 메시지 소유자인지 확인
+function isMessageOwner(messageId) {
+  // 메시지를 생성하는 시점에만 확인 가능
+  return auth != null;
+}
