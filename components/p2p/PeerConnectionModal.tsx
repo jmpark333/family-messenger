@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QRCodeSVG as QRCode } from 'qrcode.react';
 import { useChatStore } from '@/stores/chat-store';
 
@@ -42,15 +42,12 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
       resetForm();
     } catch (err) {
       setError((err as Error).message || '연결에 실패했습니다');
-    }
-  } finally {
+    } finally {
       setIsConnecting(false);
     }
   };
 
-  // ESC 키로 닫기
-  // useEffect를 사용하지 않고 간단히 처리
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         onClose();
@@ -59,11 +56,10 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
 
     window.addEventListener('keydown', handleEscape);
 
-    // 클린업
     return () => {
       window.removeEventListener('keydown', handleEscape);
     };
-  }
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

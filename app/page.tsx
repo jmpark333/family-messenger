@@ -146,7 +146,7 @@ export default function HomePage() {
 }
 
 interface InitialSetupProps {
-  onSetupComplete: () => void;
+  onSetupComplete?: () => void;
 }
 
 function InitialSetup({ onSetupComplete }: InitialSetupProps) {
@@ -189,7 +189,7 @@ function InitialSetup({ onSetupComplete }: InitialSetupProps) {
       useChatStore.getState().setMyInfo(session.peerId, '나');
       useChatStore.getState().setAuthenticated(true);
 
-      onSetupComplete();
+      onSetupComplete?.();
     } catch {
       setError('로그인 중 오류가 발생했습니다');
       setLoading(false);
