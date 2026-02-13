@@ -21,8 +21,8 @@ export interface PreKeyBundle {
 export interface SignalSession {
   sessionId: string;
   recipientId: string;
-  device Id: number;
-  state: any; // Signal Session State
+  deviceId: number;
+  state: unknown; // Signal Session State
 }
 
 export interface EncryptedMessage {
@@ -47,7 +47,7 @@ export interface WebRTCConfig {
 
 export interface DataMessage {
   id: string;
-  type: 'text' | 'key-exchange' | 'typing' | 'presence';
+  type: 'text' | 'key-exchange' | 'typing' | 'presence' | 'encrypted';
   senderId: string;
   timestamp: number;
   data: any;

@@ -13,7 +13,8 @@ export async function generateFamilyKey(): Promise<FamilyKey> {
   const keyData = crypto.getRandomValues(new Uint8Array(32));
 
   // 키 지문(SHA-256) 생성
-  const fingerprintBuffer = await crypto.subtle.digest('SHA-256', keyData);
+  // TypeScript 5.9 호환을 위해 buffer 속성 직접 전달
+  const fingerprintBuffer = await crypto.subtle.digest('SHA-256', keyData.buffer as ArrayBuffer);
   const fingerprintArray = new Uint8Array(fingerprintBuffer);
 
   // 16진수 문자열로 변환
@@ -91,7 +92,8 @@ export async function verifyKeyFingerprint(
   keyData: Uint8Array,
   expectedFingerprint: string
 ): Promise<boolean> {
-  const fingerprintBuffer = await crypto.subtle.digest('SHA-256', keyData);
+  // TypeScript 5.9 호환을 위해 buffer 속성 직접 전달
+  const fingerprintBuffer = await crypto.subtle.digest('SHA-256', keyData.buffer as ArrayBuffer);
   const fingerprintArray = new Uint8Array(fingerprintBuffer);
 
   const actualFingerprint = Array.from(fingerprintArray)

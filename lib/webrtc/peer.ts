@@ -57,12 +57,19 @@ export class P2PManager {
    */
   private async init() {
     try {
-      this.peer = new Peer(this.config.peerId, {
-        debug: this.config.debug || false,
+      // peerId가 제공되면 사용, 없으면 PeerJS가 자동으로 생성
+      const peerOptions = {
+        debug: this.config.debug ? 3 : 0, // 0=disabled, 3=all logs
         config: {
           iceServers: ICE_SERVERS,
         },
-      });
+      };
+
+      if (this.config.peerId) {
+        this.peer = new Peer(this.config.peerId, peerOptions);
+      } else {
+        this.peer = new Peer(peerOptions);
+      }
 
       this.setupPeerEvents();
     } catch (error) {
