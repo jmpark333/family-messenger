@@ -154,6 +154,21 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
               <li>상대방 기기의 Peer ID를 확인하세요</li>
               <li>여기에 상대방 Peer ID를 입력하고 연결을 누르세요</li>
             </ol>
+
+            {/* 연결 문제 해결 팁 */}
+            <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>연결이 안될 때</span>
+              </h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 list-disc list-inside">
+                <li>같은 WiFi 네트워크 사용 확인 (두 기기가 같은 공유기 권장)</li>
+                <li>방화벽/보안 소프트웨어에서 WebRTC(P2P) 허용</li>
+                <li>브라우저 시크릿 모드 아닌 일반 모드 사용</li>
+                <li>두 기기 모두 최신 버전 앱 사용 확인</li>
+                <li>페이지 새로고침 (Ctrl+Shift+R)</li>
+              </ul>
+            </div>
           </div>
 
           {/* 내 코드 탭 - 하단에 표시 */}

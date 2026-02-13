@@ -10,13 +10,16 @@ import type { PeerInfo, DataMessage, AuthSession, AuthChallenge, AuthResponse } 
 import { useChatStore } from '@/stores/chat-store';
 import { createAuthChallenge, createAuthResponse, verifyAuthResponse } from '@/lib/auth';
 
-// 공용 STUN 서버
+// 공용 STUN 서버 + 추가 STUN 서버들
 const ICE_SERVERS = [
+  // Google STUN
   { urls: 'stun:stun.l.google.com:19302' },
   { urls: 'stun:stun1.l.google.com:19302' },
   { urls: 'stun:stun2.l.google.com:19302' },
   { urls: 'stun:stun3.l.google.com:19302' },
   { urls: 'stun:stun4.l.google.com:19302' },
+  // 추가 STUN 서버들 (연결 성공률 향상)
+  { urls: 'stun:stun.nextcloud.com:443' },
 ];
 
 export interface P2PConfig {
