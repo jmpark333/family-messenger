@@ -40,18 +40,12 @@ export default function PeerConnectionModal({ isOpen, onClose, myPeerId, onConne
     setError('');
 
     try {
-      const p2pManager = getP2PManager();
-      if (!p2pManager) {
-        throw new Error('P2P 관리자가 초기화되지 않았습니다');
-      }
-
-      // 연결 가능성 테스트 - peer.connect()로 직접 시도
-      // 성공하면 연결 가능, 실패하면 peer-unavailable 에러
-      await p2pManager.connectToPeer(testPeerId);
-      setError('테스트 성공! 연결이 가능합니다. 연결을 누르세요.');
+      // onConnect 콜백 사용 (테스트 연결도 콜백으로 정리됨)
+      await onConnect(testPeerId);
+      setError('테스트 연결 성공! 연결을 누르세요.');
       setTimeout(() => setIsTesting(false), 2000);
     } catch (err) {
-      setError((err as Error).message || '테스트 실패: 상대방을 확인할 수 없습니다');
+      setError((err as Error).message || '테스트 연결 실패: ' + (err as Error).message);
       setIsTesting(false);
     }
   };
