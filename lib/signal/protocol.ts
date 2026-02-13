@@ -18,8 +18,9 @@ export async function encryptMessage(
 ): Promise<EncryptedMessage> {
   // Web Crypto API로 키 임포트
   const cryptoKey = await crypto.subtle.importKey(
-    'aes-gcm',
+    'raw',
     key,
+    { name: 'AES-GCM', length: 256 },
     false,
     ['encrypt']
   );
@@ -62,8 +63,9 @@ export async function decryptMessage(
 
   // Web Crypto API로 키 임포트
   const cryptoKey = await crypto.subtle.importKey(
-    'aes-gcm',
+    'raw',
     key,
+    { name: 'AES-GCM', length: 256 },
     false,
     ['decrypt']
   );
