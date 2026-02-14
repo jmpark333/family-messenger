@@ -1,18 +1,38 @@
 import * as crypto from 'crypto';
 import type { InviteToken } from './url-generator';
 
+/**
+ * URL-safe base64 디코딩 (브라우저 호환)
+ * base64url 형식을 표준 base64로 변환 후 atob으로 디코딩
+ */
+function base64UrlDecode(str: string): string {
+  // base64url을 base64로 변환
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+
+  // 패딩 처리
+  while (base64.length % 4) {
+    base64 += '=';
+  }
+
+  // 브라우저 네이티브 atob 사용 후 UTF-8 디코딩
+  return decodeURIComponent(atob(base64).split('').map(c => {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+}
+
 export function validateInviteToken(encoded: string): InviteToken | null {
   try {
-    const decoded = Buffer.from(encoded, 'base64url').toString();
+    const decoded = base64UrlDecode(encoded);
     const token: InviteToken = JSON.parse(decoded);
 
     // Check expiry
-    if (Date.now() > token.expiresAt) {
+    const now = Date.now();
+    if (now > token.expiresAt) {
       return null;
     }
 
     // Verify signature
-    const secret = process.env.FIREBASE_CONFIG;
+    const secret = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'family-messenger-default';
     if (!secret) {
       return null;
     }

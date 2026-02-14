@@ -22,9 +22,17 @@ export default function ChatPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[ChatPage] Rendered - isAuthenticated:', isAuthenticated);
+    console.log('[ChatPage] Messages count:', messages.length);
+  }, [isAuthenticated, messages.length]);
+
   // Redirect to home if not authenticated
   useEffect(() => {
+    console.log('[ChatPage] Auth check - isAuthenticated:', isAuthenticated);
     if (!isAuthenticated) {
+      console.log('[ChatPage] Not authenticated, redirecting to home');
       router.push('/');
       toast.error('인증이 필요합니다. 가족에 먼저 참여해주세요.');
     }

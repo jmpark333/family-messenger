@@ -12,9 +12,16 @@ export interface InviteToken {
 
 /**
  * URL-safe base64 인코딩 (브라우저 호환)
+ * btoa로 인코딩 후 base64url 형식으로 변환
  */
 function base64UrlEncode(str: string): string {
-  return Buffer.from(str).toString('base64')
+  // 브라우저 네이티브 btoa 사용으로 UTF-8 문자열 처리
+  const base64 = btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_match, p1) => {
+    return String.fromCharCode(parseInt(p1, 16));
+  }));
+
+  // base64url 형식으로 변환
+  return base64
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=+$/, '');

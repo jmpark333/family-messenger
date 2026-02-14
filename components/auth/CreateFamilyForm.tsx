@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 import { generateInviteUrl } from '@/lib/auth/url-generator';
 import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
 import { generateIdentityKeyPair } from '@/lib/signal/protocol';
+import { useChatStore } from '@/stores/chat-store';
 
 export function CreateFamilyForm() {
   const router = useRouter();
+  const setAuthenticated = useChatStore((state) => state.setAuthenticated);
+  const setMyInfo = useChatStore((state) => state.setMyInfo);
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,13 +40,18 @@ export function CreateFamilyForm() {
       const keyPair = await generateIdentityKeyPair();
 
       // Save to IndexedDB
+      const memberId = crypto.randomUUID();
       await dbHelpers.saveFamily({
         id: familyId,
-        myMemberId: crypto.randomUUID(),
+        myMemberId: memberId,
         myName: name,
         keys: keyPair,
         joinedAt: Date.now()
       });
+
+      // Set authenticated state immediately after family creation
+      setAuthenticated(true);
+      setMyInfo(memberId, name);
 
       const url = generateInviteUrl(familyId, 'creator', baseUrl);
       setInviteUrl(url);

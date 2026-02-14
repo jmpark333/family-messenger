@@ -81,6 +81,16 @@ export default function MessageInput() {
               status: 'sending',
               encrypted: true,
             });
+            
+            // IndexedDB에 메시지 저장
+            useChatStore.getState().saveMessage({
+              id: message.id,
+              senderId: myPeerId,
+              content: `[파일] ${fileData.file.name}`,
+              timestamp: Date.now(),
+              status: 'sending',
+              encrypted: true,
+            });
           } else {
             // 큐가 없는 경우 기존 방식으로 P2P 직접 전송
             const p2pManager = getP2PManager();
@@ -88,6 +98,16 @@ export default function MessageInput() {
               p2pManager.broadcast(message);
 
               useChatStore.getState().addMessage({
+                id: message.id,
+                senderId: myPeerId,
+                content: `[파일] ${fileData.file.name}`,
+                timestamp: Date.now(),
+                status: 'sent',
+                encrypted: true,
+              });
+              
+              // IndexedDB에 메시지 저장
+              useChatStore.getState().saveMessage({
                 id: message.id,
                 senderId: myPeerId,
                 content: `[파일] ${fileData.file.name}`,
@@ -137,6 +157,16 @@ export default function MessageInput() {
           status: 'sending',
           encrypted: true,
         });
+        
+        // IndexedDB에 메시지 저장
+        useChatStore.getState().saveMessage({
+          id: message.id,
+          senderId: myPeerId,
+          content: text,
+          timestamp: Date.now(),
+          status: 'sending',
+          encrypted: true,
+        });
       } else {
         // 큐가 없는 경우 기존 방식으로 P2P 직접 전송
         const p2pManager = getP2PManager();
@@ -144,6 +174,16 @@ export default function MessageInput() {
           p2pManager.broadcast(message);
 
           useChatStore.getState().addMessage({
+            id: message.id,
+            senderId: myPeerId,
+            content: text,
+            timestamp: Date.now(),
+            status: 'sent',
+            encrypted: true,
+          });
+          
+          // IndexedDB에 메시지 저장
+          useChatStore.getState().saveMessage({
             id: message.id,
             senderId: myPeerId,
             content: text,

@@ -11,10 +11,10 @@ let isDBFullyAvailable = false;
  */
 async function checkIndexedDBAvailability(): Promise<boolean> {
   if (typeof window === 'undefined') return false;
-  
+
   // 이미 확인했다면 결과를 반환
   if (dbAvailabilityChecked) return isDBFullyAvailable;
-  
+
   try {
     // 실제 데이터베이스 접근 시도
     await new Promise<void>((resolve, reject) => {
@@ -27,12 +27,24 @@ async function checkIndexedDBAvailability(): Promise<boolean> {
         resolve();
       };
     });
-    
+
     isDBFullyAvailable = true;
     dbAvailabilityChecked = true;
     return true;
   } catch (error) {
-    console.warn('IndexedDB 접근 불가:', error);
+    // 더 상세한 에러 정보 제공
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.warn('IndexedDB 접근 불가:', errorMessage);
+
+    // 사용자에게 더 명확한 안내
+    if (errorMessage.includes('storage') || errorMessage.includes('allowed')) {
+      console.error('IndexedDB 접근이 브라우저 보안 설정에 의해 차단되었습니다.');
+      console.error('해결 방법:');
+      console.error('1. 브라우저 설정에서 개인정보 보호/써드파티 설정을 확인하세요');
+      console.error('2. 사생성 모드에서는 IndexedDB 접근을 허용해야 합니다');
+      console.error('3. 일반 브라우징 모드(시크릿 모드 등)에서 다시 시도하세요');
+    }
+
     isDBFullyAvailable = false;
     dbAvailabilityChecked = true;
     return false;

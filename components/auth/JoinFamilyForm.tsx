@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { validateInviteToken } from '@/lib/auth/token-validator';
 import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
 import { generateIdentityKeyPair } from '@/lib/signal/protocol';
+import { useChatStore } from '@/stores/chat-store';
 
 interface Props {
   inviteToken?: string;
@@ -12,6 +13,8 @@ interface Props {
 
 export function JoinFamilyForm({ inviteToken: propToken }: Props) {
   const router = useRouter();
+  const setAuthenticated = useChatStore((state) => state.setAuthenticated);
+  const setMyInfo = useChatStore((state) => state.setMyInfo);
   const [name, setName] = useState('');
   const [token, setToken] = useState(propToken || '');
   const [loading, setLoading] = useState(false);
@@ -49,13 +52,18 @@ export function JoinFamilyForm({ inviteToken: propToken }: Props) {
       const keyPair = await generateIdentityKeyPair();
 
       // Save to IndexedDB
+      const memberId = crypto.randomUUID();
       await dbHelpers.saveFamily({
         id: validated.familyId,
-        myMemberId: crypto.randomUUID(),
+        myMemberId: memberId,
         myName: name,
         keys: keyPair,
         joinedAt: Date.now()
       });
+
+      // Set authenticated state
+      setAuthenticated(true);
+      setMyInfo(memberId, name);
 
       router.push('/chat');
     } catch (err) {
