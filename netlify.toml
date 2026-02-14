@@ -1,0 +1,41 @@
+/**
+ * Netlify 설정
+ *
+ * PUBLISH DISTINCT 옵션 �경 설정
+ *   CONFIG 변경
+ */
+
+module.exports = {
+  config: {
+    // 빌드 디렉터리를 standalone으로 설정
+    output: "standalone",
+
+    // Turbopack 사용 비활성화
+    turbo: {
+      resolveAlias: {
+        alias: {
+          "@/*": ["./*"]
+        }
+      }
+    },
+
+    // �가 빌드는 빌드 옵션 설정들
+    publish: {
+      // 개별 디렉터리에서 standalone으로 빌드
+    // Next.js PWA 지원
+    // functions (필요시에 따로)
+  }
+  },
+
+    // 기본 설정
+    build: {
+      // Turbopack 대신 Webpack 사용
+      // standalone export 사용
+    },
+    redirect: {
+      // 빌드 에러 처리
+      status: 200
+      // ...
+    }
+  }
+};

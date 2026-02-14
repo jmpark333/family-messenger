@@ -1,10 +1,11 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
 import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
 
-export default function AuthPage() {
+function AuthPageContent() {
   const searchParams = useSearchParams();
   const mode = searchParams.get('mode');
   const invite = searchParams.get('invite');
@@ -48,5 +49,17 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center">
       <p>유효하지 않은 접근입니다. <a href="/">홈으로</a></p>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p>로딩 중...</p>
+      </div>
+    }>
+      <AuthPageContent />
+    </Suspense>
   );
 }

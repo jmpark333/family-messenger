@@ -25,6 +25,10 @@ export async function generateIdentityKeyPair(): Promise<{
     ['deriveKey', 'deriveBits']
   );
 
+  if (typeof keyPair === 'boolean' || !('publicKey' in keyPair)) {
+    throw new Error('Failed to generate key pair');
+  }
+
   const publicKeyBuffer = await crypto.subtle.exportKey('raw', keyPair.publicKey);
   const privateKeyBuffer = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
 

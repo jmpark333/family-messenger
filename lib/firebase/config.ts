@@ -4,20 +4,21 @@
  * Firebase Realtime Database를 사용한 가족 메신저 동기화
  */
 
-import { initializeApp, FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getDatabase, Database } from 'firebase/database';
 import { getAuth, Auth } from 'firebase/auth';
+import type { FirebaseApp } from 'firebase/app';
 
-// Firebase 설정 (사용자가 제공)
+// Firebase 설정 (환경 변수에서 로드)
 const firebaseConfig = {
-  apiKey: "AIzaSyBAlYQA_RZxUmFWc5fM5ajF4zffEbbztDg",
-  authDomain: "family-messenger-4122f.firebaseapp.com",
-  databaseURL: "https://family-messenger-4122f-default-rtdb.firebaseio.com",
-  projectId: "family-messenger-4122f",
-  storageBucket: "family-messenger-4122f.firebasestorage.app",
-  messagingSenderId: "800238871697",
-  appId: "1:800238871697:web:0b26e581fced2d6bd9cb30",
-  measurementId: "G-1ZJMLRMTN4"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || ""
 };
 
 // Firebase 앱 초기화

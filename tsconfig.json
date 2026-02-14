@@ -19,29 +19,18 @@
         "name": "next"
       }
     ],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true
-  },
-  "paths": {
-    "@/*": [
-      "./*"
-    ],
-    "@/lib/*": [
-      "./lib/*"
-    ],
-    "@/components/*": [
-      "./components/*"
-    ],
-    "@/stores/*": [
-      "./stores/*"
-    ],
-    "@/styles/*": [
-      "./styles/*"
-    ],
-    "@/types/*": [
-      "./types/*"
-    ]
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@/lib/*": ["./lib/*"],
+      "@/components/*": ["./components/*"],
+      "@/stores/*": ["./stores/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/types/*": ["./types/*"]
+    }
   },
   "include": [
     "next-env.d.ts",

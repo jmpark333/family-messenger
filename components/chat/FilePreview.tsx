@@ -45,7 +45,7 @@ function FilePreviewItem({ fileData, onRemove }: FilePreviewItemProps) {
       {isImage ? (
         <ImagePreview preview={preview} fileName={file.name} fileSize={fileSize} onRemove={onRemove} />
       ) : (
-        <FilePreview fileName={file.name} fileSize={fileSize} onRemove={onRemove} />
+        <FilePreviewDisplay fileName={file.name} fileSize={fileSize} onRemove={onRemove} />
       )}
     </div>
   );
@@ -98,13 +98,13 @@ function ImagePreview({ preview, fileName, fileSize, onRemove }: ImagePreviewPro
   );
 }
 
-interface FilePreviewProps {
+interface FilePreviewDisplayProps {
   fileName: string;
   fileSize: string;
   onRemove: () => void;
 }
 
-function FilePreview({ fileName, fileSize, onRemove }: FilePreviewProps) {
+function FilePreviewDisplay({ fileName, fileSize, onRemove }: FilePreviewDisplayProps) {
   const getFileIcon = (name: string) => {
     const ext = name.split('.').pop()?.toLowerCase();
 
