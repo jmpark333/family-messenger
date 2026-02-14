@@ -50,8 +50,9 @@ export default function MessageInput() {
         const reader = new FileReader();
         reader.onload = () => {
           const base64 = reader.result as string;
+          const messageId = crypto.randomUUID();
           const message: DataMessage = {
-            id: crypto.randomUUID(),
+            id: messageId,
             type: 'text',
             senderId: myPeerId,
             timestamp: Date.now(),
@@ -72,19 +73,9 @@ export default function MessageInput() {
             // 메시지 큐에 등록
             messageQueue.enqueue(message);
 
-            // 로컬 메시지 목록에 추가 (상태: sending)
-            useChatStore.getState().addMessage({
-              id: message.id,
-              senderId: myPeerId,
-              content: `[파일] ${fileData.file.name}`,
-              timestamp: Date.now(),
-              status: 'sending',
-              encrypted: true,
-            });
-            
-            // IndexedDB에 메시지 저장
+            // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
             useChatStore.getState().saveMessage({
-              id: message.id,
+              id: messageId,
               senderId: myPeerId,
               content: `[파일] ${fileData.file.name}`,
               timestamp: Date.now(),
@@ -97,18 +88,9 @@ export default function MessageInput() {
             if (p2pManager) {
               p2pManager.broadcast(message);
 
-              useChatStore.getState().addMessage({
-                id: message.id,
-                senderId: myPeerId,
-                content: `[파일] ${fileData.file.name}`,
-                timestamp: Date.now(),
-                status: 'sent',
-                encrypted: true,
-              });
-              
-              // IndexedDB에 메시지 저장
+              // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
               useChatStore.getState().saveMessage({
-                id: message.id,
+                id: messageId,
                 senderId: myPeerId,
                 content: `[파일] ${fileData.file.name}`,
                 timestamp: Date.now(),
@@ -132,8 +114,9 @@ export default function MessageInput() {
 
     // Send text message if there's text
     if (text.trim()) {
+      const messageId = crypto.randomUUID();
       const message: DataMessage = {
-        id: crypto.randomUUID(),
+        id: messageId,
         type: 'text',
         senderId: myPeerId,
         timestamp: Date.now(),
@@ -148,19 +131,9 @@ export default function MessageInput() {
         // 메시지 큐에 등록
         messageQueue.enqueue(message);
 
-        // 로컬 메시지 목록에 추가 (상태: sending)
-        useChatStore.getState().addMessage({
-          id: message.id,
-          senderId: myPeerId,
-          content: text,
-          timestamp: Date.now(),
-          status: 'sending',
-          encrypted: true,
-        });
-        
-        // IndexedDB에 메시지 저장
+        // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
         useChatStore.getState().saveMessage({
-          id: message.id,
+          id: messageId,
           senderId: myPeerId,
           content: text,
           timestamp: Date.now(),
@@ -173,18 +146,9 @@ export default function MessageInput() {
         if (p2pManager) {
           p2pManager.broadcast(message);
 
-          useChatStore.getState().addMessage({
-            id: message.id,
-            senderId: myPeerId,
-            content: text,
-            timestamp: Date.now(),
-            status: 'sent',
-            encrypted: true,
-          });
-          
-          // IndexedDB에 메시지 저장
+          // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
           useChatStore.getState().saveMessage({
-            id: message.id,
+            id: messageId,
             senderId: myPeerId,
             content: text,
             timestamp: Date.now(),

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -16,6 +17,7 @@ export default function ChatPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isP2PInitialized, setIsP2PInitialized] = useState(false);
+  const myPeerIdRef = useRef<string>('');
   const {
     isAuthenticated,
     messages,
@@ -26,6 +28,13 @@ export default function ChatPage() {
   } = useChatStore();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // myPeerId를 ref에 저장
+  useEffect(() => {
+    if (myPeerId) {
+      myPeerIdRef.current = myPeerId;
+    }
+  }, [myPeerId]);
 
   // P2PManager 초기화
   useEffect(() => {
@@ -44,9 +53,15 @@ export default function ChatPage() {
         toast.info('연결 종료됨');
       },
       onMessage: (message: DataMessage) => {
-        console.log('[ChatPage] Received message:', message);
+        console.log('[ChatPage] Received message:', message, 'myPeerId:', myPeerIdRef.current);
         
-        // 수신된 메시지를 채팅 목록에 추가
+        // 내 자신이 보낸 메시지는 중복 추가하지 않음
+        if (message.senderId === myPeerIdRef.current) {
+          console.log('[ChatPage] Ignoring own message (echo)');
+          return;
+        }
+        
+        // 다른 사용자의 메시지를 채팅 목록에 추가
         if (message.type === 'text' || message.type === 'encrypted') {
           const chatMessage = {
             id: message.id,
