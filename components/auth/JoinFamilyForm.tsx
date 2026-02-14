@@ -18,26 +18,30 @@ export function JoinFamilyForm({ inviteToken: propToken }: Props) {
   const [error, setError] = useState('');
 
   const handleJoin = async () => {
-    // Check IndexedDB availability
-    if (!isDatabaseAvailable()) {
-      setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
-      return;
-    }
-
     setError('');
     setLoading(true);
 
     try {
+      // Check IndexedDB availability
+      const isAvailable = await isDatabaseAvailable();
+      if (!isAvailable) {
+        setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
+        setLoading(false);
+        return;
+      }
+
       // Validate token
       const validated = validateInviteToken(token);
       if (!validated) {
         setError('유효하지 않은 초대장입니다');
+        setLoading(false);
         return;
       }
 
       // Check expiry
       if (Date.now() > validated.expiresAt) {
         setError('만료된 초대장입니다. 가족원에게 새 URL을 요청하세요');
+        setLoading(false);
         return;
       }
 

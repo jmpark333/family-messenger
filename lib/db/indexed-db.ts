@@ -1,14 +1,40 @@
 import Dexie, { Table } from 'dexie';
 import type { MessageSchema, FileAttachment, FamilySchema, MemberSchema } from './schema';
 
+// 실제 IndexedDB 접근 테스트를 위한 플래그
+let dbAvailabilityChecked = false;
+let isDBFullyAvailable = false;
+
 /**
  * IndexedDB 사용 가능 여부를 확인합니다.
+ * 단순히 API 존재 여부가 아니라 실제 접근을 시도해봅니다.
  */
-function isIndexedDBAvailable(): boolean {
+async function checkIndexedDBAvailability(): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  
+  // 이미 확인했다면 결과를 반환
+  if (dbAvailabilityChecked) return isDBFullyAvailable;
+  
   try {
-    if (typeof window === 'undefined') return false;
-    return 'indexedDB' in window && window.indexedDB !== null;
-  } catch {
+    // 실제 데이터베이스 접근 시도
+    await new Promise<void>((resolve, reject) => {
+      const request = window.indexedDB.open('_db_test_');
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        request.result.close();
+        // 테스트용 DB 삭제
+        window.indexedDB.deleteDatabase('_db_test_');
+        resolve();
+      };
+    });
+    
+    isDBFullyAvailable = true;
+    dbAvailabilityChecked = true;
+    return true;
+  } catch (error) {
+    console.warn('IndexedDB 접근 불가:', error);
+    isDBFullyAvailable = false;
+    dbAvailabilityChecked = true;
     return false;
   }
 }
@@ -36,10 +62,10 @@ export class FamilyMessengerDB extends Dexie {
 }
 
 /**
- * 데이터베이스가 사용 가능한지 확인합니다.
+ * 데이터베이스가 사용 가능한지 비동기로 확인합니다.
  */
-export function isDatabaseAvailable(): boolean {
-  return isIndexedDBAvailable();
+export async function isDatabaseAvailable(): Promise<boolean> {
+  return await checkIndexedDBAvailability();
 }
 
 export const db = new FamilyMessengerDB();
@@ -75,7 +101,7 @@ export const dbHelpers = {
     try {
       let query = db.messages.orderBy('timestamp').reverse();
       if (before) {
-        query = query.filter(m => m.timestamp < before);
+        query = query.filter((m: MessageSchema) => m.timestamp < before);
       }
       return await query.limit(limit).toArray();
     } catch (error) {

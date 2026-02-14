@@ -19,16 +19,17 @@ export function CreateFamilyForm() {
       return;
     }
 
-    // Check IndexedDB availability
-    if (!isDatabaseAvailable()) {
-      setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
-      return;
-    }
-
     setLoading(true);
     setError('');
 
     try {
+      // Check IndexedDB availability
+      const isAvailable = await isDatabaseAvailable();
+      if (!isAvailable) {
+        setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
+        setLoading(false);
+        return;
+      }
       const familyId = crypto.randomUUID();
       const baseUrl = window.location.origin;
 

@@ -204,7 +204,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   loadMessages: async (limit = 100) => {
     try {
       // Check IndexedDB availability first
-      if (!isDatabaseAvailable()) {
+      const isAvailable = await isDatabaseAvailable();
+      if (!isAvailable) {
         console.warn('IndexedDB not available, skipping message load');
         set({ messages: [] });
         return;
@@ -223,7 +224,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   saveMessage: async (message) => {
     try {
       // Check IndexedDB availability first
-      if (!isDatabaseAvailable()) {
+      const isAvailable = await isDatabaseAvailable();
+      if (!isAvailable) {
         console.warn('IndexedDB not available, skipping message save');
         set((state) => ({
           messages: [...state.messages, message],
