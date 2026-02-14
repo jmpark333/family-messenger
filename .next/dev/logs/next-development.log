@@ -1,15 +1,2500 @@
-[00:00:01.513] Server  LOG     
-[00:00:01.513] Server  LOG       We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
-[00:00:01.513] Server  LOG       The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+[00:00:00.783] Server  LOG     
+[00:00:00.783] Server  LOG       We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+[00:00:00.783] Server  LOG       The following mandatory changes were made to your tsconfig.json:
 
-[00:00:01.513] Server  LOG       	- include was updated to add '.next/dev/types/**/*.ts'
-[00:00:01.513] Server  LOG     
-[00:00:01.514] Server  LOG       The following mandatory changes were made to your tsconfig.json:
+[00:00:00.784] Server  LOG       	- moduleResolution was set to node (to match webpack resolution)
+[00:00:00.784] Server  LOG       	- resolveJsonModule was set to true (to match webpack resolution)
+[00:00:00.784] Server  LOG       	- isolatedModules was set to true (requirement for SWC / Babel)
+[00:00:00.784] Server  LOG     
+[00:00:00.951] Server  LOG     ✓ Ready in 612ms
+[00:00:25.605] Server  ERROR   ⨯ ./app/auth/page.tsx:4:1
+Module not found: Can't resolve '@/components/auth/CreateFamilyForm'
+  2 |
+  3 | import { useSearchParams } from 'next/navigation';
+> 4 | import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
+  6 |
+  7 | export default function AuthPage() {
 
-[00:00:01.514] Server  LOG       	- moduleResolution was set to node (to match webpack resolution)
-[00:00:01.514] Server  LOG       	- resolveJsonModule was set to true (to match webpack resolution)
-[00:00:01.514] Server  LOG       	- isolatedModules was set to true (requirement for SWC / Babel)
-[00:00:01.514] Server  LOG     
-[00:00:01.699] Server  LOG     ✓ Ready in 1236ms
-[00:00:41.012] Server  LOG     ○ Compiling / ...
-[00:04:04.367] Server  LOG     ✓ Finished writing to filesystem cache in 119s
+
+
+Import traces:
+  Client Component Browser:
+    ./app/auth/page.tsx [Client Component Browser]
+    ./app/auth/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/auth/page.tsx [Client Component SSR]
+    ./app/auth/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/auth/page.tsx:5:1
+Module not found: Can't resolve '@/components/auth/JoinFamilyForm'
+  3 | import { useSearchParams } from 'next/navigation';
+  4 | import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
+> 5 | import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function AuthPage() {
+  8 |   const searchParams = useSearchParams();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/auth/page.tsx [Client Component Browser]
+    ./app/auth/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/auth/page.tsx [Client Component SSR]
+    ./app/auth/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:00:55.069] Server  ERROR   ⨯ ./stores/chat-store.ts:10:1
+Module not found: Can't resolve '@/lib/db'
+   8 |   type AuthCredentials,
+   9 | } from '@/types';
+> 10 | import { dbHelpers } from '@/lib/db';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import type { MessageSchema } from '@/lib/db';
+  12 |
+  13 | // Typing timeout (ms)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./stores/chat-store.ts [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./stores/chat-store.ts [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./components/shared/Toaster.tsx:3:1
+Module not found: Can't resolve '@/lib/hooks/useToast'
+  1 | 'use client';
+  2 |
+> 3 | import { useToast } from '@/lib/hooks/useToast';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { useEffect, useState } from 'react';
+  5 |
+  6 | export default function Toaster() {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./components/shared/Toaster.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/shared/Toaster.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./components/chat/MessageInput.tsx:6:1
+Module not found: Can't resolve '@/lib/offline/message-queue'
+  4 | import { useChatStore } from '@/stores/chat-store';
+  5 | import { getP2PManager } from '@/lib/webrtc/peer';
+> 6 | import { getMessageQueue } from '@/lib/offline/message-queue';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type { DataMessage } from '@/types';
+  8 | import FileUploadButton from './FileUploadButton';
+  9 | import FilePreview, { type FilePreviewData } from './FilePreview';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./components/chat/MessageInput.tsx:5:1
+Module not found: Can't resolve '@/lib/webrtc/peer'
+  3 | import { useState, useRef, useEffect } from 'react';
+  4 | import { useChatStore } from '@/stores/chat-store';
+> 5 | import { getP2PManager } from '@/lib/webrtc/peer';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { getMessageQueue } from '@/lib/offline/message-queue';
+  7 | import type { DataMessage } from '@/types';
+  8 | import FileUploadButton from './FileUploadButton';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./components/chat/MessageInput.tsx:4:1
+Module not found: Can't resolve '@/stores/chat-store'
+  2 |
+  3 | import { useState, useRef, useEffect } from 'react';
+> 4 | import { useChatStore } from '@/stores/chat-store';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { getP2PManager } from '@/lib/webrtc/peer';
+  6 | import { getMessageQueue } from '@/lib/offline/message-queue';
+  7 | import type { DataMessage } from '@/types';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./components/security/SecurityIndicator.tsx:4:1
+Module not found: Can't resolve '@/stores/chat-store'
+  2 |
+  3 | import { useState, useEffect } from 'react';
+> 4 | import { useChatStore } from '@/stores/chat-store';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 |
+  6 | interface SecurityStatus {
+  7 |   level: 'secure' | 'warning' | 'insecure';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./components/security/SecurityIndicator.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/security/SecurityIndicator.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:01:14.845] Server  ERROR   ⨯ ./app/auth/page.tsx:4:1
+Module not found: Can't resolve '@/components/auth/CreateFamilyForm'
+  2 |
+  3 | import { useSearchParams } from 'next/navigation';
+> 4 | import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
+  6 |
+  7 | export default function AuthPage() {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/auth/page.tsx [Client Component Browser]
+    ./app/auth/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/auth/page.tsx [Client Component SSR]
+    ./app/auth/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/auth/page.tsx:5:1
+Module not found: Can't resolve '@/components/auth/JoinFamilyForm'
+  3 | import { useSearchParams } from 'next/navigation';
+  4 | import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
+> 5 | import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function AuthPage() {
+  8 |   const searchParams = useSearchParams();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/auth/page.tsx [Client Component Browser]
+    ./app/auth/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/auth/page.tsx [Client Component SSR]
+    ./app/auth/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.129] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.129] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.130] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.131] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.131] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.131] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.132] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.132] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.133] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.133] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.133] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.134] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (사용자가 제공)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.134] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.135] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.136] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.137] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.138] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.139] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:22.159] Server  LOG     ✓ Compiled in 521ms
+[00:09:26.023] Server  LOG       Reload env: .env.local
+[00:09:31.105] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.106] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.106] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.107] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.108] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.108] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.109] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.109] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+  12 | const firebaseConfig = {
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.109] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.110] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.110] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.110] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, FirebaseApp } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 |
+  11 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.111] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.112] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.112] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.113] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.113] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:31.114] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:09:43.171] Server  LOG       Reload env: .env.local
+[00:10:06.971] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, getApps } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.972] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, getApps } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.973] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, getApps } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.974] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, getApps } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.974] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, getApps } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+  12 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.974] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, getApps } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+  12 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.975] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, getApps } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+  12 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.976] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, getApps } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+  12 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.976] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, getApps } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.977] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, getApps } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.977] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, getApps } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.978] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, getApps } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.979] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.979] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.980] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.981] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.982] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:06.983] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.941] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, getApps } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.942] Server  ERROR   ⨯ ./lib/firebase/config.ts:7:1
+Module not found: Can't resolve 'firebase/app'
+   5 |  */
+   6 |
+>  7 | import { initializeApp, getApps } from 'firebase/app';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | import { getDatabase, Database } from 'firebase/database';
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.943] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, getApps } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+  12 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.944] Server  ERROR   ⨯ ./lib/firebase/config.ts:9:1
+Module not found: Can't resolve 'firebase/auth'
+   7 | import { initializeApp, getApps } from 'firebase/app';
+   8 | import { getDatabase, Database } from 'firebase/database';
+>  9 | import { getAuth, Auth } from 'firebase/auth';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+  12 | // Firebase 설정 (환경 변수에서 로드)
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.945] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, getApps } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.945] Server  ERROR   ⨯ ./lib/firebase/config.ts:8:1
+Module not found: Can't resolve 'firebase/database'
+   6 |
+   7 | import { initializeApp, getApps } from 'firebase/app';
+>  8 | import { getDatabase, Database } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 | import { getAuth, Auth } from 'firebase/auth';
+  10 | import type { FirebaseApp } from 'firebase/app';
+  11 |
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/config.ts [Client Component Browser]
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/config.ts [Client Component SSR]
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.947] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.947] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:23.949] Server  ERROR   ⨯ ./lib/firebase/firebase-admin.ts:13:1
+Module not found: Can't resolve 'firebase/database'
+  11 |  */
+  12 |
+> 13 | import { getDatabase, ref, get, child } from 'firebase/database';
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { initFirebase } from './config';
+  15 |
+  16 | /**
+
+
+
+Import traces:
+  Client Component Browser:
+    ./lib/firebase/firebase-admin.ts [Client Component Browser]
+    ./lib/auth/invite-service.ts [Client Component Browser]
+    ./lib/auth/index.ts [Client Component Browser]
+    ./lib/webrtc/peer.ts [Client Component Browser]
+    ./components/chat/MessageInput.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Client Component Browser]
+    ./app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/firebase/firebase-admin.ts [Client Component SSR]
+    ./lib/auth/invite-service.ts [Client Component SSR]
+    ./lib/auth/index.ts [Client Component SSR]
+    ./lib/webrtc/peer.ts [Client Component SSR]
+    ./components/chat/MessageInput.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Client Component SSR]
+    ./app/chat/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:10:24.873] Server  LOG     ✓ Compiled in 275ms
+[00:12:12.187] Server  LOG     ✓ Compiled in 18ms
+[00:12:15.825] Server  LOG     ✓ Compiled in 18ms

@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { generateInviteUrl } from '@/lib/auth/url-generator';
-import { dbHelpers } from '@/lib/db';
+import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
 import { generateIdentityKeyPair } from '@/lib/signal/protocol';
-import type { FamilySchema } from '@/lib/db';
 
 export function CreateFamilyForm() {
   const router = useRouter();
@@ -20,11 +19,16 @@ export function CreateFamilyForm() {
       return;
     }
 
+    // Check IndexedDB availability
+    if (!isDatabaseAvailable()) {
+      setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
-      // Create family in Firebase
       const familyId = crypto.randomUUID();
       const baseUrl = window.location.origin;
 
@@ -43,7 +47,8 @@ export function CreateFamilyForm() {
       const url = generateInviteUrl(familyId, 'creator', baseUrl);
       setInviteUrl(url);
     } catch (err) {
-      setError('가족 생성에 실패했습니다');
+      console.error('가족 생성 실패:', err);
+      setError('가족 생성에 실패했습니다. 브라우저 저장소를 확인해주세요.');
     } finally {
       setLoading(false);
     }

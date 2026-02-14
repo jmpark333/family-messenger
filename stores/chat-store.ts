@@ -7,7 +7,7 @@ import {
   type KeyExchangeData,
   type AuthCredentials,
 } from '@/types';
-import { dbHelpers } from '@/lib/db';
+import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
 import type { MessageSchema } from '@/lib/db';
 
 // Typing timeout (ms)
@@ -203,6 +203,13 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   loadMessages: async (limit = 100) => {
     try {
+      // Check IndexedDB availability first
+      if (!isDatabaseAvailable()) {
+        console.warn('IndexedDB not available, skipping message load');
+        set({ messages: [] });
+        return;
+      }
+      
       const messageSchemas = await dbHelpers.getMessages(limit);
       const messages = messageSchemas.map(schemaToChatMessage);
       set({ messages });
@@ -215,6 +222,15 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   saveMessage: async (message) => {
     try {
+      // Check IndexedDB availability first
+      if (!isDatabaseAvailable()) {
+        console.warn('IndexedDB not available, skipping message save');
+        set((state) => ({
+          messages: [...state.messages, message],
+        }));
+        return;
+      }
+      
       const messageSchema = chatMessageToSchema(message);
       await dbHelpers.addMessage(messageSchema);
       // 메시지를 상태에 추가

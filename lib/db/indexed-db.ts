@@ -2,6 +2,18 @@ import Dexie, { Table } from 'dexie';
 import type { MessageSchema, FileAttachment, FamilySchema, MemberSchema } from './schema';
 
 /**
+ * IndexedDB 사용 가능 여부를 확인합니다.
+ */
+function isIndexedDBAvailable(): boolean {
+  try {
+    if (typeof window === 'undefined') return false;
+    return 'indexedDB' in window && window.indexedDB !== null;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Family Messenger IndexedDB 데이터베이스 클래스
  * Dexie를 사용하여 IndexedDB를 추상화합니다.
  */
@@ -21,6 +33,13 @@ export class FamilyMessengerDB extends Dexie {
       members: 'id, name'
     });
   }
+}
+
+/**
+ * 데이터베이스가 사용 가능한지 확인합니다.
+ */
+export function isDatabaseAvailable(): boolean {
+  return isIndexedDBAvailable();
 }
 
 export const db = new FamilyMessengerDB();

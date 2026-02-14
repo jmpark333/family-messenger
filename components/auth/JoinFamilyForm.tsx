@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { validateInviteToken } from '@/lib/auth/token-validator';
-import { dbHelpers } from '@/lib/db';
+import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
 import { generateIdentityKeyPair } from '@/lib/signal/protocol';
-import type { FamilySchema } from '@/lib/db';
 
 interface Props {
   inviteToken?: string;
@@ -19,6 +18,12 @@ export function JoinFamilyForm({ inviteToken: propToken }: Props) {
   const [error, setError] = useState('');
 
   const handleJoin = async () => {
+    // Check IndexedDB availability
+    if (!isDatabaseAvailable()) {
+      setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
+      return;
+    }
+
     setError('');
     setLoading(true);
 
@@ -50,7 +55,8 @@ export function JoinFamilyForm({ inviteToken: propToken }: Props) {
 
       router.push('/chat');
     } catch (err) {
-      setError('가족 참여에 실패했습니다');
+      console.error('가족 참여 실패:', err);
+      setError('가족 참여에 실패했습니다. 브라우저 저장소를 확인해주세요.');
     } finally {
       setLoading(false);
     }
