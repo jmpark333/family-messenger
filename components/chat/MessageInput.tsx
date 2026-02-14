@@ -14,7 +14,7 @@ export default function MessageInput() {
   const [attachedFiles, setAttachedFiles] = useState<FilePreviewData[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { myPeerId } = useChatStore();
+  const { myPeerId, addMessage } = useChatStore();
 
   // 타이핑 인디케이터 전송
   useEffect(() => {
@@ -72,33 +72,33 @@ export default function MessageInput() {
           if (messageQueue) {
             // 메시지 큐에 등록
             messageQueue.enqueue(message);
-
-            // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
-            useChatStore.getState().saveMessage({
-              id: messageId,
-              senderId: myPeerId,
-              content: `[파일] ${fileData.file.name}`,
-              timestamp: Date.now(),
-              status: 'sending',
-              encrypted: true,
-            });
           } else {
             // 큐가 없는 경우 기존 방식으로 P2P 직접 전송
             const p2pManager = getP2PManager();
             if (p2pManager) {
               p2pManager.broadcast(message);
-
-              // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
-              useChatStore.getState().saveMessage({
-                id: messageId,
-                senderId: myPeerId,
-                content: `[파일] ${fileData.file.name}`,
-                timestamp: Date.now(),
-                status: 'sent',
-                encrypted: true,
-              });
             }
           }
+
+          // ✅ UI에 즉시 추가 (중복 방지 위해)
+          addMessage({
+            id: messageId,
+            senderId: myPeerId,
+            content: `[파일] ${fileData.file.name}`,
+            timestamp: Date.now(),
+            status: 'sending',
+            encrypted: true,
+          });
+          
+          // IndexedDB에 메시지 저장
+          useChatStore.getState().saveMessage({
+            id: messageId,
+            senderId: myPeerId,
+            content: `[파일] ${fileData.file.name}`,
+            timestamp: Date.now(),
+            status: 'sending',
+            encrypted: true,
+          });
         };
         reader.readAsDataURL(fileData.file);
       });
@@ -130,33 +130,33 @@ export default function MessageInput() {
       if (messageQueue) {
         // 메시지 큐에 등록
         messageQueue.enqueue(message);
-
-        // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
-        useChatStore.getState().saveMessage({
-          id: messageId,
-          senderId: myPeerId,
-          content: text,
-          timestamp: Date.now(),
-          status: 'sending',
-          encrypted: true,
-        });
       } else {
         // 큐가 없는 경우 기존 방식으로 P2P 직접 전송
         const p2pManager = getP2PManager();
         if (p2pManager) {
           p2pManager.broadcast(message);
-
-          // IndexedDB에 메시지 저장 (UI 업데이트는 P2P 수신 시)
-          useChatStore.getState().saveMessage({
-            id: messageId,
-            senderId: myPeerId,
-            content: text,
-            timestamp: Date.now(),
-            status: 'sent',
-            encrypted: true,
-          });
         }
       }
+
+      // ✅ UI에 즉시 추가 (중복 방지 위해)
+      addMessage({
+        id: messageId,
+        senderId: myPeerId,
+        content: text,
+        timestamp: Date.now(),
+        status: 'sending',
+        encrypted: true,
+      });
+      
+      // IndexedDB에 메시지 저장
+      useChatStore.getState().saveMessage({
+        id: messageId,
+        senderId: myPeerId,
+        content: text,
+        timestamp: Date.now(),
+        status: 'sending',
+        encrypted: true,
+      });
     }
 
     setText('');
