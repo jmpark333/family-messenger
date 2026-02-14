@@ -3,14 +3,15 @@
  * 오프라인 지원 및 캐싱 전략
  */
 
-const CACHE_NAME = 'family-messenger-v2';
-const STATIC_CACHE = 'family-messenger-static-v2';
+const CACHE_NAME = 'family-messenger-v3';
+const STATIC_CACHE = 'family-messenger-static-v3';
 
 // 캐싱할 정적 자원
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/favicon.ico',
+  '/icon.svg',
 ];
 
 // 설치 이벤트
