@@ -1,361 +1,348 @@
-# URL 기반 가족 인증 구현 계획
+# 간소화된 URL 기반 가족 인증 구현 계획 v2
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 가족 URL 기반 인증 시스템으로 개편 - URL 공유로 가족원 초대, IndexedDB 저장, 파일 전송 기능 추가
+**Goal:** 간소화된 URL + 4자리 인증코드 기반 가족 메신저 - 복잡한 Firebase/P2P 제거, 서버 중계식 채팅
 
-**Architecture:** 기존 Firebase + Signal Protocol 아키텍처 유지하며, 인증을 URL 기반으로 변경. Firebase는 시그널링만 담당하고 메시지는 IndexedDB에만 저장. P2P(WebRTC)로 파일 전송.
+**Architecture:** 서버 중계식 채팅, 간단한 Netlify Functions API, E2E 암호화 유지
 
-**Tech Stack:** Next.js 16, TypeScript, Zustand, Firebase Realtime DB, WebRTC(PeerJS), Signal Protocol, Dexie.js (IndexedDB)
+**Tech Stack:** Next.js 16, TypeScript, Zustand, Netlify Functions, Web Crypto API, Dexie.js (IndexedDB)
 
 ---
 
-## Task 1: IndexedDB 래퍼 구현 (Dexie.js)
+## Task 1: 간단한 API 서버 구현 (Netlify Functions)
 
 **Files:**
-- Create: `lib/db/indexed-db.ts`
-- Create: `lib/db/schema.ts`
-- Create: `lib/db/index.ts`
+- Create: `netlify/functions/api/family-create.ts`
+- Create: `netlify/functions/api/family-join.ts`
+- Create: `netlify/functions/api/messages-send.ts`
+- Create: `netlify/functions/api/messages-poll.ts`
+- Create: `lib/api/storage.ts` (간단한 파일 기반 저장소)
 
-**Step 1: 스키마 타입 정의**
+**Step 1: 저장소 구현 (Netlify Blobs 또는 파일 시스템)**
 
 ```typescript
-// lib/db/schema.ts
-export interface MessageSchema {
+// lib/api/storage.ts
+import fs from 'fs';
+import path from 'path';
+
+const DATA_DIR = path.join(process.cwd(), '.netlify', 'data');
+
+interface Family {
   id: string;
+  authCode: string;
+  members: Array<{ id: string; name: string; publicKey: string }>;
+  createdAt: number;
+}
+
+interface Message {
+  id: string;
+  familyId: string;
   senderId: string;
   senderName: string;
   content: string;
   timestamp: number;
-  type: 'text' | 'file' | 'system';
   encrypted: boolean;
-  file?: FileAttachment;
-  status: 'pending' | 'sent' | 'delivered' | 'failed';
 }
 
-export interface FileAttachment {
-  id: string;
-  messageId: string;
-  name: string;
-  type: string;
-  size: number;
-  thumbnail?: string;
-}
+export class Storage {
+  private ensureDir() {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  }
 
-export interface FamilySchema {
-  id: string;
-  myMemberId: string;
-  myName: string;
-  keys: {
-    publicKey: Uint8Array;
-    privateKey?: Uint8Array;
-  };
-  joinedAt: number;
-}
+  async createFamily(name: string, authCode: string, memberId: string, publicKey: string): Promise<Family> {
+    this.ensureDir();
+    const familyId = crypto.randomUUID();
+    const family: Family = {
+      id: familyId,
+      authCode,
+      members: [{ id: memberId, name, publicKey }],
+      createdAt: Date.now(),
+    };
+    fs.writeFileSync(
+      path.join(DATA_DIR, `${familyId}.json`),
+      JSON.stringify(family, null, 2)
+    );
+    return family;
+  }
 
-export interface MemberSchema {
-  id: string;
-  name: string;
-  publicKey: Uint8Array;
-  connected: boolean;
-  lastSeen: number;
-}
-```
+  async getFamily(familyId: string): Promise<Family | null> {
+    const filePath = path.join(DATA_DIR, `${familyId}.json`);
+    if (!fs.existsSync(filePath)) return null;
+    const data = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(data);
+  }
 
-**Step 2: Dexie.js 래퍼 구현**
+  async addMember(familyId: string, memberId: string, name: string, publicKey: string): Promise<boolean> {
+    const family = await this.getFamily(familyId);
+    if (!family || family.members.length >= 4) return false;
 
-```typescript
-// lib/db/indexed-db.ts
-import Dexie, { Table } from 'dexie';
-import type { MessageSchema, FileAttachment, FamilySchema, MemberSchema } from './schema';
+    family.members.push({ id: memberId, name, publicKey });
+    fs.writeFileSync(
+      path.join(DATA_DIR, `${familyId}.json`),
+      JSON.stringify(family, null, 2)
+    );
+    return true;
+  }
 
-export class FamilyMessengerDB extends Dexie {
-  messages!: Table<MessageSchema, string>;
-  files!: Table<FileAttachment, string>;
-  family!: Table<FamilySchema, string>;
-  members!: Table<MemberSchema, string>;
+  async saveMessage(message: Message): Promise<void> {
+    const filePath = path.join(DATA_DIR, `messages-${message.familyId}.json`);
+    let messages: Message[] = [];
+    if (fs.existsSync(filePath)) {
+      messages = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    }
+    messages.push(message);
 
-  constructor() {
-    super('FamilyMessengerDB');
+    // 최근 1000개만 유지
+    if (messages.length > 1000) {
+      messages = messages.slice(-1000);
+    }
 
-    this.version(1).stores({
-      messages: 'id, timestamp, senderId',
-      files: 'id, messageId',
-      family: 'id',
-      members: 'id, name'
-    });
+    fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
+  }
+
+  async getMessages(familyId: string, since?: number): Promise<Message[]> {
+    const filePath = path.join(DATA_DIR, `messages-${familyId}.json`);
+    if (!fs.existsSync(filePath)) return [];
+
+    const messages: Message[] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+    if (since !== undefined) {
+      return messages.filter(m => m.timestamp > since);
+    }
+
+    return messages;
   }
 }
 
-export const db = new FamilyMessengerDB();
+export const storage = new Storage();
+```
 
-// Helper functions
-export const dbHelpers = {
-  // Messages
-  async addMessage(message: MessageSchema): Promise<void> {
-    await db.messages.add(message);
-  },
+**Step 2: 가족 생성 API**
 
-  async getMessages(limit: number = 100, before?: number): Promise<MessageSchema[]> {
-    let query = db.messages.orderBy('timestamp').reverse();
-    if (before) {
-      query = query.filter(m => m.timestamp < before);
+```typescript
+// netlify/functions/api/family-create.ts
+import { Handler } from '@netlify/functions';
+import { storage } from '../../../lib/api/storage';
+
+export const handler: Handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  try {
+    const { name, authCode, publicKey } = JSON.parse(event.body || '{}');
+
+    if (!name || !authCode || authCode.length !== 4) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Invalid input' }),
+      };
     }
-    return query.limit(limit).toArray();
-  },
 
-  async updateMessageStatus(id: string, status: MessageSchema['status']): Promise<void> {
-    await db.messages.update(id, { status });
-  },
+    const memberId = crypto.randomUUID();
+    const family = await storage.createFamily(name, authCode, memberId, publicKey);
 
-  async clearMessages(): Promise<void> {
-    await db.messages.clear();
-  },
+    const inviteUrl = `${process.env.URL}/invite?family=${family.id}`;
 
-  // Files
-  async addFile(file: FileAttachment): Promise<void> {
-    await db.files.add(file);
-  },
-
-  async getFile(id: string): Promise<FileAttachment | undefined> {
-    return db.files.get(id);
-  },
-
-  // Family
-  async saveFamily(family: FamilySchema): Promise<void> {
-    await db.family.put(family);
-  },
-
-  async getFamily(): Promise<FamilySchema | undefined> {
-    return db.family.toCollection().first();
-  },
-
-  async clearFamily(): Promise<void> {
-    await db.family.clear();
-  },
-
-  // Members
-  async addMember(member: MemberSchema): Promise<void> {
-    await db.members.put(member);
-  },
-
-  async getMember(id: string): Promise<MemberSchema | undefined> {
-    return db.members.get(id);
-  },
-
-  async updateMember(id: string, updates: Partial<MemberSchema>): Promise<void> {
-    await db.members.update(id, updates);
-  },
-
-  async getAllMembers(): Promise<MemberSchema[]> {
-    return db.members.toArray();
-  },
-
-  async clearMembers(): Promise<void> {
-    await db.members.clear();
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        familyId: family.id,
+        memberId,
+        inviteUrl,
+      }),
+    };
+  } catch (error) {
+    console.error('Error creating family:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
   }
 };
 ```
 
-**Step 3: 바(barrel) export**
+**Step 3: 가족 참여 API**
 
 ```typescript
-// lib/db/index.ts
-export * from './schema';
-export * from './indexed-db';
-export { db } from './indexed-db';
-```
+// netlify/functions/api/family-join.ts
+import { Handler } from '@netlify/functions';
+import { storage } from '../../../lib/api/storage';
 
-**Step 4: Dexie.js 의존성 설치**
+export const handler: Handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
 
-```bash
-npm install dexie
-npm install --save-dev @types/dexie
-```
-
-**Step 5: Commit**
-
-```bash
-git add lib/db/ package.json package-lock.json
-git commit -m "feat: add IndexedDB wrapper with Dexie.js"
-```
-
----
-
-## Task 2: 인증 URL 생성 및 검증 API
-
-**Files:**
-- Create: `lib/auth/url-generator.ts`
-- Create: `lib/auth/token-validator.ts`
-- Create: `lib/auth/invite-service.ts`
-- Create: `app/api/auth/verify/route.ts`
-
-**Step 1: URL 생성 구현**
-
-```typescript
-// lib/auth/url-generator.ts
-import crypto from 'crypto';
-
-const INVITE_URL_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-
-export interface InviteToken {
-  familyId: string;
-  createdBy: string;
-  createdAt: number;
-  expiresAt: number;
-  signature: string;
-}
-
-export function generateInviteUrl(familyId: string, createdBy: string, baseUrl: string): string {
-  const token: InviteToken = {
-    familyId,
-    createdBy,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + INVITE_URL_EXPIRY,
-    signature: ''
-  };
-
-  // HMAC signature
-  const secret = process.env.FIREBASE_CONFIG || 'default-secret';
-  const data = `${token.familyId}:${token.createdBy}:${token.createdAt}:${token.expiresAt}`;
-  token.signature = crypto.createHmac('sha256', secret).update(data).digest('hex');
-
-  const encoded = Buffer.from(JSON.stringify(token)).toString('base64url');
-  return `${baseUrl}/auth?invite=${encoded}`;
-}
-```
-
-**Step 2: 토큰 검증 구현**
-
-```typescript
-// lib/auth/token-validator.ts
-import type { InviteToken } from './url-generator';
-
-export function validateInviteToken(encoded: string): InviteToken | null {
   try {
-    const decoded = Buffer.from(encoded, 'base64url').toString();
-    const token: InviteToken = JSON.parse(decoded);
+    const { familyId, name, authCode, publicKey } = JSON.parse(event.body || '{}');
 
-    // Check expiry
-    if (Date.now() > token.expiresAt) {
-      return null;
+    const family = await storage.getFamily(familyId);
+
+    if (!family) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: 'Family not found' }),
+      };
     }
 
-    // Verify signature
-    const secret = process.env.FIREBASE_CONFIG || 'default-secret';
-    const data = `${token.familyId}:${token.createdBy}:${token.createdAt}:${token.expiresAt}`;
-    const expectedSignature = require('crypto')
-      .createHmac('sha256', secret)
-      .update(data)
-      .digest('hex');
-
-    if (token.signature !== expectedSignature) {
-      return null;
+    if (family.authCode !== authCode) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ error: 'Invalid auth code' }),
+      };
     }
 
-    return token;
-  } catch {
-    return null;
-  }
-}
+    if (family.members.length >= 4) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Family is full' }),
+      };
+    }
 
-export function getInviteErrorCode(token: InviteToken | null): string | null {
-  if (!token) {
-    return 'INVALID_TOKEN';
+    const memberId = crypto.randomUUID();
+    const success = await storage.addMember(familyId, memberId, name, publicKey);
+
+    if (!success) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Failed to join family' }),
+      };
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        familyId,
+        memberId,
+        members: family.members,
+      }),
+    };
+  } catch (error) {
+    console.error('Error joining family:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
   }
-  if (Date.now() > token.expiresAt) {
-    return 'EXPIRED_TOKEN';
-  }
-  return null;
-}
+};
 ```
 
-**Step 3: 초대 서비스 구현**
+**Step 4: 메시지 전송 API**
 
 ```typescript
-// lib/auth/invite-service.ts
-import { getFirebaseAdmin } from '../firebase/firebase-admin';
-import type { InviteToken } from './url-validator';
+// netlify/functions/api/messages-send.ts
+import { Handler } from '@netlify/functions';
+import { storage } from '../../../lib/api/storage';
 
-export interface InviteValidationResult {
-  valid: boolean;
-  error?: 'EXPIRED' | 'INVALID' | 'FULL' | 'ALREADY_MEMBER';
-  familyId?: string;
-  memberCount?: number;
-}
-
-export async function validateInvite(token: InviteToken): Promise<InviteValidationResult> {
-  const admin = getFirebaseAdmin();
-  const db = admin.database();
-
-  // Check family exists
-  const familyRef = db.ref(`families/${token.familyId}`);
-  const familySnap = await familyRef.get();
-
-  if (!familySnap.exists()) {
-    return { valid: false, error: 'INVALID' };
+export const handler: Handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  // Check member count
-  const membersRef = familyRef.child('members');
-  const membersSnap = await membersRef.get();
-  const memberCount = membersSnap.size || 0;
+  try {
+    const { familyId, senderId, senderName, content, encrypted } = JSON.parse(event.body || '{}');
 
-  if (memberCount >= 4) {
-    return { valid: false, error: 'FULL', memberCount };
+    const message = {
+      id: crypto.randomUUID(),
+      familyId,
+      senderId,
+      senderName,
+      content,
+      timestamp: Date.now(),
+      encrypted: encrypted || false,
+    };
+
+    await storage.saveMessage(message);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, messageId: message.id }),
+    };
+  } catch (error) {
+    console.error('Error sending message:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
   }
-
-  return {
-    valid: true,
-    familyId: token.familyId,
-    memberCount
-  };
-}
+};
 ```
 
-**Step 4: API 라우트**
+**Step 5: 메시지 폴링 API**
 
 ```typescript
-// app/api/auth/verify/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { validateInviteToken } from '@/lib/auth/token-validator';
-import { validateInvite } from '@/lib/auth/invite-service';
+// netlify/functions/api/messages-poll.ts
+import { Handler } from '@netlify/functions';
+import { storage } from '../../../lib/api/storage';
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const invite = searchParams.get('invite');
-
-  if (!invite) {
-    return NextResponse.json({ error: 'MISSING_INVITE' }, { status: 400 });
+export const handler: Handler = async (event) => {
+  if (event.httpMethod !== 'GET') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const token = validateInviteToken(invite);
-  const validation = await validateInvite(token);
+  try {
+    const { familyId, since } = event.queryStringParameters || {};
 
-  if (!validation.valid) {
-    return NextResponse.json(validation, { status: 400 });
+    if (!familyId) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Missing familyId' }),
+      };
+    }
+
+    const messages = await storage.getMessages(
+      familyId,
+      since ? parseInt(since, 10) : undefined
+    );
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ messages }),
+    };
+  } catch (error) {
+    console.error('Error polling messages:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
   }
-
-  return NextResponse.json(validation);
-}
+};
 ```
 
-**Step 5: Commit**
+**Step 6: netlify.toml 업데이트**
+
+```toml
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+```
+
+**Step 7: Commit**
 
 ```bash
-git add lib/auth/ app/api/auth/
-git commit -m "feat: add invite URL generation and verification API"
+git add netlify/functions api lib/api/storage.ts netlify.toml
+git commit -m "feat: add simplified API endpoints (v2)"
 ```
 
 ---
 
-## Task 3: 가족 생성 페이지
+## Task 2: 간단한 인증 페이지
 
 **Files:**
-- Create: `app/auth/page.tsx`
-- Create: `components/auth/CreateFamilyForm.tsx`
+- Modify: `app/page.tsx`
+- Create: `app/invite/page.tsx`
+- Modify: `components/auth/CreateFamilyForm.tsx`
+- Modify: `components/auth/JoinFamilyForm.tsx`
 
-**Step 1: 메인 페이지를 가족 생성/입장 선택으로 변경**
+**Step 1: 메인 페이지 간소화**
 
 ```typescript
 // app/page.tsx
@@ -367,21 +354,20 @@ export default function HomePage() {
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center space-y-6">
         <div className="text-6xl">👨‍👩‍👧‍👦</div>
         <h1 className="text-2xl font-bold text-gray-900">가족 메신저</h1>
-        <p className="text-gray-600">가족끼리만 메시지와 파일을 공유하세요</p>
+        <p className="text-gray-600">가족끼리만 메시지를 공유하세요</p>
 
         <div className="space-y-3">
           <Link
-            href="/auth?mode=create"
+            href="/create"
             className="block w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
           >
             새 가족 만들기
           </Link>
-          <p className="text-sm text-gray-500">또는</p>
           <Link
-            href="/auth?mode=join"
+            href="/invite"
             className="block w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all"
           >
-            가족원에게 받은 URL 입력
+            초대장으로 참여
           </Link>
         </div>
       </div>
@@ -390,7 +376,43 @@ export default function HomePage() {
 }
 ```
 
-**Step 2: 가족 생성 커폀넌트**
+**Step 2: 가족 생성 페이지**
+
+```typescript
+// app/create/page.tsx
+import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
+
+export default function CreatePage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        <h2 className="text-xl font-bold mb-6 text-center">새 가족 만들기</h2>
+        <CreateFamilyForm />
+      </div>
+    </div>
+  );
+}
+```
+
+**Step 3: 초대 페이지**
+
+```typescript
+// app/invite/page.tsx
+import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
+
+export default function InvitePage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+        <h2 className="text-xl font-bold mb-6 text-center">가족에 참여</h2>
+        <JoinFamilyForm />
+      </div>
+    </div>
+  );
+}
+```
+
+**Step 4: 간소화된 가족 생성 폼**
 
 ```typescript
 // components/auth/CreateFamilyForm.tsx
@@ -398,11 +420,13 @@ export default function HomePage() {
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { generateInviteUrl } from '@/lib/auth/url-generator';
+import { useChatStore } from '@/stores/chat-store';
+import { generateKeyPair } from '@/lib/crypto';
 
 export function CreateFamilyForm() {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [authCode, setAuthCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
@@ -412,26 +436,52 @@ export function CreateFamilyForm() {
       setError('이름을 입력해주세요');
       return;
     }
+    if (!authCode.trim() || authCode.length !== 4) {
+      setError('4자리 인증코드를 입력해주세요');
+      return;
+    }
 
     setLoading(true);
     setError('');
 
     try {
-      // Create family in Firebase
-      const familyId = crypto.randomUUID();
-      const baseUrl = window.location.origin;
+      // 키 쌍 생성
+      const keyPair = await generateKeyPair();
+      const memberId = crypto.randomUUID();
 
-      // Save to IndexedDB
-      await dbHelpers.saveFamily({
-        id: familyId,
-        myMemberId: crypto.randomUUID(),
-        myName: name,
-        keys: { publicKey: new Uint8Array() }, // TODO: generate keys
-        joinedAt: Date.now()
+      // API 호출
+      const response = await fetch('/api/family/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          authCode: authCode.toUpperCase(),
+          publicKey: keyPair.publicKey,
+        }),
       });
 
-      const url = generateInviteUrl(familyId, 'creator', baseUrl);
-      setInviteUrl(url);
+      if (!response.ok) {
+        throw new Error('가족 생성 실패');
+      }
+
+      const data = await response.json();
+
+      // 스토어 업데이트
+      useChatStore.getState().setAuthenticated(true);
+      useChatStore.getState().setMyInfo(data.memberId, name);
+      useChatStore.getState().setFamilyId(data.familyId);
+
+      // IndexedDB에 저장
+      await dbHelpers.saveFamily({
+        id: data.familyId,
+        myMemberId: data.memberId,
+        myName: name,
+        authCode: authCode.toUpperCase(),
+        keys: keyPair,
+        joinedAt: Date.now(),
+      });
+
+      setInviteUrl(data.inviteUrl);
     } catch (err) {
       setError('가족 생성에 실패했습니다');
     } finally {
@@ -439,157 +489,11 @@ export function CreateFamilyForm() {
     }
   };
 
-  const handleCopy = () => {
-    if (inviteUrl) {
-      navigator.clipboard.writeText(inviteUrl);
-      alert('URL이 복사되었습니다!');
-    }
-  };
-
-  if (inviteUrl) {
-    return (
-      <div className="space-y-4">
-        <div className="text-center">
-          <div className="text-4xl mb-2">🎉</div>
-          <h3 className="text-lg font-semibold">가족이 생성되었습니다!</h3>
-        </div>
-
-        <div className="bg-gray-50 rounded-xl p-4">
-          <p className="text-sm text-gray-600 mb-2">이 URL을 가족원에게 보내세요:</p>
-          <input
-            type="text"
-            value={inviteUrl}
-            readOnly
-            className="w-full px-3 py-2 bg-white border rounded-lg text-sm"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={handleCopy}
-            className="py-2 bg-blue-500 text-white rounded-lg font-medium"
-          >
-            복사하기
-          </button>
-          <button
-            onClick={() => router.push('/chat')}
-            className="py-2 bg-gray-200 text-gray-700 rounded-lg font-medium"
-          >
-            채팅 시작
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); handleCreate(); }} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          이름
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
-          placeholder="당신의 이름"
-          autoFocus
-        />
-      </div>
-
-      {error && (
-        <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm">
-          ⚠️ {error}
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={loading || !name.trim()}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50"
-      >
-        {loading ? '생성 중...' : '가족 만들기'}
-      </button>
-    </form>
-  );
+  // ... 나머지 UI 코드
 }
 ```
 
-**Step 3: Commit**
-
-```bash
-git add app/page.tsx components/auth/CreateFamilyForm.tsx
-git commit -m "feat: add create family form page"
-```
-
----
-
-## Task 4: 가족 입장 페이지
-
-**Files:**
-- Create: `app/auth/page.tsx`
-- Create: `components/auth/JoinFamilyForm.tsx`
-
-**Step 1: 인증 페이지 구현**
-
-```typescript
-// app/auth/page.tsx
-'use client';
-
-import { useSearchParams } from 'next/navigation';
-import { CreateFamilyForm } from '@/components/auth/CreateFamilyForm';
-import { JoinFamilyForm } from '@/components/auth/JoinFamilyForm';
-
-export default function AuthPage() {
-  const searchParams = useSearchParams();
-  const mode = searchParams.get('mode');
-  const invite = searchParams.get('invite');
-
-  // If invite URL is present, show join form
-  if (invite) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-          <JoinFamilyForm inviteToken={invite} />
-        </div>
-      </div>
-    );
-  }
-
-  // Otherwise show mode selection
-  if (mode === 'create') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-          <h2 className="text-xl font-bold mb-6 text-center">새 가족 만들기</h2>
-          <CreateFamilyForm />
-        </div>
-      </div>
-    );
-  }
-
-  if (mode === 'join') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-          <h2 className="text-xl font-bold mb-6 text-center">URL 입력</h2>
-          <JoinFamilyForm />
-        </div>
-      </div>
-    );
-  }
-
-  // Invalid - redirect home
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p>유효하지 않은 접근입니다. <a href="/">홈으로</a></p>
-    );
-  }
-}
-```
-
-**Step 2: 가족 입장 폼**
+**Step 5: 간소화된 참여 폼**
 
 ```typescript
 // components/auth/JoinFamilyForm.tsx
@@ -597,625 +501,216 @@ export default function AuthPage() {
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { validateInviteToken } from '@/lib/auth/token-validator';
+import { useSearchParams } from 'next/navigation';
+import { useChatStore } from '@/stores/chat-store';
+import { generateKeyPair } from '@/lib/crypto';
 
-interface Props {
-  inviteToken?: string;
-}
-
-export function JoinFamilyForm({ inviteToken: propToken }: Props) {
+export function JoinFamilyForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const familyId = searchParams.get('family');
+
   const [name, setName] = useState('');
-  const [token, setToken] = useState(propToken || '');
+  const [authCode, setAuthCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleJoin = async () => {
-    setError('');
+    if (!name.trim()) {
+      setError('이름을 입력해주세요');
+      return;
+    }
+    if (!authCode.trim() || authCode.length !== 4) {
+      setError('4자리 인증코드를 입력해주세요');
+      return;
+    }
+    if (!familyId) {
+      setError('유효하지 않은 초대장입니다');
+      return;
+    }
+
     setLoading(true);
+    setError('');
 
     try {
-      // Validate token
-      const validated = validateInviteToken(token);
-      if (!validated) {
-        setError('유효하지 않은 초대장입니다');
-        return;
+      const keyPair = await generateKeyPair();
+
+      const response = await fetch('/api/family/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          familyId,
+          name,
+          authCode: authCode.toUpperCase(),
+          publicKey: keyPair.publicKey,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || '참여 실패');
       }
 
-      // Check expiry
-      if (Date.now() > validated.expiresAt) {
-        setError('만료된 초대장입니다. 가족원에게 새 URL을 요청하세요');
-        return;
-      }
+      const data = await response.json();
 
-      // TODO: Verify with API, join family, key exchange
+      // 스토어 업데이트
+      useChatStore.getState().setAuthenticated(true);
+      useChatStore.getState().setMyInfo(data.memberId, name);
+      useChatStore.getState().setFamilyId(familyId);
 
-      // Save to IndexedDB
+      // IndexedDB에 저장
       await dbHelpers.saveFamily({
-        id: validated.familyId,
-        myMemberId: crypto.randomUUID(),
+        id: familyId,
+        myMemberId: data.memberId,
         myName: name,
-        keys: { publicKey: new Uint8Array() },
-        joinedAt: Date.now()
+        authCode: authCode.toUpperCase(),
+        keys: keyPair,
+        joinedAt: Date.now(),
       });
 
       router.push('/chat');
     } catch (err) {
-      setError('가족 참여에 실패했습니다');
+      setError(err instanceof Error ? err.message : '참여에 실패했습니다');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); handleJoin(); }} className="space-y-4">
-      {!propToken && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            초대 URL
-          </label>
-          <input
-            type="text"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
-            placeholder="가족원에게 받은 URL을 붙여넣으세요"
-          />
-        </div>
-      )}
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          이름
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
-          placeholder="가족원들에게 보일 이름"
-          autoFocus={!!propToken}
-        />
-      </div>
-
-      {error && (
-        <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm">
-          ⚠️ {error}
-        </div>
-      )}
-
-      <button
-        type="submit"
-        disabled={loading || !name.trim() || !token.trim()}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50"
-      >
-        {loading ? '참여 중...' : '가족에 참여'}
-      </button>
-    </form>
-  );
+  // ... 나머지 UI 코드
 }
 ```
 
-**Step 3: Commit**
+**Step 6: Commit**
 
 ```bash
-git add app/auth/page.tsx components/auth/JoinFamilyForm.tsx
-git commit -m "feat: add join family page"
+git add app/page.tsx app/create/page.tsx app/invite/page.tsx components/auth/
+git commit -m "feat: add simplified auth pages (v2)"
 ```
 
 ---
 
-## Task 5: Zustand 스토어 수정 (IndexedDB 연동)
-
-**Files:**
-- Modify: `stores/chat-store.ts`
-
-**Step 1: IndexedDB를 사용하도록 스토어 리팩토링**
-
-```typescript
-// stores/chat-store.ts
-import { create } from 'zustand';
-import { dbHelpers } from '@/lib/db';
-
-interface ChatStore {
-  // ... existing state ...
-
-  // Actions
-  loadMessages: () => Promise<void>;
-  saveMessage: (message: ChatMessage) => Promise<void>;
-}
-
-export const useChatStore = create<ChatStore>((set, get) => ({
-  // ... existing initial state ...
-
-  // New actions
-  loadMessages: async () => {
-    const messages = await dbHelpers.getMessages(100);
-    set({ messages });
-  },
-
-  saveMessage: async (message) => {
-    await dbHelpers.addMessage(message);
-    set((state) => ({
-      messages: [...state.messages, message]
-    }));
-  },
-
-  // ... keep other actions ...
-}));
-```
-
-**Step 2: Commit**
-
-```bash
-git add stores/chat-store.ts
-git commit -m "refactor: integrate IndexedDB with chat store"
-```
-
----
-
-## Task 6: 파일 업로드 커폀넌트
-
-**Files:**
-- Create: `components/chat/FileUploadButton.tsx`
-- Create: `components/chat/FilePreview.tsx`
-
-**Step 1: 파일 업로드 버튼**
-
-```typescript
-// components/chat/FileUploadButton.tsx
-'use client';
-
-import { useRef } from 'react';
-import { useChatStore } from '@/stores/chat-store';
-
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-  'application/pdf',
-  'text/plain'
-];
-
-export function FileUploadButton() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addMessage } = useChatStore();
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validation
-    if (file.size > MAX_FILE_SIZE) {
-      alert('파일 크기는 10MB 이하여야 합니다');
-      return;
-    }
-
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      alert('지원하지 않는 파일 형식입니다');
-      return;
-    }
-
-    // TODO: Send file via P2P
-    console.log('File selected:', file.name);
-
-    // Reset
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  return (
-    <>
-      <input
-        ref={fileInputRef}
-        type="file"
-        className="hidden"
-        onChange={handleFileSelect}
-        accept={ALLOWED_TYPES.join(',')}
-      />
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        className="p-3 text-gray-500 hover:text-blue-500 transition-colors"
-        aria-label="파일 첨부"
-      >
-        📎
-      </button>
-    </>
-  );
-}
-```
-
-**Step 2: 파일 미리보기**
-
-```typescript
-// components/chat/FilePreview.tsx
-'use client';
-
-import type { FileAttachment } from '@/lib/db';
-
-interface Props {
-  file: FileAttachment;
-}
-
-export function FilePreview({ file }: Props) {
-  const isImage = file.type.startsWith('image/');
-
-  if (isImage) {
-    return (
-      <div className="rounded-lg overflow-hidden max-w-xs">
-        <img
-          src={`/api/files/${file.id}`}
-          alt={file.name}
-          className="w-full h-auto"
-        />
-        <p className="text-xs text-gray-500 mt-1">{file.name}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
-      <span className="text-2xl">📄</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{file.name}</p>
-        <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
-      </div>
-      <button className="text-blue-500 hover:text-blue-700">
-        ⬇️
-      </button>
-    </div>
-  );
-}
-```
-
-**Step 3: MessageInput에 파일 버튼 추가**
-
-```typescript
-// components/chat/MessageInput.tsx 수정
-import { FileUploadButton } from './FileUploadButton';
-
-// ... in return, add to the input area:
-<div className="flex items-end gap-2">
-  <FileUploadButton />
-  {/* existing textarea and send button */}
-</div>
-```
-
-**Step 4: Commit**
-
-```bash
-git add components/chat/FileUploadButton.tsx components/chat/FilePreview.tsx components/chat/MessageInput.tsx
-git commit -m "feat: add file upload and preview components"
-```
-
----
-
-## Task 7: Firebase 시그널링 리팩토링 (메시지 TTL)
-
-**Files:**
-- Modify: `lib/firebase/firebase-manager.ts`
-
-**Step 1: 메시지 전송 시 TTL 추가**
-
-```typescript
-// lib/firebase/firebase-manager.ts
-// ... existing code ...
-
-async broadcastMessage(message: DataMessage) {
-  if (!this.familyId) return;
-
-  const messagesRef = this.db.ref(`families/${this.familyId}/messages`);
-  await messagesRef.push({
-    ...message,
-    // Set server timestamp with 1 minute TTL
-    '.priority': Firebase.ServerValue.TIMESTAMP
-  });
-
-  // Cleanup old messages via Firebase rules or Cloud Functions
-}
-```
-
-**Step 2: Commit**
-
-```bash
-git add lib/firebase/firebase-manager.ts
-git commit -m "refactor: add TTL to Firebase messages"
-```
-
----
-
-## Task 8: E2E 키 교환 유지보수
-
-**Files:**
-- Modify: `lib/signal/protocol.ts`
-- Modify: `components/auth/CreateFamilyForm.tsx`
-- Modify: `components/auth/JoinFamilyForm.tsx`
-
-**Step 1: 키 생성 헬퍼 추가**
-
-```typescript
-// lib/signal/protocol.ts
-export async function generateIdentityKeyPair(): Promise<{ publicKey: Uint8Array; privateKey: Uint8Array }> {
-  // TODO: Use existing Signal Protocol implementation
-  const keyPair = await crypto.subtle.generateKey(
-    { name: 'ECDH', namedCurve: 'P-256' },
-    true,
-    ['deriveKey']
-  );
-
-  const publicKey = await crypto.subtle.exportKey('raw', keyPair.publicKey);
-  const privateKey = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
-
-  return {
-    publicKey: new Uint8Array(publicKey),
-    privateKey: new Uint8Array(privateKey)
-  };
-}
-```
-
-**Step 2: CreateFamilyForm에서 키 생성 사용**
-
-```typescript
-// components/auth/CreateFamilyForm.tsx 수정
-import { generateIdentityKeyPair } from '@/lib/signal/protocol';
-
-// in handleCreate:
-const keyPair = await generateIdentityKeyPair();
-
-await dbHelpers.saveFamily({
-  id: familyId,
-  myMemberId: crypto.randomUUID(),
-  myName: name,
-  keys: keyPair,
-  joinedAt: Date.now()
-});
-```
-
-**Step 3: Commit**
-
-```bash
-git add lib/signal/protocol.ts components/auth/CreateFamilyForm.tsx components/auth/JoinFamilyForm.tsx
-git commit -m "feat: integrate key generation with auth forms"
-```
-
----
-
-## Task 9: 오프라인 지원 및 메시지 재시용
-
-**Files:**
-- Create: `lib/offline/message-queue.ts`
-- Modify: `components/chat/MessageInput.tsx`
-
-**Step 1: 메시지 큐 구현**
-
-```typescript
-// lib/offline/message-queue.ts
-interface QueuedMessage {
-  id: string;
-  message: DataMessage;
-  attempts: number;
-  timestamp: number;
-}
-
-class MessageQueue {
-  private queue: Map<string, QueuedMessage> = new Map();
-  private processing = false;
-  private maxAttempts = 3;
-
-  enqueue(message: DataMessage) {
-    this.queue.set(message.id, {
-      id: message.id,
-      message,
-      attempts: 0,
-      timestamp: Date.now()
-    });
-    this.processQueue();
-  }
-
-  private async processQueue() {
-    if (this.processing) return;
-    this.processing = true;
-
-    for (const [id, queued] of this.queue) {
-      if (queued.attempts >= this.maxAttempts) {
-        this.queue.delete(id);
-        continue;
-      }
-
-      try {
-        await this.sendMessage(queued.message);
-        this.queue.delete(id);
-      } catch {
-        queued.attempts++;
-      }
-    }
-
-    this.processing = false;
-  }
-
-  private async sendMessage(message: DataMessage) {
-    // TODO: Send via Firebase or P2P
-  }
-}
-
-export const messageQueue = new MessageQueue();
-```
-
-**Step 2: MessageInput에서 큐 사용**
-
-```typescript
-// components/chat/MessageInput.tsx 수정
-import { messageQueue } from '@/lib/offline/message-queue';
-
-// in handleSend:
-messageQueue.enqueue(message);
-```
-
-**Step 3: Commit**
-
-```bash
-git add lib/offline/message-queue.ts components/chat/MessageInput.tsx
-git commit -m "feat: add offline message queue with retry"
-```
-
----
-
-## Task 10: 에러 핸들링 및 알림 시스템
-
-**Files:**
-- Create: `components/shared/Toaster.tsx`
-- Create: `lib/hooks/useToast.ts`
-
-**Step 1: 토스트 훅**
-
-```typescript
-// lib/hooks/useToast.ts
-import { create } from 'zustand';
-
-interface Toast {
-  id: string;
-  message: string;
-  type: 'info' | 'success' | 'error' | 'warning';
-}
-
-interface ToastStore {
-  toasts: Toast[];
-  addToast: (message: string, type?: Toast['type']) => void;
-  removeToast: (id: string) => void;
-}
-
-export const useToastStore = create<ToastStore>((set) => ({
-  toasts: [],
-  addToast: (message, type = 'info') => {
-    const id = crypto.randomUUID();
-    set((state) => ({
-      toasts: [...state.toasts, { id, message, type }]
-    }));
-    setTimeout(() => {
-      set((state) => ({
-        toasts: state.toasts.filter(t => t.id !== id)
-      }));
-    }, 3000);
-  },
-  removeToast: (id) =>
-    set((state) => ({
-      toasts: state.toasts.filter(t => t.id !== id)
-    }))
-}));
-
-export const useToast = () => {
-  const { addToast } = useToastStore();
-  return {
-    showToast: (message: string, type?: Toast['type']) => addToast(message, type)
-  };
-};
-```
-
-**Step 2: Toaster 커폀넌트**
-
-```typescript
-// components/shared/Toaster.tsx
-'use client';
-
-import { useToastStore } from '@/lib/hooks/useToast';
-
-export function Toaster() {
-  const toasts = useToastStore((state) => state.toasts);
-  const removeToast = useToastStore((state) => state.removeToast);
-
-  const colors = {
-    info: 'bg-blue-500',
-    success: 'bg-green-500',
-    error: 'bg-red-500',
-    warning: 'bg-yellow-500'
-  };
-
-  return (
-    <div className="fixed bottom-4 right-4 z-50 space-y-2">
-      {toasts.map((toast) => (
-        <div
-          key={toast.id}
-          className={`${colors[toast.type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3`}
-        >
-          <span>{toast.message}</span>
-          <button
-            onClick={() => removeToast(toast.id)}
-            className="opacity-70 hover:opacity-100"
-          >
-            ✕
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
-**Step 3: Commit**
-
-```bash
-git add lib/hooks/useToast.ts components/shared/Toaster.tsx
-git commit -m "feat: add toast notification system"
-```
-
----
-
-## Task 11: 채팅 페이지 UI 개선
+## Task 3: 간단한 채팅 페이지
 
 **Files:**
 - Modify: `app/chat/page.tsx`
+- Modify: `components/chat/MessageInput.tsx`
+- Create: `lib/api/client.ts`
 
-**Step 1: 채팅 페이지 커폀넌트 구현**
+**Step 1: API 클라이언트**
+
+```typescript
+// lib/api/client.ts
+export class ApiClient {
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = '/api';
+  }
+
+  async sendMessage(params: {
+    familyId: string;
+    senderId: string;
+    senderName: string;
+    content: string;
+    encrypted: boolean;
+  }) {
+    const response = await fetch(`${this.baseUrl}/messages/send`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    return response.json();
+  }
+
+  async pollMessages(familyId: string, since?: number) {
+    const params = new URLSearchParams({ familyId });
+    if (since !== undefined) {
+      params.set('since', since.toString());
+    }
+    const response = await fetch(`${this.baseUrl}/messages/poll?${params}`);
+    return response.json();
+  }
+}
+
+export const apiClient = new ApiClient();
+```
+
+**Step 2: 간소화된 채팅 페이지**
 
 ```typescript
 // app/chat/page.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useChatStore } from '@/stores/chat-store';
-import { ChatMessage } from '@/components/chat/ChatMessage';
-import { MessageInput } from '@/components/chat/MessageInput';
-import { Toaster } from '@/components/shared/Toaster';
-import { dbHelpers } from '@/lib/db';
+import { apiClient } from '@/lib/api/client';
+import ChatMessage from '@/components/chat/ChatMessage';
+import MessageInput from '@/components/chat/MessageInput';
 
 export default function ChatPage() {
-  const { messages, loadMessages } = useChatStore();
+  const { messages, isAuthenticated, familyId, myPeerId, addMessage } = useChatStore();
+  const [isLoading, setIsLoading] = useState(false);
 
+  // 메시지 폴링
   useEffect(() => {
-    loadMessages();
-  }, []);
+    if (!isAuthenticated || !familyId) return;
+
+    const pollMessages = async () => {
+      if (isLoading) return;
+      setIsLoading(true);
+
+      try {
+        const lastTimestamp = messages[messages.length - 1]?.timestamp || 0;
+        const data = await apiClient.pollMessages(familyId, lastTimestamp);
+
+        for (const msg of data.messages) {
+          if (msg.senderId !== myPeerId) {
+            addMessage(msg);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to poll messages:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const interval = setInterval(pollMessages, 3000); // 3초마다 폴링
+    pollMessages(); // 초기 로딩
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated, familyId, messages.length]);
+
+  if (!isAuthenticated) {
+    return <div>인증이 필요합니다...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Toaster />
-
-      <header className="bg-white dark:bg-gray-800 border-b sticky top-0">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-semibold">가족 메신저</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold">가족 메신저</h1>
           <button className="text-sm text-blue-500">나가기</button>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto p-4 pb-24">
-        {messages.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p>메시지를 보내보세요!</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {messages.map((msg) => (
-              <ChatMessage key={msg.id} message={msg} isMine={false} />
-            ))}
-          </div>
-        )}
+      {/* Messages */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-4 space-y-4">
+          {messages.map((message) => (
+            <ChatMessage
+              key={message.id}
+              message={message}
+              isMine={message.senderId === myPeerId}
+            />
+          ))}
+        </div>
       </main>
 
-      <footer className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t">
-        <div className="max-w-2xl mx-auto p-4">
+      {/* Input */}
+      <footer className="bg-white border-t">
+        <div className="max-w-4xl mx-auto p-4">
           <MessageInput />
         </div>
       </footer>
@@ -1224,75 +719,154 @@ export default function ChatPage() {
 }
 ```
 
-**Step 2: Commit**
+**Step 3: Commit**
 
 ```bash
-git add app/chat/page.tsx
-git commit -m "feat: implement chat page UI"
+git add app/chat/page.tsx lib/api/client.ts
+git commit -m "feat: add simplified chat page (v2)"
 ```
 
 ---
 
-## Task 12: Firebase 규칙 설정
+## Task 4: 간단한 E2E 암호화
 
 **Files:**
-- Create: `firebase.rules`
+- Create: `lib/crypto/index.ts`
 
-**Step 1: Realtime Database 규칙**
+**Step 1: Web Crypto API 래퍼**
 
-```javascript
-// firebase.rules
-{
-  "rules": {
-    "families": {
-      "$familyId": {
-        ".read": "auth != null",
-        ".write": "auth != null",
-        "members": {
-          ".indexOn": ["name"],
-          "$memberId": {
-            ".validate": "newData.hasChildren(['id', 'name', 'publicKey', 'joinedAt'])"
-          }
-        },
-        "messages": {
-          // Messages expire after 1 minute
-          ".validate": "newData.hasChildren(['id', 'senderId', 'timestamp', 'type']) && newData.child('timestamp').val() > now - 60000"
-        },
-        "signaling": {
-          "$memberId": {
-            ".read": "auth != null",
-            ".write": "auth.uid == $memberId"
-          }
-        },
-        "presence": {
-          ".indexOn": ["online"]
-        }
-      }
-    }
-  }
+```typescript
+// lib/crypto/index.ts
+export async function generateKeyPair(): Promise<{
+  publicKey: string;
+  privateKey: string;
+}> {
+  const keyPair = await crypto.subtle.generateKey(
+    { name: 'ECDH', namedCurve: 'P-256' },
+    true,
+    ['deriveKey']
+  );
+
+  const publicKey = await crypto.subtle.exportKey('spki', keyPair.publicKey);
+  const privateKey = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+
+  return {
+    publicKey: btoa(String.fromCharCode(...new Uint8Array(publicKey))),
+    privateKey: btoa(String.fromCharCode(...new Uint8Array(privateKey))),
+  };
+}
+
+export async function encryptMessage(
+  message: string,
+  publicKeyBase64: string
+): Promise<string> {
+  const publicKeyBuffer = Uint8Array.from(atob(publicKeyBase64), c => c.charCodeAt(0));
+  const publicKey = await crypto.subtle.importKey(
+    'spki',
+    publicKeyBuffer,
+    { name: 'ECDH', namedCurve: 'P-256' },
+    false,
+    []
+  );
+
+  const ephemeralKey = await crypto.subtle.generateKey(
+    { name: 'ECDH', namedCurve: 'P-256' },
+    true,
+    ['deriveKey']
+  );
+
+  const sharedKey = await crypto.subtle.deriveKey(
+    { name: 'ECDH', public: publicKey },
+    ephemeralKey.privateKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt']
+  );
+
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    sharedKey,
+    new TextEncoder().encode(message)
+  );
+
+  const ephemeralPublicKey = await crypto.subtle.exportKey('spki', ephemeralKey.publicKey);
+  const ephemeralPublicKeyArray = new Uint8Array(ephemeralPublicKey);
+
+  // Combine: ephemeralPublicKey + iv + encrypted
+  const combined = new Uint8Array(
+    ephemeralPublicKeyArray.length + iv.length + encrypted.byteLength
+  );
+  combined.set(ephemeralPublicKeyArray);
+  combined.set(iv, ephemeralPublicKeyArray.length);
+  combined.set(new Uint8Array(encrypted), ephemeralPublicKeyArray.length + iv.length);
+
+  return btoa(String.fromCharCode(...combined));
+}
+
+export async function decryptMessage(
+  encryptedBase64: string,
+  privateKeyBase64: string
+): Promise<string> {
+  const privateKeyBuffer = Uint8Array.from(atob(privateKeyBase64), c => c.charCodeAt(0));
+  const privateKey = await crypto.subtle.importKey(
+    'pkcs8',
+    privateKeyBuffer,
+    { name: 'ECDH', namedCurve: 'P-256' },
+    false,
+    ['deriveKey']
+  );
+
+  const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+
+  // Extract ephemeralPublicKey (first 91 bytes for P-256)
+  const ephemeralPublicKeyArray = combined.slice(0, 91);
+  const iv = combined.slice(91, 103); // 12 bytes
+  const encrypted = combined.slice(103);
+
+  const ephemeralPublicKey = await crypto.subtle.importKey(
+    'spki',
+    ephemeralPublicKeyArray,
+    { name: 'ECDH', namedCurve: 'P-256' },
+    false,
+    []
+  );
+
+  const sharedKey = await crypto.subtle.deriveKey(
+    { name: 'ECDH', public: ephemeralPublicKey },
+    privateKey,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['decrypt']
+  );
+
+  const decrypted = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv },
+    sharedKey,
+    encrypted
+  );
+
+  return new TextDecoder().decode(decrypted);
 }
 ```
 
 **Step 2: Commit**
 
 ```bash
-git add firebase.rules
-git commit -m "feat: add Firebase security rules"
+git add lib/crypto/
+git commit -m "feat: add simplified E2E encryption (v2)"
 ```
 
 ---
 
 ## 완료 체크리스트
 
-- [ ] IndexedDB 래퍼 동작 확인
+- [ ] 간단한 API 서버 동작 확인
 - [ ] 가족 생성 및 URL 생성 동작
-- [ ] URL로 가족 입장 동작
-- [ ] 텍스트 메시지 전송/수신
-- [ ] 파일 업로드 (이미지, PDF)
-- [ ] 오프라인 상태에서 메시지 큐 동작
+- [ ] 4자리 인증코드로 가족 참여 동작
+- [ ] 텍스트 메시지 전송/수신 (폴링)
 - [ ] E2E 암호화 확인
 - [ ] 4명 제한 체크
-- [ ] 24시간 만료 체크
 - [ ] 다양한 에러 상황 테스트
 
 ---
@@ -1303,21 +877,26 @@ git commit -m "feat: add Firebase security rules"
 # 1. 개발 서버 시작
 npm run dev
 
-# 2. 다른 브라우저/시크릿 모드에서 두 탭 열기
-# 3. 첫 탭: 가족 생성 → URL 복사
-# 4. 둘 탭: URL 붙여넣고 가족 입장
-# 5. 양쪽 탭에서 메시지 전송 테스트
-# 6. 파일 업로드 테스트
-# 7. 오프라인 모드 테스트 (DevTools → Network → Offline)
+# 2. 가족 생성 테스트
+# - /create 접속
+# - 이름 + 4자리 코드 입력
+# - 생성된 URL 복사
+
+# 3. 가족 참여 테스트
+# - 다른 브라우저/시크릿 모드에서 /invite?family=xxxxx 접속
+# - 이름 + 4자리 코드 입력
+# - 채팅방 입장
+
+# 4. 메시지 전송 테스트
+# - 양쪽 브라우저에서 메시지 전송
+# - 3초 폴링으로 메시지 수신 확인
 ```
 
 ---
 
 ## 배포 전 체크리스트
 
-- [ ] `NEXT_PUBLIC_BASE_URL` 환경변수 설정
-- [ ] Firebase 프로젝트 설정
-- [ ] Firebase Database 규칙 배포
+- [ ] Netlify Functions 설정 확인
+- [ ] 환경변수 설정 (필요시)
 - [ ] Netlify 빌드 확인
 - [ ] Production HTTPS 확인
-- [ ] CSP 헤더 설정
