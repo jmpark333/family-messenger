@@ -91,9 +91,6 @@ module.exports = async function handler(req, res) {
         memberId,
         inviteUrl,
       });
-    } catch (parseError) {
-      console.error('[API] JSON parse error:', parseError);
-      return res.status(400).json({ error: 'Invalid JSON', details: parseError.message });
     } catch (error) {
       console.error('[API] Error creating family:', error);
       return res.status(500).json({ error: 'Internal server error', details: error.message });

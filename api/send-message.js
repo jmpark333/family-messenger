@@ -58,12 +58,9 @@ module.exports = async function handler(req, res) {
       console.log('[API] Message saved:', { messageId, familyId });
 
       return res.status(200).json({ success: true, messageId });
-    } catch (parseError) {
-      console.error('[API] JSON parse error:', parseError);
-      return res.status(400).json({ error: 'Invalid JSON' });
     } catch (error) {
       console.error('[API] Error sending message:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error', details: error.message });
     }
   });
 };
