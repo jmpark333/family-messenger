@@ -1,7 +1,5 @@
 // Vercel Function: Poll Messages
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -16,11 +14,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { familyId, since } = req.query;
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const familyId = url.searchParams.get('familyId');
+    const since = url.searchParams.get('since');
 
     console.log('[API] Poll messages request:', { familyId, since });
 
-    if (!familyId || typeof familyId !== 'string') {
+    if (!familyId) {
       return res.status(400).json({ error: 'Missing familyId' });
     }
 
