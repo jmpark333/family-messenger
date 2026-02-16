@@ -1,6 +1,4 @@
-// Vercel Function: Create Family
-const { Redis } = require('@upstash/redis');
-
+// Vercel Function: Create Family (without Redis for now)
 module.exports = async function handler(req, res) {
   console.log('[API] create-family called, method:', req.method);
 
@@ -23,9 +21,10 @@ module.exports = async function handler(req, res) {
     body += chunk;
     console.log('[API] Received chunk, length:', chunk.length);
   });
-  req.on('end', async () => {
+  req.on('end', () => {
     try {
       console.log('[API] Raw body:', body);
+      console.log('[API] Body length:', body.length);
 
       if (!body || body.trim().length === 0) {
         console.error('[API] Empty body');
@@ -61,38 +60,6 @@ module.exports = async function handler(req, res) {
       // UUID 생성
       const familyId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
       const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-
-      // Redis 연결 테스트
-      console.log('[API] Connecting to Redis...');
-      const redis = new Redis({
-        url: process.env.KV_REST_API_URL,
-        token: process.env.KV_REST_API_TOKEN,
-      });
-
-      // Redis에 가족 저장
-      const family = {
-        id: familyId,
-        authCode,
-        members: [{ id: memberId, name: name.trim(), publicKey }],
-        createdAt: Date.now(),
-      };
-
-      console.log('[API] Saving family to Redis:', familyId);
-      await redis.hset(`family:${familyId}`, family);
-      await redis.expire(`family:${familyId}`, 60 * 60 * 24 * 30); // 30일
-      console.log('[API] Family saved successfully');
-
-      // 메시지 리스트 초기화
-      await redis.lpush(`messages:${familyId}`, JSON.stringify({
-        id: 'system',
-        familyId,
-        senderId: 'system',
-        senderName: '시스템',
-        content: `${name}님이 가족을 생성했습니다.`,
-        timestamp: Date.now(),
-        encrypted: false,
-      }));
-      console.log('[API] Initial message saved');
 
       const baseUrl = process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`

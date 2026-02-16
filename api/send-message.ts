@@ -1,11 +1,4 @@
-// Vercel Function: Send Message
-const { Redis } = require('@upstash/redis');
-
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL,
-  token: process.env.KV_REST_API_TOKEN,
-});
-
+// Vercel Function: Send Message (without Redis for now)
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,10 +16,10 @@ module.exports = async function handler(req, res) {
   // Parse body
   let body = '';
   req.on('data', chunk => body += chunk);
-  req.on('end', async () => {
+  req.on('end', () => {
     try {
       const data = JSON.parse(body);
-      const { familyId, senderId, senderName, content, encrypted } = data;
+      const { familyId, senderId, senderName, content } = data;
 
       console.log('[API] Send message request:', { familyId, senderId, senderName, contentLength: content?.length });
 
@@ -36,25 +29,9 @@ module.exports = async function handler(req, res) {
 
       const messageId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
-      const message = {
-        id: messageId,
-        familyId,
-        senderId,
-        senderName,
-        content,
-        timestamp: Date.now(),
-        encrypted: encrypted || false,
-      };
+      console.log('[API] Message saved (mock):', { messageId, familyId });
 
-      // Redis에 메시지 저장
-      await redis.lpush(`messages:${familyId}`, JSON.stringify(message));
-      // 최근 1000개만 유지
-      await redis.ltrim(`messages:${familyId}`, 0, 999);
-      // 7일 만료
-      await redis.expire(`messages:${familyId}`, 60 * 60 * 24 * 7);
-
-      console.log('[API] Message saved:', { messageId, familyId });
-
+      // TODO: Redis 저장
       return res.status(200).json({ success: true, messageId });
     } catch (parseError) {
       console.error('[API] JSON parse error:', parseError);
