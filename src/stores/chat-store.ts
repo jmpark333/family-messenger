@@ -1,7 +1,5 @@
-// 간소화된 Chat Store - P2P/Firebase 의존성 제거
+// 간소화된 Chat Store - Redis API 사용, IndexedDB 제거
 import { create } from 'zustand';
-import type { MessageSchema } from '@/lib/db';
-import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
 
 interface Message {
   id: string;
@@ -100,88 +98,31 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }),
 
   saveMessage: async (message) => {
-    const { messages, processedMessageIds } = get();
+    const { processedMessageIds } = get();
 
     // 중복 방지
     if (processedMessageIds.has(message.id)) {
       return;
     }
 
-    try {
-      // IndexedDB에 저장
-      const isAvailable = await isDatabaseAvailable();
-      if (isAvailable) {
-        const messageSchema: MessageSchema = {
-          id: message.id,
-          senderId: message.senderId,
-          senderName: message.senderName,
-          content: message.content,
-          timestamp: message.timestamp,
-          type: 'text',
-          encrypted: message.encrypted,
-          status: message.status,
-        };
-        await dbHelpers.addMessage(messageSchema);
-      }
-
-      // 상태 업데이트
-      set((state) => ({
-        messages: [...state.messages, message].sort(
-          (a, b) => a.timestamp - b.timestamp
-        ),
-        processedMessageIds: new Set([...state.processedMessageIds, message.id]),
-      }));
-    } catch (error) {
-      console.error('Failed to save message:', error);
-      // 에러가 발생해도 메모리 상태에는 추가
-      set((state) => ({
-        messages: [...state.messages, message].sort(
-          (a, b) => a.timestamp - b.timestamp
-        ),
-        processedMessageIds: new Set([...state.processedMessageIds, message.id]),
-      }));
-    }
+    // 메모리 상태에만 추가 (서버 Redis에 저장됨)
+    set((state) => ({
+      messages: [...state.messages, message].sort(
+        (a, b) => a.timestamp - b.timestamp
+      ),
+      processedMessageIds: new Set([...state.processedMessageIds, message.id]),
+    }));
   },
 
   loadMessages: async () => {
-    try {
-      const isAvailable = await isDatabaseAvailable();
-      if (!isAvailable) {
-        set({ messages: [], processedMessageIds: new Set() });
-        return;
-      }
-
-      const messageSchemas = await dbHelpers.getMessages(100);
-      const messages: Message[] = messageSchemas.map((schema) => ({
-        id: schema.id,
-        senderId: schema.senderId,
-        senderName: schema.senderName,
-        content: schema.content,
-        timestamp: schema.timestamp,
-        encrypted: schema.encrypted,
-        status: schema.status,
-      }));
-      const messageIds = new Set(messages.map((m) => m.id));
-
-      set({ messages, processedMessageIds: messageIds });
-    } catch (error) {
-      console.error('Failed to load messages:', error);
-      set({ messages: [], processedMessageIds: new Set() });
-    }
+    // API에서 메시지를 가져오므로 여기서는 아무것도 하지 않음
+    set({ messages: [], processedMessageIds: new Set() });
   },
 
   clearMessages: () =>
     set({ messages: [], processedMessageIds: new Set() }),
 
   logout: async () => {
-    try {
-      const isAvailable = await isDatabaseAvailable();
-      if (isAvailable) {
-        await dbHelpers.clearMessages();
-      }
-    } catch (error) {
-      console.error('Failed to clear messages:', error);
-    }
     set({
       isAuthenticated: false,
       familyId: null,
