@@ -1,4 +1,11 @@
 // Vercel Function: Join Family
+const { Redis } = require('@upstash/redis');
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,7 +23,7 @@ module.exports = async function handler(req, res) {
   // Parse body
   let body = '';
   req.on('data', chunk => body += chunk);
-  req.on('end', () => {
+  req.on('end', async () => {
     try {
       const data = JSON.parse(body);
       const { familyId, name, authCode, publicKey } = data;
@@ -39,20 +46,51 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Public key is required' });
       }
 
+      // Redis에서 가족 조회
+      const family = await redis.hgetall(`family:${familyId}`);
+
+      if (!family || Object.keys(family).length === 0) {
+        return res.status(404).json({ error: 'Family not found' });
+      }
+
+      // authCode 확인 (문자열 변환 필요)
+      if (family.authCode !== authCode) {
+        return res.status(401).json({ error: 'Invalid auth code' });
+      }
+
       const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+
+      // 멤버 추가
+      let members = JSON.parse(family.members || '[]');
+      members.push({ id: memberId, name: name.trim(), publicKey });
+      family.members = JSON.stringify(members);
+
+      await redis.hset(`family:${familyId}`, family);
+
+      // 시스템 메시지 추가
+      await redis.lpush(`messages:${familyId}`, JSON.stringify({
+        id: `sys-${Date.now()}`,
+        familyId,
+        senderId: 'system',
+        senderName: '시스템',
+        content: `${name}님이 가족에 참여했습니다.`,
+        timestamp: Date.now(),
+        encrypted: false,
+      }));
 
       console.log('[API] Family joined:', { familyId, memberId });
 
       return res.status(200).json({
         familyId,
         memberId,
-        members: [
-          { id: memberId, name: name.trim(), publicKey }
-        ],
+        members: JSON.parse(family.members),
       });
     } catch (parseError) {
       console.error('[API] JSON parse error:', parseError);
       return res.status(400).json({ error: 'Invalid JSON' });
+    } catch (error) {
+      console.error('[API] Error joining family:', error);
+      return res.status(500).json({ error: 'Internal server error' });
     }
   });
 };

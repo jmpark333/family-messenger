@@ -1,4 +1,11 @@
 // Vercel Function: Create Family
+const { Redis } = require('@upstash/redis');
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,7 +23,7 @@ module.exports = async function handler(req, res) {
   // Parse body
   let body = '';
   req.on('data', chunk => body += chunk);
-  req.on('end', () => {
+  req.on('end', async () => {
     try {
       const data = JSON.parse(body);
       const { name, authCode, publicKey } = data;
@@ -39,6 +46,27 @@ module.exports = async function handler(req, res) {
       const familyId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
       const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
+      // Redis에 가족 저장
+      const family = {
+        id: familyId,
+        authCode,
+        members: [{ id: memberId, name: name.trim(), publicKey }],
+        createdAt: Date.now(),
+      };
+      await redis.hset(`family:${familyId}`, family);
+      await redis.expire(`family:${familyId}`, 60 * 60 * 24 * 30); // 30일
+
+      // 메시지 리스트 초기화
+      await redis.lpush(`messages:${familyId}`, JSON.stringify({
+        id: 'system',
+        familyId,
+        senderId: 'system',
+        senderName: '시스템',
+        content: `${name}님이 가족을 생성했습니다.`,
+        timestamp: Date.now(),
+        encrypted: false,
+      }));
+
       const baseUrl = process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
         : 'http://localhost:3000';
@@ -54,6 +82,9 @@ module.exports = async function handler(req, res) {
     } catch (parseError) {
       console.error('[API] JSON parse error:', parseError);
       return res.status(400).json({ error: 'Invalid JSON' });
+    } catch (error) {
+      console.error('[API] Error creating family:', error);
+      return res.status(500).json({ error: 'Internal server error' });
     }
   });
 };

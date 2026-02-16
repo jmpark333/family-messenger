@@ -13,6 +13,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@upstash/redis": "^1.36.2",
     "autoprefixer": "^10.4.24",
     "dexie": "^4.3.0",
     "postcss": "^8.5.6",

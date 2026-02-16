@@ -1,4 +1,11 @@
 // Vercel Function: Poll Messages
+const { Redis } = require('@upstash/redis');
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,8 +31,15 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Missing familyId' });
     }
 
-    // TODO: Vercel KV 또는 DB에서 조회
-    const messages = [];
+    // Redis에서 메시지 조회
+    const messageStrings = await redis.lrange(`messages:${familyId}`, 0, -1);
+    let messages = messageStrings.map(s => JSON.parse(s)).reverse(); // 최신순 정렬
+
+    // since 필터링
+    if (since) {
+      const sinceTime = parseInt(since, 10);
+      messages = messages.filter(m => m.timestamp > sinceTime);
+    }
 
     console.log('[API] Polling result:', { familyId, messageCount: messages.length });
 
