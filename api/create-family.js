@@ -91,7 +91,7 @@ module.exports = async function handler(req, res) {
       // 저장 확인
       try {
         const verify = await redis.get(`family:${familyId}`);
-        console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO');
+        console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO', verify);
       } catch (verifyError) {
         console.error('[API] Redis get failed:', verifyError);
       }

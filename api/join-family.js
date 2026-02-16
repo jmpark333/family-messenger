@@ -65,7 +65,8 @@ module.exports = async function handler(req, res) {
         return res.status(404).json({ error: 'Family not found' });
       }
 
-      const family = JSON.parse(familyData);
+      // Upstash Redis는 이미 역직렬화된 객체를 반환
+      const family = typeof familyData === 'string' ? JSON.parse(familyData) : familyData;
       if (family.authCode !== authCode) {
         console.error('[API] Invalid auth code');
         return res.status(401).json({ error: 'Invalid authentication code' });
