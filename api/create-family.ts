@@ -23,7 +23,7 @@ module.exports = async function handler(req, res) {
     body += chunk;
     console.log('[API] Received chunk, length:', chunk.length);
   });
-  req.on('end', () => {
+  req.on('end', async () => {
     try {
       console.log('[API] Raw body:', body);
       console.log('[API] Body length:', body.length);

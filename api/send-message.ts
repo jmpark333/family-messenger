@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
   // Parse body
   let body = '';
   req.on('data', chunk => body += chunk);
-  req.on('end', () => {
+  req.on('end', async () => {
     try {
       const data = JSON.parse(body);
       const { familyId, senderId, senderName, content } = data;
