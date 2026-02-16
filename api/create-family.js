@@ -78,10 +78,20 @@ module.exports = async function handler(req, res) {
 
       // Redis에 저장
       console.log('[API] Storing family in Redis:', familyId);
-      await redis.hset('families', familyId, JSON.stringify(family));
+      try {
+        await redis.hset('families', familyId, JSON.stringify(family));
+        console.log('[API] Redis hset completed successfully');
+      } catch (redisError) {
+        console.error('[API] Redis hset failed:', redisError);
+        return res.status(500).json({ error: 'Failed to store family', details: redisError.message });
+      }
       // 저장 확인
-      const verify = await redis.hget('families', familyId);
-      console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO');
+      try {
+        const verify = await redis.hget('families', familyId);
+        console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO', verify);
+      } catch (verifyError) {
+        console.error('[API] Redis hget failed:', verifyError);
+      }
 
       // 초대 URL은 항상 프로덕션 도메인 사용 (프리뷰 배포 문제 방지)
       const productionUrl = process.env.PRODUCTION_URL || 'https://family-messenger-murex.vercel.app';

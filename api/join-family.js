@@ -51,14 +51,24 @@ module.exports = async function handler(req, res) {
 
       // Validate family exists and auth code matches
       console.log('[API] Looking up family in Redis:', familyId);
-      const familyData = await redis.hget('families', familyId);
-      console.log('[API] Redis lookup result:', familyData ? 'Found' : 'Not found');
+      let familyData;
+      try {
+        familyData = await redis.hget('families', familyId);
+        console.log('[API] Redis lookup result:', familyData ? 'Found' : 'Not found');
+      } catch (redisError) {
+        console.error('[API] Redis hget failed:', redisError);
+        return res.status(500).json({ error: 'Database error', details: redisError.message });
+      }
 
       if (!familyData) {
         console.error('[API] Family not found:', familyId);
         // Check if there are any families in Redis
-        const allFamilies = await redis.hgetall('families');
-        console.log('[API] All families in Redis:', Object.keys(allFamilies || {}));
+        try {
+          const allFamilies = await redis.hgetall('families');
+          console.log('[API] All families in Redis:', allFamilies);
+        } catch (allError) {
+          console.error('[API] Redis hgetall failed:', allError);
+        }
         return res.status(404).json({ error: 'Family not found' });
       }
 
