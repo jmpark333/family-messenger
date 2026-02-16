@@ -77,7 +77,11 @@ module.exports = async function handler(req, res) {
       };
 
       // Redis에 저장
+      console.log('[API] Storing family in Redis:', familyId);
       await redis.hset('families', familyId, JSON.stringify(family));
+      // 저장 확인
+      const verify = await redis.hget('families', familyId);
+      console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO');
 
       // 초대 URL은 항상 프로덕션 도메인 사용 (프리뷰 배포 문제 방지)
       const productionUrl = process.env.PRODUCTION_URL || 'https://family-messenger-murex.vercel.app';
