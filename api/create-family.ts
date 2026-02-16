@@ -1,0 +1,51 @@
+// Vercel Function: Create Family
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { name, authCode, publicKey } = await req.body;
+
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    if (!authCode || authCode.length !== 4) {
+      return res.status(400).json({ error: 'Auth code must be 4 characters' });
+    }
+
+    if (!publicKey || typeof publicKey !== 'string') {
+      return res.status(400).json({ error: 'Public key is required' });
+    }
+
+    // UUID 생성 (Node.js용)
+    const familyId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+    const inviteUrl = `${baseUrl}/invite?family=${familyId}`;
+
+    return res.status(200).json({
+      familyId,
+      memberId,
+      inviteUrl,
+    });
+  } catch (error) {
+    console.error('Error creating family:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}

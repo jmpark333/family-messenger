@@ -37,7 +37,7 @@ class ApiClient {
   async createFamily(
     request: CreateFamilyRequest
   ): Promise<CreateFamilyResponse> {
-    const response = await this.fetchApi('/family/create', {
+    const response = await this.fetchApi('/create-family', {
       method: 'POST',
       body: JSON.stringify(request),
     });
@@ -45,7 +45,7 @@ class ApiClient {
   }
 
   async joinFamily(request: JoinFamilyRequest): Promise<JoinFamilyResponse> {
-    const response = await this.fetchApi('/family/join', {
+    const response = await this.fetchApi('/join-family', {
       method: 'POST',
       body: JSON.stringify(request),
     });
@@ -53,7 +53,7 @@ class ApiClient {
   }
 
   async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
-    const response = await this.fetchApi('/messages/send', {
+    const response = await this.fetchApi('/send-message', {
       method: 'POST',
       body: JSON.stringify(request),
     });
@@ -69,7 +69,7 @@ class ApiClient {
       params.set('since', since.toString());
     }
 
-    const response = await this.fetchApi(`/messages/poll?${params}`);
+    const response = await this.fetchApi(`/poll-messages?${params}`);
     return response.json();
   }
 }
