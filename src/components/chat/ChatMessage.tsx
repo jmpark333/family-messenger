@@ -17,7 +17,7 @@ export default function ChatMessage({ message, isMine }: ChatMessageProps) {
     <div
       className={`flex ${isMine ? 'justify-end' : 'justify-start'} animate-fade-in`}
     >
-      <div className={`max-w-[80%] ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
+      <div className={`max-w-[90%] ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
         {/* 발신자 이름 (내 메시지는 표시 안함) */}
         {!isMine && (
           <span className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-2">
