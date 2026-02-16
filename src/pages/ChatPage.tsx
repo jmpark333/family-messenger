@@ -97,13 +97,19 @@ export default function ChatPage() {
   }, [messages]);
 
   const handleSendMessage = async (content: string) => {
-    if (!familyId || !myMemberId || !myName) return;
+    console.log('[ChatPage] handleSendMessage called:', { content, familyId, myMemberId, myName });
+
+    if (!familyId || !myMemberId || !myName) {
+      console.error('[ChatPage] Missing required data:', { familyId, myMemberId, myName });
+      return;
+    }
 
     try {
       // TODO: 각 멤버의 공개키로 암호화 (현재는 평문)
       // 멀티캐스트 암호화는 추후 구현
       const encrypted = false;
 
+      console.log('[ChatPage] Calling apiClient.sendMessage...');
       const response = await apiClient.sendMessage({
         familyId,
         senderId: myMemberId,
@@ -111,6 +117,8 @@ export default function ChatPage() {
         content,
         encrypted,
       });
+
+      console.log('[ChatPage] Message sent successfully:', response);
 
       // 로컬 메시지 추가
       addMessage({
@@ -123,7 +131,7 @@ export default function ChatPage() {
         status: 'sent',
       });
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('[ChatPage] Failed to send message:', error);
       toast.error('메시지 전송 실패');
     }
   };

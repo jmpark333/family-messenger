@@ -53,11 +53,14 @@ class ApiClient {
   }
 
   async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
+    console.log('[apiClient] sendMessage called:', request);
     const response = await this.fetchApi('/send-message', {
       method: 'POST',
       body: JSON.stringify(request),
     });
-    return response.json();
+    const result = await response.json();
+    console.log('[apiClient] sendMessage response:', result);
+    return result;
   }
 
   async pollMessages(

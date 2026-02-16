@@ -12,6 +12,7 @@ export function MessageInput({ onSend }: MessageInputProps) {
   const handleSend = () => {
     if (!text.trim()) return;
 
+    console.log('[MessageInput] Sending message:', text.trim());
     onSend(text.trim());
     setText('');
   };
