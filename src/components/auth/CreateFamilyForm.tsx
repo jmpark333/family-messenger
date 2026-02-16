@@ -14,7 +14,7 @@ export function CreateFamilyForm() {
   const setAuthCode = useChatStore((state) => state.setAuthCode);
 
   const [name, setName] = useState('');
-  const [authCode, setAuthCode] = useState('');
+  const [authCodeInput, setAuthCodeInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export function CreateFamilyForm() {
       setError('이름을 입력해주세요');
       return;
     }
-    if (!authCode.trim() || authCode.length !== 4) {
+    if (!authCodeInput.trim() || authCodeInput.length !== 4) {
       setError('4자리 인증코드를 입력해주세요');
       return;
     }
@@ -41,7 +41,7 @@ export function CreateFamilyForm() {
       // API 호출
       const response = await apiClient.createFamily({
         name: name.trim(),
-        authCode: authCode.toUpperCase(),
+        authCode: authCodeInput.toUpperCase(),
         publicKey: keyPair.publicKey,
       });
 
@@ -50,7 +50,7 @@ export function CreateFamilyForm() {
       setFamilyId(response.familyId);
       setMyInfo(response.memberId, name.trim());
       setKeys(keyPair.publicKey, keyPair.privateKey);
-      setAuthCode(authCode.toUpperCase());
+      setAuthCode(authCodeInput.toUpperCase());
 
       setInviteUrl(response.inviteUrl);
     } catch (err) {
@@ -83,7 +83,7 @@ export function CreateFamilyForm() {
 
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <p className="text-sm text-blue-900 mb-2">
-            인증코드: <strong>{authCode.toUpperCase()}</strong>
+            인증코드: <strong>{authCodeInput.toUpperCase()}</strong>
           </p>
           <p className="text-sm text-blue-700 mb-3">
             가족원에게 이 정보를 공유하세요:
@@ -145,10 +145,10 @@ export function CreateFamilyForm() {
         <input
           id="authCode"
           type="text"
-          value={authCode}
+          value={authCodeInput}
           onChange={(e) => {
             const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            setAuthCode(value.slice(0, 4));
+            setAuthCodeInput(value.slice(0, 4));
           }}
           className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-center text-2xl tracking-widest font-mono"
           placeholder="A123"
@@ -167,7 +167,7 @@ export function CreateFamilyForm() {
 
       <button
         type="submit"
-        disabled={loading || !name.trim() || authCode.length !== 4}
+        disabled={loading || !name.trim() || authCodeInput.length !== 4}
         className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         {loading ? '생성 중...' : '가족 만들기'}

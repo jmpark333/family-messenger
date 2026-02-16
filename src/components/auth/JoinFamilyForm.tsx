@@ -24,7 +24,7 @@ export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
 
   const [familyId, setFamilyIdInput] = useState(familyIdFromUrl || propFamilyId || '');
   const [name, setName] = useState('');
-  const [authCode, setAuthCode] = useState('');
+  const [authCodeInput, setAuthCodeInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -40,7 +40,7 @@ export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
       setError('이름을 입력해주세요');
       return;
     }
-    if (!authCode.trim() || authCode.length !== 4) {
+    if (!authCodeInput.trim() || authCodeInput.length !== 4) {
       setError('4자리 인증코드를 입력해주세요');
       return;
     }
@@ -55,7 +55,7 @@ export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
       const response = await apiClient.joinFamily({
         familyId: familyId.trim(),
         name: name.trim(),
-        authCode: authCode.toUpperCase(),
+        authCode: authCodeInput.toUpperCase(),
         publicKey: keyPair.publicKey,
       });
 
@@ -64,7 +64,7 @@ export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
       setFamilyId(response.familyId);
       setMyInfo(response.memberId, name.trim());
       setKeys(keyPair.publicKey, keyPair.privateKey);
-      setAuthCode(authCode.toUpperCase());
+      setAuthCode(authCodeInput.toUpperCase());
 
       // 멤버 공개키 저장 (암호화용)
       response.members.forEach((member) => {
@@ -134,10 +134,10 @@ export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
         <input
           id="authCode"
           type="text"
-          value={authCode}
+          value={authCodeInput}
           onChange={(e) => {
             const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            setAuthCode(value.slice(0, 4));
+            setAuthCodeInput(value.slice(0, 4));
           }}
           className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-center text-2xl tracking-widest font-mono"
           placeholder="A123"
@@ -157,7 +157,7 @@ export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
           loading ||
           !familyId.trim() ||
           !name.trim() ||
-          authCode.length !== 4
+          authCodeInput.length !== 4
         }
         className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
