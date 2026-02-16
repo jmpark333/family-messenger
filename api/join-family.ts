@@ -16,7 +16,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { familyId, name, authCode, publicKey } = await req.body;
+    const { familyId, name, authCode, publicKey } = req.body || {};
+
+    console.log('[API] Join family request:', { familyId, name, authCode });
 
     if (!familyId || typeof familyId !== 'string') {
       return res.status(400).json({ error: 'Family ID is required' });
@@ -37,6 +39,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
     // TODO: Vercel KV 또는 DB에 저장 (현재는 mock 응답)
+    console.log('[API] Family joined:', { familyId, memberId });
+
     return res.status(200).json({
       familyId,
       memberId,
@@ -45,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ],
     });
   } catch (error) {
-    console.error('Error joining family:', error);
+    console.error('[API] Error joining family:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

@@ -18,6 +18,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { familyId, since } = req.query;
 
+    console.log('[API] Poll messages request:', { familyId, since });
+
     if (!familyId || typeof familyId !== 'string') {
       return res.status(400).json({ error: 'Missing familyId' });
     }
@@ -25,9 +27,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // TODO: Vercel KV 또는 DB에서 조회
     const messages = [];
 
+    console.log('[API] Polling result:', { familyId, messageCount: messages.length });
+
     return res.status(200).json({ messages });
   } catch (error) {
-    console.error('Error polling messages:', error);
+    console.error('[API] Error polling messages:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

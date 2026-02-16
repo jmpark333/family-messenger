@@ -16,7 +16,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { name, authCode, publicKey } = await req.body;
+    const { name, authCode, publicKey } = req.body || {};
+
+    console.log('[API] Create family request:', { name, authCode, hasPublicKey: !!publicKey });
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
       return res.status(400).json({ error: 'Name is required' });
@@ -39,13 +41,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       : 'http://localhost:3000';
     const inviteUrl = `${baseUrl}/invite?family=${familyId}`;
 
+    console.log('[API] Family created:', { familyId, memberId });
+
     return res.status(200).json({
       familyId,
       memberId,
       inviteUrl,
     });
   } catch (error) {
-    console.error('Error creating family:', error);
+    console.error('[API] Error creating family:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
