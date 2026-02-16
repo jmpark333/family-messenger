@@ -75,7 +75,8 @@ module.exports = async function handler(req, res) {
       // Add new member
       family.members.push({ id: memberId, name: name.trim(), publicKey });
       try {
-        await redis.set(`family:${familyId}`, JSON.stringify(family));
+        // Upstash Redis는 자동으로 JSON 직렬화
+        await redis.set(`family:${familyId}`, family);
         // TTL 재설정
         await redis.expire(`family:${familyId}`, 7 * 24 * 60 * 60);
       } catch (setError) {

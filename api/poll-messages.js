@@ -32,9 +32,8 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'Storage service unavailable' });
     }
 
-    // Redis에서 메시지 조회
-    const rawMessages = await redis.lrange(`messages:${familyId}`, 0, -1);
-    let messages = rawMessages.map(msg => JSON.parse(msg));
+    // Redis에서 메시지 조회 (Upstash Redis는 자동으로 JSON 역직렬화)
+    const messages = await redis.lrange(`messages:${familyId}`, 0, -1);
 
     // since 파라미터가 있으면 필터링
     if (since) {

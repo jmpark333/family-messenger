@@ -79,7 +79,8 @@ module.exports = async function handler(req, res) {
       // Redis에 저장 (단일 키-값 사용)
       console.log('[API] Storing family in Redis:', familyId);
       try {
-        await redis.set(`family:${familyId}`, JSON.stringify(family));
+        // Upstash Redis는 자동으로 JSON 직렬화
+        await redis.set(`family:${familyId}`, family);
         // 7일 TTL 설정
         await redis.expire(`family:${familyId}`, 7 * 24 * 60 * 60);
         console.log('[API] Redis set completed successfully');

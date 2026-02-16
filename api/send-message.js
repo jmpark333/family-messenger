@@ -46,8 +46,8 @@ module.exports = async function handler(req, res) {
         timestamp: Date.now(),
       };
 
-      // Redis List에 저장 (family messages:{familyId})
-      await redis.lpush(`messages:${familyId}`, JSON.stringify(message));
+      // Redis List에 저장 (Upstash Redis는 자동으로 JSON 직렬화)
+      await redis.lpush(`messages:${familyId}`, message);
 
       // 최대 1000개 메시지 유지
       await redis.ltrim(`messages:${familyId}`, 0, 999);
