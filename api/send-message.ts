@@ -1,4 +1,6 @@
-// Vercel Function: Send Message (without Redis for now)
+// Vercel Function: Send Message with Upstash Redis
+const { getRedis } = require('./lib/redis');
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,9 +31,32 @@ module.exports = async function handler(req, res) {
 
       const messageId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
-      console.log('[API] Message saved (mock):', { messageId, familyId });
+      const redis = getRedis();
+      if (!redis) {
+        console.error('[API] Redis not available');
+        return res.status(500).json({ error: 'Storage service unavailable' });
+      }
 
-      // TODO: Redis 저장
+      const message = {
+        id: messageId,
+        familyId,
+        senderId,
+        senderName,
+        content,
+        timestamp: Date.now(),
+      };
+
+      // Redis List에 저장 (family messages:{familyId})
+      await redis.lpush(`messages:${familyId}`, JSON.stringify(message));
+
+      // 최대 1000개 메시지 유지
+      await redis.ltrim(`messages:${familyId}`, 0, 999);
+
+      // 7일 TTL 설정
+      await redis.expire(`messages:${familyId}`, 7 * 24 * 60 * 60);
+
+      console.log('[API] Message saved:', { messageId, familyId });
+
       return res.status(200).json({ success: true, messageId });
     } catch (parseError) {
       console.error('[API] JSON parse error:', parseError);

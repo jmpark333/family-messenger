@@ -1,4 +1,6 @@
-// Vercel Function: Join Family (without Redis for now)
+// Vercel Function: Join Family with Upstash Redis
+const { getRedis } = require('./lib/redis');
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,15 +43,35 @@ module.exports = async function handler(req, res) {
 
       const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
+      const redis = getRedis();
+      if (!redis) {
+        console.error('[API] Redis not available');
+        return res.status(500).json({ error: 'Storage service unavailable' });
+      }
+
+      // Validate family exists and auth code matches
+      const familyData = await redis.hget('families', familyId);
+      if (!familyData) {
+        console.error('[API] Family not found:', familyId);
+        return res.status(404).json({ error: 'Family not found' });
+      }
+
+      const family = JSON.parse(familyData);
+      if (family.authCode !== authCode) {
+        console.error('[API] Invalid auth code');
+        return res.status(401).json({ error: 'Invalid authentication code' });
+      }
+
+      // Add new member
+      family.members.push({ id: memberId, name: name.trim(), publicKey });
+      await redis.hset('families', familyId, JSON.stringify(family));
+
       console.log('[API] Family joined:', { familyId, memberId });
 
-      // TODO: Redis 저장
       return res.status(200).json({
         familyId,
         memberId,
-        members: [
-          { id: memberId, name: name.trim(), publicKey }
-        ],
+        members: family.members,
       });
     } catch (parseError) {
       console.error('[API] JSON parse error:', parseError);

@@ -1,4 +1,6 @@
-// Vercel Function: Create Family (without Redis for now)
+// Vercel Function: Create Family with Upstash Redis
+const { getRedis } = require('./lib/redis');
+
 module.exports = async function handler(req, res) {
   console.log('[API] create-family called, method:', req.method);
 
@@ -57,9 +59,25 @@ module.exports = async function handler(req, res) {
 
       console.log('[API] All validations passed, creating family...');
 
+      const redis = getRedis();
+      if (!redis) {
+        console.error('[API] Redis not available');
+        return res.status(500).json({ error: 'Storage service unavailable' });
+      }
+
       // UUID 생성
       const familyId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
       const memberId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+
+      const family = {
+        id: familyId,
+        authCode,
+        members: [{ id: memberId, name: name.trim(), publicKey }],
+        createdAt: Date.now(),
+      };
+
+      // Redis에 저장
+      await redis.hset('families', familyId, JSON.stringify(family));
 
       const baseUrl = process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`

@@ -1,4 +1,6 @@
-// Vercel Function: Poll Messages (without Redis for now)
+// Vercel Function: Poll Messages with Upstash Redis
+const { getRedis } = require('./lib/redis');
+
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -24,8 +26,24 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Missing familyId' });
     }
 
-    // TODO: Redis 조회
-    const messages = [];
+    const redis = getRedis();
+    if (!redis) {
+      console.error('[API] Redis not available');
+      return res.status(500).json({ error: 'Storage service unavailable' });
+    }
+
+    // Redis에서 메시지 조회
+    const rawMessages = await redis.lrange(`messages:${familyId}`, 0, -1);
+    let messages = rawMessages.map(msg => JSON.parse(msg));
+
+    // since 파라미터가 있으면 필터링
+    if (since) {
+      const sinceTime = parseInt(since, 10);
+      messages = messages.filter(msg => msg.timestamp > sinceTime);
+    }
+
+    // 최신 메시지가 먼저 오도록 정렬 (최신순)
+    messages.sort((a, b) => b.timestamp - a.timestamp);
 
     console.log('[API] Polling result:', { familyId, messageCount: messages.length });
 
