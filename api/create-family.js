@@ -76,21 +76,24 @@ module.exports = async function handler(req, res) {
         createdAt: Date.now(),
       };
 
-      // Redis에 저장
+      // Redis에 저장 (단일 키-값 사용)
       console.log('[API] Storing family in Redis:', familyId);
       try {
-        await redis.hset('families', familyId, JSON.stringify(family));
-        console.log('[API] Redis hset completed successfully');
+        await redis.set(`family:${familyId}`, JSON.stringify(family));
+        // 7일 TTL 설정
+        await redis.expire(`family:${familyId}`, 7 * 24 * 60 * 60);
+        console.log('[API] Redis set completed successfully');
       } catch (redisError) {
-        console.error('[API] Redis hset failed:', redisError);
+        console.error('[API] Redis set failed:', redisError);
         return res.status(500).json({ error: 'Failed to store family', details: redisError.message });
       }
+
       // 저장 확인
       try {
-        const verify = await redis.hget('families', familyId);
-        console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO', verify);
+        const verify = await redis.get(`family:${familyId}`);
+        console.log('[API] Verification - family in Redis:', verify ? 'YES' : 'NO');
       } catch (verifyError) {
-        console.error('[API] Redis hget failed:', verifyError);
+        console.error('[API] Redis get failed:', verifyError);
       }
 
       // 초대 URL은 항상 프로덕션 도메인 사용 (프리뷰 배포 문제 방지)

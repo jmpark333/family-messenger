@@ -53,22 +53,15 @@ module.exports = async function handler(req, res) {
       console.log('[API] Looking up family in Redis:', familyId);
       let familyData;
       try {
-        familyData = await redis.hget('families', familyId);
+        familyData = await redis.get(`family:${familyId}`);
         console.log('[API] Redis lookup result:', familyData ? 'Found' : 'Not found');
       } catch (redisError) {
-        console.error('[API] Redis hget failed:', redisError);
+        console.error('[API] Redis get failed:', redisError);
         return res.status(500).json({ error: 'Database error', details: redisError.message });
       }
 
       if (!familyData) {
         console.error('[API] Family not found:', familyId);
-        // Check if there are any families in Redis
-        try {
-          const allFamilies = await redis.hgetall('families');
-          console.log('[API] All families in Redis:', allFamilies);
-        } catch (allError) {
-          console.error('[API] Redis hgetall failed:', allError);
-        }
         return res.status(404).json({ error: 'Family not found' });
       }
 
@@ -80,7 +73,14 @@ module.exports = async function handler(req, res) {
 
       // Add new member
       family.members.push({ id: memberId, name: name.trim(), publicKey });
-      await redis.hset('families', familyId, JSON.stringify(family));
+      try {
+        await redis.set(`family:${familyId}`, JSON.stringify(family));
+        // TTL 재설정
+        await redis.expire(`family:${familyId}`, 7 * 24 * 60 * 60);
+      } catch (setError) {
+        console.error('[API] Failed to update family:', setError);
+        return res.status(500).json({ error: 'Failed to update family' });
+      }
 
       console.log('[API] Family joined:', { familyId, memberId });
 
