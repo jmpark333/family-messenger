@@ -10,17 +10,17 @@ export default function HomePage() {
 
         <div className="space-y-3">
           <Link
-            to="/auth?mode=create"
+            to="/create"
             className="block w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
           >
             새 가족 만들기
           </Link>
           <p className="text-sm text-gray-500">또는</p>
           <Link
-            to="/auth?mode=join"
+            to="/invite"
             className="block w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all"
           >
-            가족원에게 받은 URL 입력
+            초대장으로 참여
           </Link>
         </div>
       </div>

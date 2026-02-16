@@ -1,118 +1,147 @@
-'use client';
-
+// JoinFamilyForm.tsx - 간소화된 버전
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validateInviteToken } from '@/lib/auth/token-validator';
-import { dbHelpers, isDatabaseAvailable } from '@/lib/db';
-import { generateIdentityKeyPair } from '@/lib/signal/protocol';
+import { useSearchParams } from '@/lib/hooks/useSearchParams';
 import { useChatStore } from '@/stores/chat-store';
+import { apiClient } from '@/lib/api/client';
+import { generateKeyPair } from '@/lib/crypto';
 
 interface Props {
-  inviteToken?: string;
+  familyId?: string;
 }
 
-export function JoinFamilyForm({ inviteToken: propToken }: Props) {
+export function JoinFamilyForm({ familyId: propFamilyId }: Props) {
   const navigate = useNavigate();
+  const searchParams = useSearchParams();
+  const familyIdFromUrl = searchParams.get('family');
+
   const setAuthenticated = useChatStore((state) => state.setAuthenticated);
+  const setFamilyId = useChatStore((state) => state.setFamilyId);
   const setMyInfo = useChatStore((state) => state.setMyInfo);
-  const setAuthCredentials = useChatStore((state) => state.setAuthCredentials);
+  const setKeys = useChatStore((state) => state.setKeys);
+  const setAuthCode = useChatStore((state) => state.setAuthCode);
+  const addMemberPublicKey = useChatStore((state) => state.addMemberPublicKey);
+
+  const [familyId, setFamilyIdInput] = useState(familyIdFromUrl || propFamilyId || '');
   const [name, setName] = useState('');
-  const [token, setToken] = useState(propToken || '');
+  const [authCode, setAuthCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleJoin = async () => {
+  const handleJoin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError('');
+
+    if (!familyId.trim()) {
+      setError('가족 ID가 필요합니다');
+      return;
+    }
+    if (!name.trim()) {
+      setError('이름을 입력해주세요');
+      return;
+    }
+    if (!authCode.trim() || authCode.length !== 4) {
+      setError('4자리 인증코드를 입력해주세요');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Check IndexedDB availability
-      const isAvailable = await isDatabaseAvailable();
-      if (!isAvailable) {
-        setError('브라우저 저장소 접근이 차단되었습니다. 개인정보 보호 설정을 확인해주세요.');
-        setLoading(false);
-        return;
-      }
+      // 키 쌍 생성
+      const keyPair = await generateKeyPair();
 
-      // Validate token
-      const validated = validateInviteToken(token);
-      if (!validated) {
-        setError('유효하지 않은 초대장입니다');
-        setLoading(false);
-        return;
-      }
-
-      // Check expiry
-      if (Date.now() > validated.expiresAt) {
-        setError('만료된 초대장입니다. 가족원에게 새 URL을 요청하세요');
-        setLoading(false);
-        return;
-      }
-
-      // Generate key pair for E2E encryption
-      const keyPair = await generateIdentityKeyPair();
-
-      // Generate additional PIN for P2P authentication
-      const additionalPin = crypto.randomUUID().slice(0, 16);
-      
-      // Save to IndexedDB
-      const memberId = crypto.randomUUID();
-      await dbHelpers.saveFamily({
-        id: validated.familyId,
-        myMemberId: memberId,
-        myName: name,
-        additionalPin,
-        keys: keyPair,
-        joinedAt: Date.now()
+      // API 호출
+      const response = await apiClient.joinFamily({
+        familyId: familyId.trim(),
+        name: name.trim(),
+        authCode: authCode.toUpperCase(),
+        publicKey: keyPair.publicKey,
       });
 
-      // Set authenticated state
+      // 스토어 업데이트
       setAuthenticated(true);
-      setMyInfo(memberId, name);
-      setAuthCredentials({
-        id: memberId,
-        password: '', // Not used in current implementation
-        additionalPin,
-      });
-      console.log('[JoinFamilyForm] Family joined with additionalPin:', additionalPin);
+      setFamilyId(response.familyId);
+      setMyInfo(response.memberId, name.trim());
+      setKeys(keyPair.publicKey, keyPair.privateKey);
+      setAuthCode(authCode.toUpperCase());
 
+      // 멤버 공개키 저장 (암호화용)
+      response.members.forEach((member) => {
+        if (member.id !== response.memberId) {
+          addMemberPublicKey(member.id, member.publicKey);
+        }
+      });
+
+      // 채팅 페이지로 이동
       navigate('/chat');
     } catch (err) {
-      console.error('가족 참여 실패:', err);
-      setError('가족 참여에 실패했습니다. 브라우저 저장소를 확인해주세요.');
+      setError(
+        err instanceof Error ? err.message : '참여에 실패했습니다'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); handleJoin(); }} className="space-y-4">
-      {!propToken && (
+    <form onSubmit={handleJoin} className="space-y-4">
+      {!familyIdFromUrl && !propFamilyId && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            초대 URL
+          <label
+            htmlFor="familyId"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            가족 ID (URL에서 ?family= 뒤에 있는 값)
           </label>
           <input
+            id="familyId"
             type="text"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
-            placeholder="가족원에게 받은 URL을 붙여넣으세요"
+            value={familyId}
+            onChange={(e) => setFamilyIdInput(e.target.value)}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors font-mono text-sm"
+            placeholder="가족 ID를 붙여넣으세요"
           />
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           이름
         </label>
         <input
+          id="name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
           placeholder="가족원들에게 보일 이름"
-          autoFocus={!!propToken}
+          autoFocus={!!familyIdFromUrl || !!propFamilyId}
+          maxLength={20}
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="authCode"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          인증코드
+        </label>
+        <input
+          id="authCode"
+          type="text"
+          value={authCode}
+          onChange={(e) => {
+            const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            setAuthCode(value.slice(0, 4));
+          }}
+          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-center text-2xl tracking-widest font-mono"
+          placeholder="A123"
+          maxLength={4}
         />
       </div>
 
@@ -124,8 +153,13 @@ export function JoinFamilyForm({ inviteToken: propToken }: Props) {
 
       <button
         type="submit"
-        disabled={loading || !name.trim() || !token.trim()}
-        className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50"
+        disabled={
+          loading ||
+          !familyId.trim() ||
+          !name.trim() ||
+          authCode.length !== 4
+        }
+        className="w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         {loading ? '참여 중...' : '가족에 참여'}
       </button>
