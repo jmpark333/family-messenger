@@ -79,10 +79,9 @@ module.exports = async function handler(req, res) {
       // Redis에 저장
       await redis.hset('families', familyId, JSON.stringify(family));
 
-      const baseUrl = process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'http://localhost:3000';
-      const inviteUrl = `${baseUrl}/invite?family=${familyId}`;
+      // 초대 URL은 항상 프로덕션 도메인 사용 (프리뷰 배포 문제 방지)
+      const productionUrl = process.env.PRODUCTION_URL || 'https://family-messenger-murex.vercel.app';
+      const inviteUrl = `${productionUrl}/invite?family=${familyId}`;
 
       console.log('[API] Family created successfully:', { familyId, memberId, inviteUrl });
 
