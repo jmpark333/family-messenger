@@ -1,5 +1,5 @@
 // Vercel Function: Poll Messages
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -34,4 +34,4 @@ export default async function handler(req, res) {
     console.error('[API] Error polling messages:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
