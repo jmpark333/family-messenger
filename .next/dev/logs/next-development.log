@@ -1,140 +1,367 @@
-[00:00:01.090] Server  LOG     ✓ Ready in 680ms
-[00:00:04.469] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:04.651] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:00:13.225] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:13.379] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:00:20.128] Browser LOG     [JoinFamilyForm] About to validate token: eyJmYW1pbHlJZCI6IjViMGI3YzgwLTZlNDUtNDYwNS05ZGExLT...
-[00:00:20.128] Browser LOG     [validateInviteToken] Input token length: 272
-[00:00:20.128] Browser LOG     [validateInviteToken] First 50 chars: eyJmYW1pbHlJZCI6IjViMGI3YzgwLTZlNDUtNDYwNS05ZGExLT
-[00:00:20.128] Browser LOG     [validateInviteToken] Decoded length: 204
-[00:00:20.128] Browser LOG     [validateInviteToken] Decoded: {"familyId":"5b0b7c80-6e45-4605-9da1-1b2c07c8f881","createdBy":"creator","createdAt":1771032301521,"expiresAt":1771118701521,"signature":"f750fe8b6271b31c8ca1eea84e624ad494fc7cfe188dbc1abd812a528c8edd1d"}
-[00:00:20.128] Browser LOG     [validateInviteToken] Parsed token: {"createdAt":1771032301521,"createdBy":"creator","expiresAt":1771118701521,"familyId":"5b0b7c80-6e45-4605-9da1-1b2c07c8f881","signature":"f750fe8b6271b31c8ca1eea84e624ad494fc7cfe188dbc1abd812a528c8edd1d"}
-[00:00:20.128] Browser LOG     [validateInviteToken] Current time: 1771032312756
-[00:00:20.128] Browser LOG     [validateInviteToken] Expires at: 1771118701521
-[00:00:20.128] Browser LOG     [validateInviteToken] Time remaining: 86388765 ms
-[00:00:20.128] Browser LOG     [validateInviteToken] Secret used: family-messenger-4122f
-[00:00:20.128] Browser LOG     [validateInviteToken] Data for signature: 5b0b7c80-6e45-4605-9da1-1b2c07c8f881:creator:1771032301521:1771118701521
-[00:00:20.128] Browser LOG     [validateInviteToken] Expected signature: f750fe8b6271b31c8ca1eea84e624ad494fc7cfe188dbc1abd812a528c8edd1d
-[00:00:20.128] Browser LOG     [validateInviteToken] Token signature: f750fe8b6271b31c8ca1eea84e624ad494fc7cfe188dbc1abd812a528c8edd1d
-[00:00:20.128] Browser LOG     [validateInviteToken] Signatures match: true
-[00:00:20.128] Browser LOG     [validateInviteToken] Token VALIDATED successfully
-[00:00:20.128] Browser LOG     [JoinFamilyForm] Validation result: {"createdAt":1771032301521,"createdBy":"creator","expiresAt":1771118701521,"familyId":"5b0b7c80-6e45-4605-9da1-1b2c07c8f881","signature":"f750fe8b6271b31c8ca1eea84e624ad494fc7cfe188dbc1abd812a528c8edd1d"}
-[00:02:49.029] Server  LOG     ✓ Compiled in 293ms
-[00:02:52.890] Server  LOG     ✓ Compiled in 21ms
-[00:04:04.961] Server  LOG     ✓ Compiled in 44ms
-[00:04:05.139] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:04:05.139] Browser LOG     [ChatPage] Messages count: 0
-[00:04:05.139] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:04:05.140] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:04:05.140] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:04:05.140] Browser LOG     [ChatPage] Messages count: 0
-[00:04:05.140] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:04:05.140] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:04:21.896] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:04:51.521] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:04:51.698] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:04:55.957] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:04:56.177] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:05:05.959] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:05:06.193] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:05:14.737] Browser LOG     [JoinFamilyForm] About to validate token: eyJmYW1pbHlJZCI6ImYwZmVlZmNiLTE0MWQtNDg3Yi1iMTliLT...
-[00:05:14.737] Browser LOG     [validateInviteToken] Input token length: 272
-[00:05:14.737] Browser LOG     [validateInviteToken] First 50 chars: eyJmYW1pbHlJZCI6ImYwZmVlZmNiLTE0MWQtNDg3Yi1iMTliLT
-[00:05:14.737] Browser LOG     [validateInviteToken] Decoded length: 204
-[00:05:14.737] Browser LOG     [validateInviteToken] Decoded: {"familyId":"f0feefcb-141d-487b-b19b-93b0dd018fe7","createdBy":"creator","createdAt":1771032619162,"expiresAt":1771119019162,"signature":"740e814c8a818655a112e589c861da77c2811a548bd19427e1f36b43a5aa0a07"}
-[00:05:14.737] Browser LOG     [validateInviteToken] Parsed token: {"createdAt":1771032619162,"createdBy":"creator","expiresAt":1771119019162,"familyId":"f0feefcb-141d-487b-b19b-93b0dd018fe7","signature":"740e814c8a818655a112e589c861da77c2811a548bd19427e1f36b43a5aa0a07"}
-[00:05:14.737] Browser LOG     [validateInviteToken] Current time: 1771032634017
-[00:05:14.737] Browser LOG     [validateInviteToken] Expires at: 1771119019162
-[00:05:14.737] Browser LOG     [validateInviteToken] Time remaining: 86385145 ms
-[00:05:14.737] Browser LOG     [validateInviteToken] Secret used: family-messenger-4122f
-[00:05:14.737] Browser LOG     [validateInviteToken] Data for signature: f0feefcb-141d-487b-b19b-93b0dd018fe7:creator:1771032619162:1771119019162
-[00:05:14.737] Browser LOG     [validateInviteToken] Expected signature: 740e814c8a818655a112e589c861da77c2811a548bd19427e1f36b43a5aa0a07
-[00:05:14.737] Browser LOG     [validateInviteToken] Token signature: 740e814c8a818655a112e589c861da77c2811a548bd19427e1f36b43a5aa0a07
-[00:05:14.737] Browser LOG     [validateInviteToken] Signatures match: true
-[00:05:14.737] Browser LOG     [validateInviteToken] Token VALIDATED successfully
-[00:05:14.737] Browser LOG     [JoinFamilyForm] Validation result: {"createdAt":1771032619162,"createdBy":"creator","expiresAt":1771119019162,"familyId":"f0feefcb-141d-487b-b19b-93b0dd018fe7","signature":"740e814c8a818655a112e589c861da77c2811a548bd19427e1f36b43a5aa0a07"}
-[00:07:15.184] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:07:15.351] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:07:29.606] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:07:29.750] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:07:33.341] Browser LOG     [JoinFamilyForm] About to validate token: eyJmYW1pbHlJZCI6ImU5Mjc0MDUxLTllZjEtNGU2NC04NzdjLW...
-[00:07:33.341] Browser LOG     [validateInviteToken] Input token length: 272
-[00:07:33.341] Browser LOG     [validateInviteToken] First 50 chars: eyJmYW1pbHlJZCI6ImU5Mjc0MDUxLTllZjEtNGU2NC04NzdjLW
-[00:07:33.341] Browser LOG     [validateInviteToken] Decoded length: 204
-[00:07:33.341] Browser LOG     [validateInviteToken] Decoded: {"familyId":"e9274051-9ef1-4e64-877c-ac1beea843b7","createdBy":"creator","createdAt":1771032771578,"expiresAt":1771119171578,"signature":"9247197fccb321119fd05e6d492f92b0cb4f0d52e5968a2562c1f3c039b2e81a"}
-[00:07:33.341] Browser LOG     [validateInviteToken] Parsed token: {"createdAt":1771032771578,"createdBy":"creator","expiresAt":1771119171578,"familyId":"e9274051-9ef1-4e64-877c-ac1beea843b7","signature":"9247197fccb321119fd05e6d492f92b0cb4f0d52e5968a2562c1f3c039b2e81a"}
-[00:07:33.341] Browser LOG     [validateInviteToken] Current time: 1771032785314
-[00:07:33.341] Browser LOG     [validateInviteToken] Expires at: 1771119171578
-[00:07:33.341] Browser LOG     [validateInviteToken] Time remaining: 86386264 ms
-[00:07:33.341] Browser LOG     [validateInviteToken] Secret used: family-messenger-4122f
-[00:07:33.341] Browser LOG     [validateInviteToken] Data for signature: e9274051-9ef1-4e64-877c-ac1beea843b7:creator:1771032771578:1771119171578
-[00:07:33.341] Browser LOG     [validateInviteToken] Expected signature: 9247197fccb321119fd05e6d492f92b0cb4f0d52e5968a2562c1f3c039b2e81a
-[00:07:33.341] Browser LOG     [validateInviteToken] Token signature: 9247197fccb321119fd05e6d492f92b0cb4f0d52e5968a2562c1f3c039b2e81a
-[00:07:33.341] Browser LOG     [validateInviteToken] Signatures match: true
-[00:07:33.341] Browser LOG     [validateInviteToken] Token VALIDATED successfully
-[00:07:33.341] Browser LOG     [JoinFamilyForm] Validation result: {"createdAt":1771032771578,"createdBy":"creator","expiresAt":1771119171578,"familyId":"e9274051-9ef1-4e64-877c-ac1beea843b7","signature":"9247197fccb321119fd05e6d492f92b0cb4f0d52e5968a2562c1f3c039b2e81a"}
-[00:08:08.907] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:08:09.043] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:08:15.956] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:08:16.107] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:08:17.865] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:08:17.865] Browser LOG     [ChatPage] Messages count: 0
-[00:08:17.865] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:17.865] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:08:17.865] Browser LOG     [ChatPage] Messages count: 0
-[00:08:17.865] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:17.865] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:17.865] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:20.045] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:08:20.045] Browser LOG     [ChatPage] Messages count: 0
-[00:08:20.045] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:20.045] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:08:20.045] Browser LOG     [ChatPage] Messages count: 0
-[00:08:20.045] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:20.045] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:08:20.045] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:14:31.498] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:15:32.810] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:15:32.962] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:15:41.855] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:15:41.991] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:15:44.921] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:15:44.921] Browser LOG     [ChatPage] Messages count: 0
-[00:15:44.921] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:44.921] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:15:44.921] Browser LOG     [ChatPage] Messages count: 0
-[00:15:44.921] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:44.921] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:44.921] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:47.200] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:15:47.200] Browser LOG     [ChatPage] Messages count: 0
-[00:15:47.200] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:47.200] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:15:47.200] Browser LOG     [ChatPage] Messages count: 0
-[00:15:47.201] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:47.201] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:15:47.201] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:05.967] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:16:06.105] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:16:10.962] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:16:10.962] Browser LOG     [ChatPage] Messages count: 0
-[00:16:10.962] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:10.962] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:16:10.962] Browser LOG     [ChatPage] Messages count: 0
-[00:16:10.963] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:10.963] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:10.963] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:46.828] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:16:46.992] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
-[00:16:49.272] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:16:49.272] Browser LOG     [ChatPage] Messages count: 0
-[00:16:49.273] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:49.273] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
-[00:16:49.273] Browser LOG     [ChatPage] Messages count: 0
-[00:16:49.273] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:49.273] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:16:49.273] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
-[00:19:40.369] Server  LOG     ✓ Compiled in 195ms
-[00:20:07.278] Server  LOG     ✓ Compiled in 34ms
-[00:20:28.755] Server  LOG     ✓ Compiled in 39ms
-[00:20:30.617] Server  LOG     ✓ Compiled in 30ms
+[00:00:03.864] Server  LOG     ✓ Ready in 3.2s
+[00:00:04.702] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:09.985] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:10.185] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
+[00:00:14.186] Browser LOG     [CreateFamilyForm] Family created with additionalPin: 1b836685-33da-43
+[00:00:25.136] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:25.269] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
+[00:00:27.794] Browser LOG     [JoinFamilyForm] Family joined with additionalPin: eafc19be-78fb-43
+[00:00:27.794] Browser LOG     [ChatPage] Initializing P2P Manager...
+[00:00:27.795] Browser LOG     [P2P] Initializing P2PManager with additionalPin: eafc19be-78fb-43
+[00:00:27.795] Browser LOG     [MessageQueue] Loaded 2 messages from storage
+[00:00:27.795] Browser LOG     [ChatPage] P2P Manager initialized
+[00:00:27.795] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Messages count: 0
+[00:00:27.795] Browser LOG     [ChatPage] myPeerId: 8b16566d-284d-4476-a6c3-d518cce93551
+[00:00:27.795] Browser LOG     [ChatPage] P2P Initialized: false
+[00:00:27.795] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Loading messages from IndexedDB...
+[00:00:27.795] Browser LOG     [ChatPage] Initializing P2P Manager...
+[00:00:27.795] Browser LOG     PeerJS:  Destroy peer with ID:null
+[00:00:27.795] Browser LOG     PeerJS:  Disconnect peer with ID:null
+[00:00:27.795] Browser LOG     [P2P] Peer disconnected
+[00:00:27.795] Browser LOG     [P2P] Peer closed
+[00:00:27.795] Browser LOG     [P2P] Initializing P2PManager with additionalPin: eafc19be-78fb-43
+[00:00:27.795] Browser LOG     [ChatPage] P2P Manager initialized
+[00:00:27.795] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Messages count: 0
+[00:00:27.795] Browser LOG     [ChatPage] myPeerId: 8b16566d-284d-4476-a6c3-d518cce93551
+[00:00:27.795] Browser LOG     [ChatPage] P2P Initialized: false
+[00:00:27.795] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Loading messages from IndexedDB...
+[00:00:27.795] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Messages count: 0
+[00:00:27.795] Browser LOG     [ChatPage] myPeerId: 8b16566d-284d-4476-a6c3-d518cce93551
+[00:00:27.795] Browser LOG     [ChatPage] P2P Initialized: true
+[00:00:27.795] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Messages count: 19
+[00:00:27.795] Browser LOG     [ChatPage] myPeerId: 8b16566d-284d-4476-a6c3-d518cce93551
+[00:00:27.795] Browser LOG     [ChatPage] P2P Initialized: true
+[00:00:27.795] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:27.795] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:28.179] Browser LOG     PeerJS:  Socket open
+[00:00:28.179] Browser LOG     PeerJS:  Server message received: {"type":"OPEN"}
+[00:00:28.179] Browser LOG     [P2P] My Peer ID: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:28.179] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:28.179] Browser LOG     [ChatPage] Messages count: 19
+[00:00:28.179] Browser LOG     [ChatPage] myPeerId: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:28.179] Browser LOG     [ChatPage] P2P Initialized: true
+[00:00:28.179] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:28.638] Browser LOG     PeerJS:  Socket open
+[00:00:28.638] Browser LOG     PeerJS:  Server message received: {"type":"OPEN"}
+[00:00:30.840] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:35.437] Browser LOG     [ChatPage] Initializing P2P Manager...
+[00:00:35.440] Browser LOG     [P2P] Initializing P2PManager with additionalPin: 1b836685-33da-43
+[00:00:35.440] Browser LOG     [MessageQueue] Loaded 0 messages from storage
+[00:00:35.440] Browser LOG     [ChatPage] P2P Manager initialized
+[00:00:35.441] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:35.441] Browser LOG     [ChatPage] Messages count: 0
+[00:00:35.441] Browser LOG     [ChatPage] myPeerId: ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:35.441] Browser LOG     [ChatPage] P2P Initialized: false
+[00:00:35.441] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:35.442] Browser LOG     [ChatPage] Loading messages from IndexedDB...
+[00:00:35.442] Browser LOG     [ChatPage] Initializing P2P Manager...
+[00:00:35.442] Browser LOG     PeerJS:  Destroy peer with ID:null
+[00:00:35.442] Browser LOG     PeerJS:  Disconnect peer with ID:null
+[00:00:35.442] Browser LOG     [P2P] Peer disconnected
+[00:00:35.443] Browser LOG     [P2P] Peer closed
+[00:00:35.443] Browser LOG     [P2P] Initializing P2PManager with additionalPin: 1b836685-33da-43
+[00:00:35.443] Browser LOG     [ChatPage] P2P Manager initialized
+[00:00:35.443] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:35.443] Browser LOG     [ChatPage] Messages count: 0
+[00:00:35.443] Browser LOG     [ChatPage] myPeerId: ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:35.444] Browser LOG     [ChatPage] P2P Initialized: false
+[00:00:35.444] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:35.444] Browser LOG     [ChatPage] Loading messages from IndexedDB...
+[00:00:35.444] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:35.444] Browser LOG     [ChatPage] Messages count: 0
+[00:00:35.445] Browser LOG     [ChatPage] myPeerId: ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:35.445] Browser LOG     [ChatPage] P2P Initialized: true
+[00:00:35.445] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:35.445] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:35.445] Browser LOG     [ChatPage] Messages count: 2
+[00:00:35.446] Browser LOG     [ChatPage] myPeerId: ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:35.446] Browser LOG     [ChatPage] P2P Initialized: true
+[00:00:35.446] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:35.446] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:35.967] Browser LOG     PeerJS:  Socket open
+[00:00:35.967] Browser LOG     PeerJS:  Server message received: {"type":"OPEN"}
+[00:00:36.511] Browser LOG     PeerJS:  Socket open
+[00:00:36.511] Browser LOG     PeerJS:  Server message received: {"type":"OPEN"}
+[00:00:36.512] Browser LOG     [P2P] My Peer ID: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:36.512] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:00:36.512] Browser LOG     [ChatPage] Messages count: 2
+[00:00:36.512] Browser LOG     [ChatPage] myPeerId: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:36.512] Browser LOG     [ChatPage] P2P Initialized: true
+[00:00:36.513] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:40.986] Browser LOG     [P2P] Connecting to: ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:40.986] Browser LOG     PeerJS:  Creating RTCPeerConnection.
+[00:00:40.986] Browser LOG     PeerJS:  Listening for ICE candidates.
+[00:00:40.986] Browser LOG     PeerJS:  Listening for data channel
+[00:00:40.986] Browser LOG     PeerJS:  Listening for remote stream
+[00:00:40.986] Browser LOG     PeerJS:  add connection data:dc_i2n56tvesis to peerId:ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:40.986] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:40.986] Browser LOG     PeerJS:  Created offer.
+[00:00:40.986] Browser LOG     PeerJS:  Set localDescription: {"sdp":"v=0\r\no=- 3897402307866321253 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:6oBR\r\na=ice-pwd:CxVyFzCIEw4PhYYRkWcty5id\r\na=ice-options:trickle\r\na=fingerprint:sha-256 A2:9D:71:15:1F:35:F5:2A:4F:4F:48:CB:15:1F:BA:B4:AE:81:DC:96:68:A6:95:AC:14:7C:AA:12:79:F3:09:9C\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"} for:ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:40.986] Browser LOG     PeerJS:  Received ICE candidates for ba66ca9e-f077-40dd-a1b6-c87e9b2a9982: {"candidate":"candidate:972327810 1 udp 2113937151 cb3b53a2-24a4-4e19-a44d-e5be2ab40be7.local 52695 typ host generation 0 ufrag 6oBR network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"6oBR"}
+[00:00:40.986] Browser LOG     PeerJS:  Received ICE candidates for ba66ca9e-f077-40dd-a1b6-c87e9b2a9982: {"candidate":"candidate:81333197 1 udp 1677729535 211.193.60.83 52695 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag 6oBR network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"6oBR"}
+[00:00:41.222] Browser LOG     PeerJS:  Server message received: {"dst":"520a708f-9a49-4c85-bc4a-13642b17f699","src":"ba66ca9e-f077-40dd-a1b6-c87e9b2a9982","type":"EXPIRE"}
+[00:00:41.222] Browser ERROR   ERROR PeerJS:  Error: Could not connect to peer ba66ca9e-f077-40dd-a1b6-c87e9b2a9982
+[00:00:41.222] Browser ERROR   [P2P] Peer error: {"type":"peer-unavailable"}
+[00:00:41.222] Browser ERROR   [ChatPage] P2P Error: {}
+[00:00:41.222] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:43.978] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:45.234] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:46.943] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:50.058] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:52.859] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:55.438] Browser LOG     [P2P] Connecting to: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:55.438] Browser LOG     PeerJS:  Creating RTCPeerConnection.
+[00:00:55.439] Browser LOG     PeerJS:  Listening for ICE candidates.
+[00:00:55.439] Browser LOG     PeerJS:  Listening for data channel
+[00:00:55.439] Browser LOG     PeerJS:  Listening for remote stream
+[00:00:55.439] Browser LOG     PeerJS:  add connection data:dc_x83f21viri to peerId:520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:55.439] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:55.439] Browser LOG     PeerJS:  Created offer.
+[00:00:55.439] Browser LOG     PeerJS:  Set localDescription: {"sdp":"v=0\r\no=- 6270859525062498572 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:fPqW\r\na=ice-pwd:PPvZMaDB3Y6cgmPMJ4orkja2\r\na=ice-options:trickle\r\na=fingerprint:sha-256 88:92:83:9D:DC:1E:F5:C6:6C:B4:2A:6C:22:27:6F:96:3D:F1:00:DF:FA:F4:03:C0:31:E7:45:7C:74:C6:3C:F1\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"} for:520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:55.440] Browser LOG     PeerJS:  Received ICE candidates for 520a708f-9a49-4c85-bc4a-13642b17f699: {"candidate":"candidate:1086638539 1 udp 2113937151 ad3418e1-df21-4e56-abbe-d3cf85c3ddd7.local 53053 typ host generation 0 ufrag fPqW network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"fPqW"}
+[00:00:55.560] Browser LOG     PeerJS:  Received ICE candidates for 520a708f-9a49-4c85-bc4a-13642b17f699: {"candidate":"candidate:2112440708 1 udp 1677729535 211.193.60.83 53053 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag fPqW network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"fPqW"}
+[00:00:55.712] Browser LOG     PeerJS:  Server message received: {"dst":"520a708f-9a49-4c85-bc4a-13642b17f699","payload":{"connectionId":"dc_x83f21viri","label":"dc_x83f21viri","reliable":true,"sdp":{"sdp":"v=0\r\no=- 6270859525062498572 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:fPqW\r\na=ice-pwd:PPvZMaDB3Y6cgmPMJ4orkja2\r\na=ice-options:trickle\r\na=fingerprint:sha-256 88:92:83:9D:DC:1E:F5:C6:6C:B4:2A:6C:22:27:6F:96:3D:F1:00:DF:FA:F4:03:C0:31:E7:45:7C:74:C6:3C:F1\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"},"serialization":"json","type":"data"},"src":"fa3571b8-3432-4e60-9d44-4a186759b691","type":"OFFER"}
+[00:00:55.712] Browser LOG     PeerJS:  Creating RTCPeerConnection.
+[00:00:55.712] Browser LOG     PeerJS:  Listening for ICE candidates.
+[00:00:55.712] Browser LOG     PeerJS:  Listening for data channel
+[00:00:55.712] Browser LOG     PeerJS:  Listening for remote stream
+[00:00:55.712] Browser LOG     PeerJS:  Setting remote description {"sdp":"v=0\r\no=- 6270859525062498572 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:fPqW\r\na=ice-pwd:PPvZMaDB3Y6cgmPMJ4orkja2\r\na=ice-options:trickle\r\na=fingerprint:sha-256 88:92:83:9D:DC:1E:F5:C6:6C:B4:2A:6C:22:27:6F:96:3D:F1:00:DF:FA:F4:03:C0:31:E7:45:7C:74:C6:3C:F1\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"}
+[00:00:55.712] Browser LOG     PeerJS:  add connection data:dc_x83f21viri to peerId:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:55.712] Browser LOG     [P2P] Incoming connection from: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:55.712] Browser LOG     PeerJS:  Server message received: {"dst":"520a708f-9a49-4c85-bc4a-13642b17f699","payload":{"candidate":{"candidate":"candidate:1086638539 1 udp 2113937151 ad3418e1-df21-4e56-abbe-d3cf85c3ddd7.local 53053 typ host generation 0 ufrag fPqW network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"fPqW"},"connectionId":"dc_x83f21viri","type":"data"},"src":"fa3571b8-3432-4e60-9d44-4a186759b691","type":"CANDIDATE"}
+[00:00:55.712] Browser LOG     PeerJS:  handleCandidate: {"candidate":"candidate:1086638539 1 udp 2113937151 ad3418e1-df21-4e56-abbe-d3cf85c3ddd7.local 53053 typ host generation 0 ufrag fPqW network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"fPqW"}
+[00:00:55.712] Browser LOG     PeerJS:  Set remoteDescription:OFFER for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:55.712] Browser LOG     PeerJS:  Added ICE candidate for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:55.712] Browser LOG     PeerJS:  Created answer.
+[00:00:55.712] Browser LOG     PeerJS:  Set localDescription: {"sdp":"v=0\r\no=- 3555033349175065481 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:hhWP\r\na=ice-pwd:rV0ZHnJSuOb+lD0rHWQbwIBF\r\na=ice-options:trickle\r\na=fingerprint:sha-256 67:1B:93:9D:58:B6:26:8C:DC:15:48:1D:07:EE:95:ED:4F:C1:30:49:68:A1:D5:25:0D:DF:C7:6B:56:7D:9D:2D\r\na=setup:active\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"answer"} for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:55.712] Browser LOG     PeerJS:  Received ICE candidates for fa3571b8-3432-4e60-9d44-4a186759b691: {"candidate":"candidate:3130818622 1 udp 2113937151 cb3b53a2-24a4-4e19-a44d-e5be2ab40be7.local 51345 typ host generation 0 ufrag hhWP network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"hhWP"}
+[00:00:55.861] Browser LOG     PeerJS:  Server message received: {"dst":"520a708f-9a49-4c85-bc4a-13642b17f699","payload":{"candidate":{"candidate":"candidate:2112440708 1 udp 1677729535 211.193.60.83 53053 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag fPqW network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"fPqW"},"connectionId":"dc_x83f21viri","type":"data"},"src":"fa3571b8-3432-4e60-9d44-4a186759b691","type":"CANDIDATE"}
+[00:00:55.861] Browser LOG     PeerJS:  handleCandidate: {"candidate":"candidate:2112440708 1 udp 1677729535 211.193.60.83 53053 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag fPqW network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"fPqW"}
+[00:00:55.861] Browser LOG     PeerJS:  Added ICE candidate for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:00:56.047] Browser LOG     PeerJS:  Received data channel
+[00:00:56.047] Browser LOG     PeerJS:  DC#dc_x83f21viri dc connection success
+[00:00:56.047] Browser LOG     [P2P] Connection opened: fa3571b8-3432-4e60-9d44-4a186759b691 isIncoming: true
+[00:00:56.047] Browser LOG     [P2P] Starting PIN verification...
+[00:00:56.047] Browser LOG     [P2P] performPinVerification called, isIncoming: true
+[00:00:56.047] Browser LOG     [P2P] myPin: set
+[00:00:56.047] Browser LOG     [P2P] Incoming connection - waiting for auth-challenge
+[00:00:56.057] Browser LOG     PeerJS:  Server message received: {"dst":"fa3571b8-3432-4e60-9d44-4a186759b691","payload":{"connectionId":"dc_x83f21viri","sdp":{"sdp":"v=0\r\no=- 3555033349175065481 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:hhWP\r\na=ice-pwd:rV0ZHnJSuOb+lD0rHWQbwIBF\r\na=ice-options:trickle\r\na=fingerprint:sha-256 67:1B:93:9D:58:B6:26:8C:DC:15:48:1D:07:EE:95:ED:4F:C1:30:49:68:A1:D5:25:0D:DF:C7:6B:56:7D:9D:2D\r\na=setup:active\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"answer"},"type":"data"},"src":"520a708f-9a49-4c85-bc4a-13642b17f699","type":"ANSWER"}
+[00:00:56.058] Browser LOG     PeerJS:  Setting remote description {"sdp":"v=0\r\no=- 3555033349175065481 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:hhWP\r\na=ice-pwd:rV0ZHnJSuOb+lD0rHWQbwIBF\r\na=ice-options:trickle\r\na=fingerprint:sha-256 67:1B:93:9D:58:B6:26:8C:DC:15:48:1D:07:EE:95:ED:4F:C1:30:49:68:A1:D5:25:0D:DF:C7:6B:56:7D:9D:2D\r\na=setup:active\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"answer"}
+[00:00:56.058] Browser LOG     PeerJS:  Server message received: {"dst":"fa3571b8-3432-4e60-9d44-4a186759b691","payload":{"candidate":{"candidate":"candidate:3130818622 1 udp 2113937151 cb3b53a2-24a4-4e19-a44d-e5be2ab40be7.local 51345 typ host generation 0 ufrag hhWP network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"hhWP"},"connectionId":"dc_x83f21viri","type":"data"},"src":"520a708f-9a49-4c85-bc4a-13642b17f699","type":"CANDIDATE"}
+[00:00:56.058] Browser LOG     PeerJS:  handleCandidate: {"candidate":"candidate:3130818622 1 udp 2113937151 cb3b53a2-24a4-4e19-a44d-e5be2ab40be7.local 51345 typ host generation 0 ufrag hhWP network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"hhWP"}
+[00:00:56.058] Browser LOG     PeerJS:  Set remoteDescription:ANSWER for:520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:56.059] Browser LOG     PeerJS:  Added ICE candidate for:520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:56.059] Browser LOG     PeerJS:  DC#dc_x83f21viri dc connection success
+[00:00:56.059] Browser LOG     [P2P] Connection opened: 520a708f-9a49-4c85-bc4a-13642b17f699 isIncoming: false
+[00:00:56.059] Browser LOG     [P2P] Starting PIN verification...
+[00:00:56.059] Browser LOG     [P2P] performPinVerification called, isIncoming: false
+[00:00:56.059] Browser LOG     [P2P] PIN verification bypassed - auto-approving connection
+[00:00:56.060] Browser LOG     [P2P] PIN verification result: true
+[00:00:56.060] Browser LOG     [ChatPage] Peer connected: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:00:56.060] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:58.432] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:58.808] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:00:58.809] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:00.841] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:01.304] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:04.510] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:07.153] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:07.174] Browser LOG     PeerJS:  DC#dc_x83f21viri dc closed for: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:01:07.174] Browser LOG     PeerJS:  Cleaning up PeerConnection to 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:01:07.174] Browser LOG     [P2P] Connection closed: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:01:07.174] Browser LOG     [ChatPage] Peer disconnected: 520a708f-9a49-4c85-bc4a-13642b17f699
+[00:01:07.174] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:09.932] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:25.016] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:25.136] Browser LOG     [PWA] Service Worker 등록 성공: http://localhost:3000/
+[00:01:27.423] Browser LOG     [JoinFamilyForm] Family joined with additionalPin: f40c51b9-b2b6-46
+[00:01:27.423] Browser LOG     [ChatPage] Initializing P2P Manager...
+[00:01:27.423] Browser LOG     [P2P] Initializing P2PManager with additionalPin: f40c51b9-b2b6-46
+[00:01:27.423] Browser LOG     [ChatPage] P2P Manager initialized
+[00:01:27.423] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:27.423] Browser LOG     [ChatPage] Messages count: 0
+[00:01:27.423] Browser LOG     [ChatPage] myPeerId: 64b2fc77-a04b-4f36-a48b-3d8a101395dc
+[00:01:27.423] Browser LOG     [ChatPage] P2P Initialized: false
+[00:01:27.423] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:27.423] Browser LOG     [ChatPage] Loading messages from IndexedDB...
+[00:01:27.423] Browser LOG     [ChatPage] Initializing P2P Manager...
+[00:01:27.423] Browser LOG     PeerJS:  Destroy peer with ID:null
+[00:01:27.423] Browser LOG     PeerJS:  Disconnect peer with ID:null
+[00:01:27.423] Browser LOG     [P2P] Peer disconnected
+[00:01:27.423] Browser LOG     [P2P] Peer closed
+[00:01:27.423] Browser LOG     [P2P] Initializing P2PManager with additionalPin: f40c51b9-b2b6-46
+[00:01:27.423] Browser LOG     [ChatPage] P2P Manager initialized
+[00:01:27.423] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:27.423] Browser LOG     [ChatPage] Messages count: 0
+[00:01:27.423] Browser LOG     [ChatPage] myPeerId: 64b2fc77-a04b-4f36-a48b-3d8a101395dc
+[00:01:27.423] Browser LOG     [ChatPage] P2P Initialized: false
+[00:01:27.423] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:27.423] Browser LOG     [ChatPage] Loading messages from IndexedDB...
+[00:01:27.423] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:27.423] Browser LOG     [ChatPage] Messages count: 0
+[00:01:27.424] Browser LOG     [ChatPage] myPeerId: 64b2fc77-a04b-4f36-a48b-3d8a101395dc
+[00:01:27.424] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:27.424] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:27.424] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:27.424] Browser LOG     [ChatPage] Messages count: 19
+[00:01:27.424] Browser LOG     [ChatPage] myPeerId: 64b2fc77-a04b-4f36-a48b-3d8a101395dc
+[00:01:27.424] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:27.424] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:27.424] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:27.881] Browser LOG     PeerJS:  Socket open
+[00:01:27.881] Browser LOG     PeerJS:  Server message received: {"type":"OPEN"}
+[00:01:27.881] Browser LOG     [P2P] My Peer ID: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:27.881] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:27.881] Browser LOG     [ChatPage] Messages count: 19
+[00:01:27.881] Browser LOG     [ChatPage] myPeerId: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:27.881] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:27.881] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:28.376] Browser LOG     PeerJS:  Socket open
+[00:01:28.376] Browser LOG     PeerJS:  Server message received: {"type":"OPEN"}
+[00:01:32.115] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:34.947] Browser LOG     [P2P] Connecting to: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:01:34.947] Browser LOG     PeerJS:  Creating RTCPeerConnection.
+[00:01:34.947] Browser LOG     PeerJS:  Listening for ICE candidates.
+[00:01:34.947] Browser LOG     PeerJS:  Listening for data channel
+[00:01:34.947] Browser LOG     PeerJS:  Listening for remote stream
+[00:01:34.947] Browser LOG     PeerJS:  add connection data:dc_dmj26vb7n9f to peerId:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:01:34.947] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:34.947] Browser LOG     PeerJS:  Created offer.
+[00:01:34.947] Browser LOG     PeerJS:  Set localDescription: {"sdp":"v=0\r\no=- 5804924267311569832 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:tXFl\r\na=ice-pwd:kITp/8Q5dYbsFFwLqL9SaOyr\r\na=ice-options:trickle\r\na=fingerprint:sha-256 AA:D4:A6:23:23:EA:A9:0A:F2:68:08:0B:F1:11:2A:03:BA:9E:D4:70:6A:6A:80:89:F2:CA:5F:FF:F5:78:F1:1A\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"} for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:01:34.947] Browser LOG     PeerJS:  Received ICE candidates for fa3571b8-3432-4e60-9d44-4a186759b691: {"candidate":"candidate:2591620703 1 udp 2113937151 dd03185a-7016-41e8-872a-163622117931.local 56279 typ host generation 0 ufrag tXFl network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"tXFl"}
+[00:01:34.947] Browser LOG     PeerJS:  Received ICE candidates for fa3571b8-3432-4e60-9d44-4a186759b691: {"candidate":"candidate:1869440570 1 udp 1677729535 211.193.60.83 56279 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag tXFl network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"tXFl"}
+[00:01:35.178] Browser LOG     PeerJS:  Server message received: {"dst":"fa3571b8-3432-4e60-9d44-4a186759b691","payload":{"connectionId":"dc_dmj26vb7n9f","label":"dc_dmj26vb7n9f","reliable":true,"sdp":{"sdp":"v=0\r\no=- 5804924267311569832 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:tXFl\r\na=ice-pwd:kITp/8Q5dYbsFFwLqL9SaOyr\r\na=ice-options:trickle\r\na=fingerprint:sha-256 AA:D4:A6:23:23:EA:A9:0A:F2:68:08:0B:F1:11:2A:03:BA:9E:D4:70:6A:6A:80:89:F2:CA:5F:FF:F5:78:F1:1A\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"},"serialization":"json","type":"data"},"src":"25cbd22f-f410-43f2-9b60-002e84aaff1d","type":"OFFER"}
+[00:01:35.179] Browser LOG     PeerJS:  Creating RTCPeerConnection.
+[00:01:35.179] Browser LOG     PeerJS:  Listening for ICE candidates.
+[00:01:35.179] Browser LOG     PeerJS:  Listening for data channel
+[00:01:35.179] Browser LOG     PeerJS:  Listening for remote stream
+[00:01:35.179] Browser LOG     PeerJS:  Setting remote description {"sdp":"v=0\r\no=- 5804924267311569832 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:tXFl\r\na=ice-pwd:kITp/8Q5dYbsFFwLqL9SaOyr\r\na=ice-options:trickle\r\na=fingerprint:sha-256 AA:D4:A6:23:23:EA:A9:0A:F2:68:08:0B:F1:11:2A:03:BA:9E:D4:70:6A:6A:80:89:F2:CA:5F:FF:F5:78:F1:1A\r\na=setup:actpass\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"offer"}
+[00:01:35.180] Browser LOG     PeerJS:  add connection data:dc_dmj26vb7n9f to peerId:25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.180] Browser LOG     [P2P] Incoming connection from: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.180] Browser LOG     PeerJS:  Set remoteDescription:OFFER for:25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.180] Browser LOG     PeerJS:  Created answer.
+[00:01:35.180] Browser LOG     PeerJS:  Set localDescription: {"sdp":"v=0\r\no=- 9067742160128920157 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:qxxb\r\na=ice-pwd:PR8ou308+g7RyZre6SZRMgZJ\r\na=ice-options:trickle\r\na=fingerprint:sha-256 A9:18:EC:02:FA:16:39:FA:35:76:F2:3F:62:65:A5:97:B7:41:5E:0D:52:BA:A4:A8:C3:76:37:22:9C:7F:F0:B1\r\na=setup:active\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"answer"} for:25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.180] Browser LOG     PeerJS:  Received ICE candidates for 25cbd22f-f410-43f2-9b60-002e84aaff1d: {"candidate":"candidate:3374910230 1 udp 2113937151 ad3418e1-df21-4e56-abbe-d3cf85c3ddd7.local 64726 typ host generation 0 ufrag qxxb network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"qxxb"}
+[00:01:35.180] Browser LOG     PeerJS:  Server message received: {"dst":"fa3571b8-3432-4e60-9d44-4a186759b691","payload":{"candidate":{"candidate":"candidate:2591620703 1 udp 2113937151 dd03185a-7016-41e8-872a-163622117931.local 56279 typ host generation 0 ufrag tXFl network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"tXFl"},"connectionId":"dc_dmj26vb7n9f","type":"data"},"src":"25cbd22f-f410-43f2-9b60-002e84aaff1d","type":"CANDIDATE"}
+[00:01:35.180] Browser LOG     PeerJS:  handleCandidate: {"candidate":"candidate:2591620703 1 udp 2113937151 dd03185a-7016-41e8-872a-163622117931.local 56279 typ host generation 0 ufrag tXFl network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"tXFl"}
+[00:01:35.180] Browser LOG     PeerJS:  Added ICE candidate for:25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.180] Browser LOG     PeerJS:  Server message received: {"dst":"fa3571b8-3432-4e60-9d44-4a186759b691","payload":{"candidate":{"candidate":"candidate:1869440570 1 udp 1677729535 211.193.60.83 56279 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag tXFl network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"tXFl"},"connectionId":"dc_dmj26vb7n9f","type":"data"},"src":"25cbd22f-f410-43f2-9b60-002e84aaff1d","type":"CANDIDATE"}
+[00:01:35.180] Browser LOG     PeerJS:  handleCandidate: {"candidate":"candidate:1869440570 1 udp 1677729535 211.193.60.83 56279 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag tXFl network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"tXFl"}
+[00:01:35.180] Browser LOG     PeerJS:  Added ICE candidate for:25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.392] Browser LOG     PeerJS:  Server message received: {"dst":"25cbd22f-f410-43f2-9b60-002e84aaff1d","payload":{"connectionId":"dc_dmj26vb7n9f","sdp":{"sdp":"v=0\r\no=- 9067742160128920157 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:qxxb\r\na=ice-pwd:PR8ou308+g7RyZre6SZRMgZJ\r\na=ice-options:trickle\r\na=fingerprint:sha-256 A9:18:EC:02:FA:16:39:FA:35:76:F2:3F:62:65:A5:97:B7:41:5E:0D:52:BA:A4:A8:C3:76:37:22:9C:7F:F0:B1\r\na=setup:active\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"answer"},"type":"data"},"src":"fa3571b8-3432-4e60-9d44-4a186759b691","type":"ANSWER"}
+[00:01:35.392] Browser LOG     PeerJS:  Setting remote description {"sdp":"v=0\r\no=- 9067742160128920157 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\nc=IN IP4 0.0.0.0\r\na=ice-ufrag:qxxb\r\na=ice-pwd:PR8ou308+g7RyZre6SZRMgZJ\r\na=ice-options:trickle\r\na=fingerprint:sha-256 A9:18:EC:02:FA:16:39:FA:35:76:F2:3F:62:65:A5:97:B7:41:5E:0D:52:BA:A4:A8:C3:76:37:22:9C:7F:F0:B1\r\na=setup:active\r\na=mid:0\r\na=sctp-port:5000\r\na=max-message-size:262144\r\n","type":"answer"}
+[00:01:35.392] Browser LOG     PeerJS:  Set remoteDescription:ANSWER for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:01:35.392] Browser LOG     PeerJS:  Server message received: {"dst":"25cbd22f-f410-43f2-9b60-002e84aaff1d","payload":{"candidate":{"candidate":"candidate:3374910230 1 udp 2113937151 ad3418e1-df21-4e56-abbe-d3cf85c3ddd7.local 64726 typ host generation 0 ufrag qxxb network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"qxxb"},"connectionId":"dc_dmj26vb7n9f","type":"data"},"src":"fa3571b8-3432-4e60-9d44-4a186759b691","type":"CANDIDATE"}
+[00:01:35.392] Browser LOG     PeerJS:  handleCandidate: {"candidate":"candidate:3374910230 1 udp 2113937151 ad3418e1-df21-4e56-abbe-d3cf85c3ddd7.local 64726 typ host generation 0 ufrag qxxb network-cost 999","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"qxxb"}
+[00:01:35.392] Browser LOG     PeerJS:  Added ICE candidate for:fa3571b8-3432-4e60-9d44-4a186759b691
+[00:01:35.392] Browser LOG     PeerJS:  DC#dc_dmj26vb7n9f dc connection success
+[00:01:35.392] Browser LOG     [P2P] Connection opened: fa3571b8-3432-4e60-9d44-4a186759b691 isIncoming: false
+[00:01:35.392] Browser LOG     [P2P] Starting PIN verification...
+[00:01:35.392] Browser LOG     [P2P] performPinVerification called, isIncoming: false
+[00:01:35.392] Browser LOG     [P2P] myPin: set
+[00:01:35.392] Browser LOG     [P2P] Outgoing connection - sending auth-challenge
+[00:01:35.392] Browser LOG     [P2P] Challenge created: {"challengeId":"86c3ff7a-e7b3-4c60-9fde-d83236553eb8","nonce":{"0":165,"1":111,"2":166,"3":153,"4":101,"5":76,"6":128,"7":251,"8":214,"9":222,"10":25,"11":36,"12":164,"13":116,"14":173,"15":116},"timestamp":1771044955856}
+[00:01:35.392] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:35.393] Browser LOG     PeerJS:  Received data channel
+[00:01:35.393] Browser LOG     PeerJS:  DC#dc_dmj26vb7n9f dc connection success
+[00:01:35.393] Browser LOG     [P2P] Connection opened: 25cbd22f-f410-43f2-9b60-002e84aaff1d isIncoming: true
+[00:01:35.393] Browser LOG     [P2P] Starting PIN verification...
+[00:01:35.393] Browser LOG     [P2P] performPinVerification called, isIncoming: true
+[00:01:35.393] Browser LOG     [P2P] PIN verification bypassed - auto-approving connection
+[00:01:35.394] Browser LOG     [P2P] PIN verification result: true
+[00:01:35.394] Browser LOG     [ChatPage] Peer connected: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:35.394] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:35.394] Browser LOG     PeerJS:  DC#dc_dmj26vb7n9f dc onmessage: {}
+[00:01:35.394] Browser LOG     [P2P] Message received from: 25cbd22f-f410-43f2-9b60-002e84aaff1d {"data":{"challengeId":"86c3ff7a-e7b3-4c60-9fde-d83236553eb8","nonce":{"0":165,"1":111,"10":25,"11":36,"12":164,"13":116,"14":173,"15":116,"2":166,"3":153,"4":101,"5":76,"6":128,"7":251,"8":214,"9":222},"timestamp":1771044955856},"id":"30a5d7eb-c228-44f9-a8aa-2b93755048dc","senderId":"25cbd22f-f410-43f2-9b60-002e84aaff1d","timestamp":1771044955856,"type":"auth-challenge"}
+[00:01:35.394] Browser LOG     [P2P] handleIncomingData - type: auth-challenge from: 25cbd22f-f410-43f2-9b60-002e84aaff1d data: {"data":{"challengeId":"86c3ff7a-e7b3-4c60-9fde-d83236553eb8","nonce":{"0":165,"1":111,"10":25,"11":36,"12":164,"13":116,"14":173,"15":116,"2":166,"3":153,"4":101,"5":76,"6":128,"7":251,"8":214,"9":222},"timestamp":1771044955856},"id":"30a5d7eb-c228-44f9-a8aa-2b93755048dc","senderId":"25cbd22f-f410-43f2-9b60-002e84aaff1d","timestamp":1771044955856,"type":"auth-challenge"}
+[00:01:35.394] Browser LOG     [P2P] is peer verified? true
+[00:01:35.394] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:37.376] Browser LOG     [P2P] broadcast - type: typing connected peers: 1
+[00:01:37.376] Browser LOG     [P2P] sendToPeer - peerId: 25cbd22f-f410-43f2-9b60-002e84aaff1d connected: true open: true
+[00:01:37.377] Browser LOG     [P2P] Sending message type: typing to: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:37.404] Browser LOG     PeerJS:  DC#dc_dmj26vb7n9f dc onmessage: {}
+[00:01:37.404] Browser LOG     [P2P] Message received from: fa3571b8-3432-4e60-9d44-4a186759b691 {"data":{"isTyping":true},"id":"4f719bc6-cb59-461b-af90-f6429b0dc1e1","senderId":"fa3571b8-3432-4e60-9d44-4a186759b691","timestamp":1771044958045,"type":"typing"}
+[00:01:37.404] Browser LOG     [P2P] handleIncomingData - type: typing from: fa3571b8-3432-4e60-9d44-4a186759b691 data: {"data":{"isTyping":true},"id":"4f719bc6-cb59-461b-af90-f6429b0dc1e1","senderId":"fa3571b8-3432-4e60-9d44-4a186759b691","timestamp":1771044958045,"type":"typing"}
+[00:01:37.404] Browser LOG     [P2P] is peer verified? false
+[00:01:37.404] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:38.134] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:38.148] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:39.172] Browser LOG     [MessageQueue] Message enqueued: 9dad1d0b-680e-4598-bd98-0e967f8efcf3
+[00:01:39.172] Browser LOG     [P2P] broadcast - type: text connected peers: 1
+[00:01:39.173] Browser LOG     [P2P] sendToPeer - peerId: 25cbd22f-f410-43f2-9b60-002e84aaff1d connected: true open: true
+[00:01:39.173] Browser LOG     [P2P] Sending message type: text to: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:39.173] Browser LOG     [ChatPage] Message sent: 9dad1d0b-680e-4598-bd98-0e967f8efcf3
+[00:01:39.173] Browser LOG     [MessageQueue] Message sent successfully: 9dad1d0b-680e-4598-bd98-0e967f8efcf3
+[00:01:39.174] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:39.174] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:39.174] Browser LOG     [ChatPage] Messages count: 3
+[00:01:39.174] Browser LOG     [ChatPage] myPeerId: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:01:39.174] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:39.174] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:39.183] Browser LOG     PeerJS:  DC#dc_dmj26vb7n9f dc onmessage: {}
+[00:01:39.183] Browser LOG     [P2P] Message received from: fa3571b8-3432-4e60-9d44-4a186759b691 {"data":"sdfsdfsdf","encrypted":true,"id":"31c3c029-233e-44fa-8c5f-211e54274cc9","senderId":"fa3571b8-3432-4e60-9d44-4a186759b691","timestamp":1771044959971,"type":"text"}
+[00:01:39.183] Browser LOG     [P2P] handleIncomingData - type: text from: fa3571b8-3432-4e60-9d44-4a186759b691 data: {"data":"sdfsdfsdf","encrypted":true,"id":"31c3c029-233e-44fa-8c5f-211e54274cc9","senderId":"fa3571b8-3432-4e60-9d44-4a186759b691","timestamp":1771044959971,"type":"text"}
+[00:01:39.183] Browser LOG     [P2P] is peer verified? false
+[00:01:39.183] Browser LOG     [P2P] Processing text message, calling onMessage callback
+[00:01:39.183] Browser LOG     [ChatPage] Received message: {"data":"sdfsdfsdf","encrypted":true,"id":"31c3c029-233e-44fa-8c5f-211e54274cc9","senderId":"fa3571b8-3432-4e60-9d44-4a186759b691","timestamp":1771044959971,"type":"text"} myPeerId: 64b2fc77-a04b-4f36-a48b-3d8a101395dc
+[00:01:39.183] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:39.183] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:39.183] Browser LOG     [ChatPage] Messages count: 20
+[00:01:39.183] Browser LOG     [ChatPage] myPeerId: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:39.183] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:39.183] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:40.151] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:41.256] Browser LOG     [P2P] broadcast - type: typing connected peers: 0
+[00:01:42.243] Browser LOG     [MessageQueue] Message enqueued: 12a4ed18-7662-4d3a-b6ff-a1f64f38b5ab
+[00:01:42.243] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:42.243] Browser LOG     [MessageQueue] Scheduled retry for 12a4ed18-7662-4d3a-b6ff-a1f64f38b5ab in 2s
+[00:01:42.243] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:42.243] Browser LOG     [ChatPage] Messages count: 21
+[00:01:42.243] Browser LOG     [ChatPage] myPeerId: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:42.243] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:42.243] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:42.944] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:42.944] Browser LOG     [MessageQueue] Scheduled retry for 12a4ed18-7662-4d3a-b6ff-a1f64f38b5ab in 5s
+[00:01:43.601] Browser LOG     [P2P] broadcast - type: typing connected peers: 0
+[00:01:43.870] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:43.870] Browser LOG     [MessageQueue] Scheduled retry for 12a4ed18-7662-4d3a-b6ff-a1f64f38b5ab in 9s
+[00:01:44.764] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:44.764] Browser LOG     [MessageQueue] Scheduled retry for 12a4ed18-7662-4d3a-b6ff-a1f64f38b5ab in 18s
+[00:01:45.703] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:45.703] Browser LOG     [MessageQueue] Message 12a4ed18-7662-4d3a-b6ff-a1f64f38b5ab exceeded max retries, marking as failed
+[00:01:46.001] Browser LOG     [MessageQueue] Message enqueued: cad11cb4-2ed4-4211-815f-eea6ce4a9334
+[00:01:46.001] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:46.001] Browser LOG     [MessageQueue] Scheduled retry for cad11cb4-2ed4-4211-815f-eea6ce4a9334 in 3s
+[00:01:46.001] Browser LOG     [ChatPage] Rendered - isAuthenticated: true
+[00:01:46.001] Browser LOG     [ChatPage] Messages count: 22
+[00:01:46.001] Browser LOG     [ChatPage] myPeerId: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:01:46.001] Browser LOG     [ChatPage] P2P Initialized: true
+[00:01:46.001] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:01:46.597] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:46.597] Browser LOG     [MessageQueue] Scheduled retry for cad11cb4-2ed4-4211-815f-eea6ce4a9334 in 4s
+[00:01:47.516] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:47.516] Browser LOG     [MessageQueue] Scheduled retry for cad11cb4-2ed4-4211-815f-eea6ce4a9334 in 10s
+[00:01:48.436] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:48.436] Browser LOG     [MessageQueue] Scheduled retry for cad11cb4-2ed4-4211-815f-eea6ce4a9334 in 17s
+[00:01:49.854] Browser LOG     [MessageQueue] No connected peers, queuing for retry
+[00:01:49.854] Browser LOG     [MessageQueue] Message cad11cb4-2ed4-4211-815f-eea6ce4a9334 exceeded max retries, marking as failed
+[00:02:02.924] Browser LOG     [P2P] PIN verification result: false
+[00:02:02.924] Browser LOG     [P2P] PIN verification failed, closing connection: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:02:02.924] Browser LOG     PeerJS:  Cleaning up PeerConnection to fa3571b8-3432-4e60-9d44-4a186759b691
+[00:02:02.924] Browser LOG     [P2P] Connection closed: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:02:02.924] Browser LOG     [ChatPage] Peer disconnected: fa3571b8-3432-4e60-9d44-4a186759b691
+[00:02:02.924] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:02:03.223] Browser LOG     PeerJS:  DC#dc_dmj26vb7n9f dc closed for: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:02:03.224] Browser LOG     PeerJS:  Cleaning up PeerConnection to 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:02:03.224] Browser LOG     [P2P] Connection closed: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:02:03.224] Browser LOG     [ChatPage] Peer disconnected: 25cbd22f-f410-43f2-9b60-002e84aaff1d
+[00:02:03.224] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:02:05.662] Browser LOG     [ChatPage] Auth check - isAuthenticated: true
+[00:02:06.882] Browser LOG     [ChatPage] Auth check - isAuthenticated: true

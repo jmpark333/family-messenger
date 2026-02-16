@@ -183,3 +183,38 @@ export type ErrorCode =
   | 'DECRYPTION_FAILED'
   | 'STORAGE_ERROR'
   | 'NETWORK_ERROR';
+
+// ============ Peer Discovery 관련 타입 ============
+export interface DiscoveredPeer {
+  peerId: string;
+  userId: string;
+  userName: string;
+  online: boolean;
+  lastSeen: number;
+  familyId: string;
+}
+
+export interface PeerDiscoveryCallbacks {
+  onPeerDiscovered: (peer: DiscoveredPeer) => void;
+  onPeerOnline: (userId: string, peerId: string) => void;
+  onPeerOffline: (userId: string) => void;
+  onPeerLeft: (userId: string) => void;
+  onError: (error: Error) => void;
+}
+
+export interface PeerDiscoveryConfig {
+  familyId: string;
+  userId: string;
+  userName: string;
+  peerId: string;
+  autoConnect?: boolean;
+}
+
+export interface PeerRegistrationData {
+  userId: string;
+  userName: string;
+  peerId: string;
+  online: boolean;
+  lastSeen: number;
+  connected: boolean;
+}

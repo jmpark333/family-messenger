@@ -1,0 +1,18 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import CreatePage from './pages/CreatePage';
+import InvitePage from './pages/InvitePage';
+import ChatPage from './pages/ChatPage';
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/create" element={<CreatePage />} />
+        <Route path="/invite" element={<InvitePage />} />
+        <Route path="/chat" element={<ChatPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
