@@ -54,9 +54,29 @@ class ApiClient {
 
   async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
     console.log('[apiClient] sendMessage called:', request);
+
+    // Prepare the payload with replyTo information
+    const payload = {
+      familyId: request.familyId,
+      senderId: request.senderId,
+      senderName: request.senderName,
+      content: request.content,
+      encrypted: request.encrypted,
+      replyTo: request.replyTo
+        ? {
+            messageId: request.replyTo.messageId,
+            senderId: request.replyTo.senderId,
+            senderName: request.replyTo.senderName,
+            content: request.replyTo.content,
+          }
+        : undefined,
+    };
+
+    console.log('[apiClient] Sending payload with replyTo:', payload.replyTo);
+
     const response = await this.fetchApi('/send-message', {
       method: 'POST',
-      body: JSON.stringify(request),
+      body: JSON.stringify(payload),
     });
     const result = await response.json();
     console.log('[apiClient] sendMessage response:', result);

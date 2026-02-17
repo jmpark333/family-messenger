@@ -48,6 +48,12 @@ export interface SendMessageRequest {
   senderName: string;
   content: string;
   encrypted: boolean;
+  replyTo?: {
+    messageId: string;
+    senderId: string;
+    senderName: string;
+    content: string;
+  };
 }
 
 // API 응답 타입
