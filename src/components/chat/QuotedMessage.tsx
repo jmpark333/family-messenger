@@ -1,27 +1,35 @@
 'use client';
 
 import { User } from 'lucide-react';
+import { ReplyToInfo } from '../../../types/index';
 
 interface QuotedMessageProps {
-  originalMessage: {
-    id: string;
-    senderId: string;
-    senderName?: string;
-    content: string;
-  };
+  originalMessage: ReplyToInfo;
   onClick?: () => void;
 }
 
 export function QuotedMessage({ originalMessage, onClick }: QuotedMessageProps) {
   const displayName = originalMessage.senderName || originalMessage.senderId.slice(0, 8);
+  const content = originalMessage.content.trim();
   const truncatedContent =
-    originalMessage.content.length > 50
-      ? originalMessage.content.slice(0, 50) + '...'
-      : originalMessage.content;
+    content.length > 50
+      ? content.slice(0, 50) + '...'
+      : content;
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick?.();
+    }
+  };
 
   return (
     <div
+      role="button"
+      tabIndex={onClick ? 0 : undefined}
       onClick={onClick}
+      onKeyDown={onClick ? handleKeyDown : undefined}
+      aria-label={`Reply to message from ${displayName}${truncatedContent ? ': ' + truncatedContent : ''}`}
       className={`
         flex items-start gap-2 px-3 py-2 mb-2 rounded-lg
         bg-gray-100 dark:bg-gray-800 border-l-4 border-blue-500
@@ -34,7 +42,7 @@ export function QuotedMessage({ originalMessage, onClick }: QuotedMessageProps) 
           {displayName}
         </p>
         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-          {truncatedContent}
+          {truncatedContent || <em className="text-gray-400">Empty message</em>}
         </p>
       </div>
     </div>
