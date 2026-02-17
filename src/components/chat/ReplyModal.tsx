@@ -1,21 +1,15 @@
 'use client';
 
-import { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, useCallback, KeyboardEvent } from 'react';
 import { Modal } from '../shared/Modal';
 import { QuotedMessage } from './QuotedMessage';
-
-interface ReplyToInfo {
-  id: string;
-  senderId: string;
-  senderName: string;
-  content: string;
-}
+import { ReplyToInfo } from '../../../types/index';
 
 interface ReplyModalProps {
   isOpen: boolean;
   onClose: () => void;
   originalMessage: ReplyToInfo;
-  onSendReply: (content: string, replyToId: string) => void;
+  onSendReply: (content: string, replyToId: string) => Promise<void>;
 }
 
 const MAX_CHARACTERS = 2000;
@@ -28,20 +22,33 @@ export function ReplyModal({
 }: ReplyModalProps) {
   const [replyText, setReplyText] = useState('');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const sendButtonRef = useRef<HTMLButtonElement>(null);
+  const focusRestoredRef = useRef(false);
 
   // Reset state when modal opens or original message changes
   useEffect(() => {
     if (isOpen) {
       setReplyText('');
       setShowConfirmDialog(false);
-      // Focus textarea when modal opens
-      setTimeout(() => {
-        textareaRef.current?.focus();
-      }, 100);
+      setIsSending(false);
+      setSendError(null);
+      focusRestoredRef.current = false;
     }
   }, [isOpen, originalMessage.id]);
+
+  // Handle focus management separately from modal's focus trap
+  useEffect(() => {
+    if (isOpen && !focusRestoredRef.current) {
+      // Use requestAnimationFrame to avoid conflicts with Modal's focus trap
+      const request = requestAnimationFrame(() => {
+        textareaRef.current?.focus();
+        focusRestoredRef.current = true;
+      });
+      return () => cancelAnimationFrame(request);
+    }
+  }, [isOpen]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -55,41 +62,52 @@ export function ReplyModal({
     }
   }, [replyText]);
 
-  const handleSend = () => {
+  const handleSend = useCallback(async () => {
     const trimmedText = replyText.trim();
-    if (!trimmedText) return;
+    if (!trimmedText || isSending) return;
 
-    onSendReply(trimmedText, originalMessage.id);
-    handleClose();
-  };
+    setIsSending(true);
+    setSendError(null);
 
-  const handleClose = () => {
-    if (replyText.trim()) {
+    try {
+      await onSendReply(trimmedText, originalMessage.id);
+      handleClose();
+    } catch (error) {
+      console.error('Failed to send reply:', error);
+      setSendError(error instanceof Error ? error.message : 'Failed to send reply. Please try again.');
+      setIsSending(false);
+    }
+  }, [replyText, isSending, onSendReply, originalMessage.id]);
+
+  const handleClose = useCallback(() => {
+    if (replyText.trim() && !showConfirmDialog) {
       // Show confirmation dialog if there's unsaved content
       setShowConfirmDialog(true);
     } else {
-      // Close immediately if no content
+      // Close immediately if no content or already confirming
       onClose();
     }
-  };
+  }, [replyText, showConfirmDialog, onClose]);
 
-  const handleConfirmClose = () => {
+  const handleConfirmClose = useCallback(() => {
     setShowConfirmDialog(false);
     onClose();
-  };
+  }, [onClose]);
 
-  const handleCancelClose = () => {
+  const handleCancelClose = useCallback(() => {
     setShowConfirmDialog(false);
+    setSendError(null);
     // Refocus the textarea
-    setTimeout(() => {
+    const request = requestAnimationFrame(() => {
       textareaRef.current?.focus();
-    }, 100);
-  };
+    });
+    return () => cancelAnimationFrame(request);
+  }, []);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (replyText.trim()) {
+      if (replyText.trim() && !isSending) {
         handleSend();
       }
     }
@@ -98,12 +116,12 @@ export function ReplyModal({
       e.preventDefault();
       handleClose();
     }
-  };
+  }, [replyText, isSending, handleSend, handleClose]);
 
   const characterCount = replyText.length;
   const isNearLimit = characterCount > MAX_CHARACTERS * 0.9;
   const isAtLimit = characterCount >= MAX_CHARACTERS;
-  const canSend = replyText.trim().length > 0 && !isAtLimit;
+  const canSend = replyText.trim().length > 0 && !isAtLimit && !isSending;
 
   // Normal mode render
   if (!showConfirmDialog) {
@@ -138,17 +156,30 @@ export function ReplyModal({
               aria-describedby="character-count"
             />
 
-            {/* Character counter */}
+            {/* Character counter with ARIA live region */}
             <div
               id="character-count"
               className={`
                 absolute bottom-2 right-2 text-xs font-medium
                 ${isNearLimit ? (isAtLimit ? 'text-red-600' : 'text-orange-600') : 'text-gray-500'}
               `}
+              aria-live="polite"
+              aria-atomic="true"
             >
               {characterCount} / {MAX_CHARACTERS}
             </div>
           </div>
+
+          {/* Error message */}
+          {sendError && (
+            <div
+              className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"
+              role="alert"
+              aria-live="assertive"
+            >
+              {sendError}
+            </div>
+          )}
 
           {/* Help text */}
           <p className="text-xs text-gray-500">
@@ -159,12 +190,12 @@ export function ReplyModal({
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={handleClose}
-              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+              disabled={isSending}
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               취소
             </button>
             <button
-              ref={sendButtonRef}
               onClick={handleSend}
               disabled={!canSend}
               className={`
@@ -175,7 +206,7 @@ export function ReplyModal({
               `}
               aria-label="답장 전송"
             >
-              전송
+              {isSending ? '전송 중...' : '전송'}
             </button>
           </div>
         </div>
