@@ -6,6 +6,7 @@ import { apiClient } from '@/lib/api/client';
 import { encryptMessage, decryptMessage } from '@/lib/crypto';
 import ChatMessage from '@/components/chat/ChatMessage';
 import MessageInput from '@/components/chat/MessageInput';
+import ReplyModal from '@/components/chat/ReplyModal';
 import Toaster from '@/components/shared/Toaster';
 import { useToast } from '@/lib/hooks/useToast';
 
@@ -23,6 +24,10 @@ export default function ChatPage() {
     addMessage,
     loadMessages,
     logout,
+    replyToMessage,
+    isReplyModalOpen,
+    setReplyToMessage,
+    clearReplyToMessage,
   } = useChatStore();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -136,6 +141,84 @@ export default function ChatPage() {
     }
   };
 
+  const handleReplyClick = (message: typeof messages[0]) => {
+    console.log('[ChatPage] handleReplyClick called:', message);
+    setReplyToMessage(message);
+  };
+
+  const handleSendReply = async (content: string, replyToId: string) => {
+    console.log('[ChatPage] handleSendReply called:', { content, replyToId });
+
+    if (!familyId || !myMemberId || !myName) {
+      console.error('[ChatPage] Missing required data:', { familyId, myMemberId, myName });
+      throw new Error('Missing required information');
+    }
+
+    // Find the original message from the messages array
+    const originalMessage = messages.find((msg) => msg.id === replyToId);
+    if (!originalMessage) {
+      console.error('[ChatPage] Original message not found:', replyToId);
+      throw new Error('Original message not found');
+    }
+
+    try {
+      const encrypted = false;
+
+      // Create the reply message with replyTo information
+      const replyData = {
+        familyId,
+        senderId: myMemberId,
+        senderName: myName,
+        content,
+        encrypted,
+        replyTo: {
+          id: originalMessage.id,
+          senderId: originalMessage.senderId,
+          senderName: originalMessage.senderName,
+          content: originalMessage.content,
+        },
+      };
+
+      console.log('[ChatPage] Sending reply with replyTo:', replyData.replyTo);
+
+      // Note: API client needs to support replyTo field
+      // For now, send as regular message (API will be updated in Task 10)
+      const response = await apiClient.sendMessage({
+        familyId,
+        senderId: myMemberId,
+        senderName: myName,
+        content,
+        encrypted,
+      });
+
+      console.log('[ChatPage] Reply sent successfully:', response);
+
+      // 로컬 메시지 추가 with replyTo
+      addMessage({
+        id: response.messageId,
+        senderId: myMemberId,
+        senderName: myName,
+        content,
+        timestamp: Date.now(),
+        encrypted,
+        status: 'sent',
+        replyTo: {
+          id: originalMessage.id,
+          senderId: originalMessage.senderId,
+          senderName: originalMessage.senderName,
+          content: originalMessage.content,
+        },
+      });
+
+      // Clear the reply state
+      clearReplyToMessage();
+    } catch (error) {
+      console.error('[ChatPage] Failed to send reply:', error);
+      toast.error('답장 전송 실패');
+      throw error;
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
     navigate('/');
@@ -180,6 +263,7 @@ export default function ChatPage() {
                 key={message.id}
                 message={message}
                 isMine={message.senderId === myMemberId}
+                onReplyClick={handleReplyClick}
               />
             ))
           )}
@@ -193,6 +277,21 @@ export default function ChatPage() {
           <MessageInput onSend={handleSendMessage} />
         </div>
       </footer>
+
+      {/* Reply Modal */}
+      {replyToMessage && (
+        <ReplyModal
+          isOpen={isReplyModalOpen}
+          onClose={clearReplyToMessage}
+          originalMessage={{
+            id: replyToMessage.id,
+            senderId: replyToMessage.senderId,
+            senderName: replyToMessage.senderName,
+            content: replyToMessage.content,
+          }}
+          onSendReply={handleSendReply}
+        />
+      )}
 
       <Toaster />
     </div>
