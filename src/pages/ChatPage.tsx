@@ -197,27 +197,24 @@ export default function ChatPage() {
       const encrypted = false;
 
       // Create the reply message with replyTo information
-      const replyData = {
-        familyId,
-        senderId: myMemberId,
-        senderName: myName,
-        content,
-        encrypted,
-        replyTo: toReplyToInfo(originalMessage),
-      };
+      const replyToInfo = toReplyToInfo(originalMessage);
 
-      console.log('[ChatPage] Sending reply with replyTo:', replyData.replyTo);
+      console.log('[ChatPage] Sending reply with replyTo:', replyToInfo);
 
-      // TODO: Task 10 - Update API integration to support replyTo field
-      // The API client sendMessage method needs to be updated to accept and handle
-      // the replyTo parameter. Currently sending as a regular message without replyTo.
-      // See: /tasks/10-update-api-client-for-reply-support.md
+      // Send reply with proper replyTo mapping
+      // Note: API expects messageId, but internal type uses id
       const response = await apiClient.sendMessage({
         familyId,
         senderId: myMemberId,
         senderName: myName,
         content,
         encrypted,
+        replyTo: {
+          messageId: replyToInfo.id,
+          senderId: replyToInfo.senderId,
+          senderName: replyToInfo.senderName,
+          content: replyToInfo.content,
+        },
       });
 
       console.log('[ChatPage] Reply sent successfully:', response);
