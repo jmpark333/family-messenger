@@ -106,6 +106,25 @@
   .message-list::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-400 dark:bg-gray-500;
   }
+
+  .highlight-pulse {
+    animation: highlight-pulse 1.5s ease-out;
+  }
+
+  @keyframes highlight-pulse {
+    0% {
+      background-color: rgb(251 191 36); /* yellow-400 */
+      transform: scale(1.02);
+    }
+    50% {
+      background-color: rgb(253 224 71); /* yellow-300 */
+      transform: scale(1.01);
+    }
+    100% {
+      background-color: inherit;
+      transform: scale(1);
+    }
+  }
 }
 
 @layer utilities {

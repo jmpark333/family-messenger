@@ -8,9 +8,10 @@ interface ChatMessageProps {
   message: MessageType;
   isMine: boolean;
   onReplyClick?: (message: MessageType) => void;
+  onScrollToOriginal?: (messageId: string) => void;
 }
 
-export default function ChatMessage({ message, isMine, onReplyClick }: ChatMessageProps) {
+export default function ChatMessage({ message, isMine, onReplyClick, onScrollToOriginal }: ChatMessageProps) {
   const [isLongPressing, setIsLongPressing] = useState(false);
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -90,6 +91,7 @@ export default function ChatMessage({ message, isMine, onReplyClick }: ChatMessa
 
   return (
     <div
+      id={`message-${message.id}`}
       className={`flex ${isMine ? 'justify-end' : 'justify-start'} animate-fade-in`}
     >
       <div className={`max-w-[90%] ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
@@ -115,8 +117,11 @@ export default function ChatMessage({ message, isMine, onReplyClick }: ChatMessa
           aria-label={onReplyClick && !isMine ? 'Reply to message' : undefined}
         >
           {/* Quoted message (if this is a reply) */}
-          {message.replyTo && (
-            <QuotedMessage originalMessage={message.replyTo} />
+          {message.replyTo && onScrollToOriginal && (
+            <QuotedMessage
+              originalMessage={message.replyTo}
+              onClick={() => onScrollToOriginal(message.replyTo!.id)}
+            />
           )}
 
           <p className="text-sm whitespace-pre-wrap break-words">

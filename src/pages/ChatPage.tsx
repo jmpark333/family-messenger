@@ -236,6 +236,23 @@ export default function ChatPage() {
     navigate('/');
   };
 
+  const scrollToMessage = (messageId: string) => {
+    const messageElement = document.getElementById(`message-${messageId}`);
+    if (messageElement) {
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Add highlight effect
+      messageElement.classList.add('highlight-pulse');
+
+      // Remove highlight class after animation completes
+      setTimeout(() => {
+        messageElement.classList.remove('highlight-pulse');
+      }, 1500);
+    } else {
+      toast.error('원본 메시지를 찾을 수 없습니다');
+    }
+  };
+
   if (!isAuthenticated) {
     return null;
   }
@@ -276,6 +293,7 @@ export default function ChatPage() {
                 message={message}
                 isMine={message.senderId === myMemberId}
                 onReplyClick={handleReplyClick}
+                onScrollToOriginal={scrollToMessage}
               />
             ))
           )}
