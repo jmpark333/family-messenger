@@ -21,12 +21,30 @@ module.exports = async function handler(req, res) {
   req.on('end', async () => {
     try {
       const data = JSON.parse(body);
-      const { familyId, senderId, senderName, content, replyTo } = data;
+      const { familyId, senderId, senderName, content, attachment, replyTo } = data;
 
-      console.log('[API] Send message request:', { familyId, senderId, senderName, contentLength: content?.length, hasReplyTo: !!replyTo });
+      console.log('[API] Send message request:', {
+        familyId,
+        senderId,
+        senderName,
+        contentLength: content?.length,
+        hasAttachment: !!attachment,
+        attachmentType: attachment?.type,
+        hasReplyTo: !!replyTo
+      });
 
-      if (!familyId || !senderId || !senderName || !content) {
+      if (!familyId || !senderId || !senderName) {
         return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      // Validate attachment size
+      if (attachment) {
+        const maxSize = attachment.type === 'image' ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (attachment.size > maxSize) {
+          return res.status(400).json({
+            error: `File too large. Maximum size for ${attachment.type} is ${maxSize / (1024 * 1024)}MB`
+          });
+        }
       }
 
       const messageId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
@@ -42,8 +60,9 @@ module.exports = async function handler(req, res) {
         familyId,
         senderId,
         senderName,
-        content,
+        content: content || '', // Allow empty content if attachment exists
         timestamp: Date.now(),
+        ...(attachment && { attachment }),
         ...(replyTo && { replyTo: { id: replyTo.messageId, senderId: replyTo.senderId, senderName: replyTo.senderName, content: replyTo.content } }),
       };
 

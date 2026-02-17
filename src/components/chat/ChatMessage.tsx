@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import type { ChatMessage as MessageType } from '@/types';
+import { File } from 'lucide-react';
+import type { ChatMessage as ChatMessageType, MessageAttachment, MessageStatus } from '@/types';
 import { QuotedMessage } from './QuotedMessage';
 
 interface ChatMessageProps {
-  message: MessageType;
+  message: ChatMessageType;
   isMine: boolean;
-  onReplyClick?: (message: MessageType) => void;
+  onReplyClick?: (message: ChatMessageType) => void;
   onScrollToOriginal?: (messageId: string) => void;
 }
 
@@ -124,9 +125,47 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
             />
           )}
 
-          <p className="text-sm whitespace-pre-wrap break-words">
-            {message.content}
-          </p>
+          {/* Attachment (image or PDF) */}
+          {message.attachment && (
+            <div className="mt-2 mb-2">
+              {message.attachment.type === 'image' ? (
+                <img
+                  src={`data:image/${message.attachment.name.split('.').pop()};base64,${message.attachment.data}`}
+                  alt={message.attachment.name}
+                  className="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => {
+                    // Open image in new tab
+                    const win = window.open();
+                    if (win) {
+                      win.document.write(`<img src="data:image/${message.attachment.name.split('.').pop()};base64,${message.attachment.data}" style="max-width:100%"/>`);
+                    }
+                  }}
+                />
+              ) : (
+                <a
+                  href={`data:application/pdf;base64,${message.attachment.data}`}
+                  download={message.attachment.name}
+                  className="flex items-center gap-3 p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                >
+                  <File className="w-8 h-8 text-red-600 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{message.attachment.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {(message.attachment.size / 1024).toFixed(1)} KB • PDF 파일
+                    </p>
+                  </div>
+                  <span className="text-xs text-red-600">다운로드</span>
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Text content */}
+          {message.content && (
+            <p className="text-sm whitespace-pre-wrap break-words">
+              {message.content}
+            </p>
+          )}
 
           {/* 메타데이터 */}
           <div className={`flex items-center gap-2 mt-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
@@ -155,15 +194,14 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
 // ============ 메시지 상태 컴포넌트 ============
 
 interface MessageStatusProps {
-  status: MessageType['status'];
+  status: MessageStatus;
 }
 
 function MessageStatus({ status }: MessageStatusProps) {
-  const statusConfig = {
-    sending: { icon: '⏳', label: '전송 중' },
+  const statusConfig: Record<MessageStatus, { icon: string; label: string }> = {
+    pending: { icon: '⏳', label: '전송 중' },
     sent: { icon: '✓', label: '전송됨' },
     delivered: { icon: '✓✓', label: '도착' },
-    read: { icon: '✓✓✓', label: '읽음' },
   };
 
   const config = statusConfig[status];

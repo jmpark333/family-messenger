@@ -13,6 +13,13 @@ export interface FamilyMember {
   publicKey: string;
 }
 
+export interface MessageAttachment {
+  type: 'image' | 'pdf';
+  name: string;
+  data: string;
+  size: number;
+}
+
 export interface Message {
   id: string;
   familyId: string;
@@ -21,6 +28,7 @@ export interface Message {
   content: string;
   timestamp: number;
   encrypted: boolean;
+  attachment?: MessageAttachment;
   replyTo?: {
     id: string;
     senderId: string;
@@ -48,6 +56,7 @@ export interface SendMessageRequest {
   senderName: string;
   content: string;
   encrypted: boolean;
+  attachment?: MessageAttachment;
   replyTo?: {
     messageId: string;
     senderId: string;

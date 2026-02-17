@@ -55,13 +55,14 @@ class ApiClient {
   async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
     console.log('[apiClient] sendMessage called:', request);
 
-    // Prepare the payload with replyTo information
+    // Prepare the payload with replyTo and attachment information
     const payload = {
       familyId: request.familyId,
       senderId: request.senderId,
       senderName: request.senderName,
       content: request.content,
       encrypted: request.encrypted,
+      ...(request.attachment && { attachment: request.attachment }),
       replyTo: request.replyTo
         ? {
             messageId: request.replyTo.messageId,
@@ -72,7 +73,7 @@ class ApiClient {
         : undefined,
     };
 
-    console.log('[apiClient] Sending payload with replyTo:', payload.replyTo);
+    console.log('[apiClient] Sending payload:', { hasReplyTo: !!payload.replyTo, hasAttachment: !!payload.attachment });
 
     const response = await this.fetchApi('/send-message', {
       method: 'POST',

@@ -9,7 +9,7 @@ import MessageInput from '@/components/chat/MessageInput';
 import ReplyModal from '@/components/chat/ReplyModal';
 import Toaster from '@/components/shared/Toaster';
 import { useToast } from '@/lib/hooks/useToast';
-import { ReplyToInfo } from '@/types/index';
+import { ReplyToInfo, MessageAttachment } from '@/types/index';
 
 /**
  * Helper function to convert a Message to ReplyToInfo type.
@@ -131,8 +131,8 @@ export default function ChatPage() {
     };
   }, []);
 
-  const handleSendMessage = async (content: string) => {
-    console.log('[ChatPage] handleSendMessage called:', { content, familyId, myMemberId, myName });
+  const handleSendMessage = async (content: string, attachment?: MessageAttachment) => {
+    console.log('[ChatPage] handleSendMessage called:', { content, attachment, familyId, myMemberId, myName });
 
     if (!familyId || !myMemberId || !myName) {
       console.error('[ChatPage] Missing required data:', { familyId, myMemberId, myName });
@@ -151,6 +151,7 @@ export default function ChatPage() {
         senderName: myName,
         content,
         encrypted,
+        ...(attachment && { attachment }),
       });
 
       console.log('[ChatPage] Message sent successfully:', response);
@@ -164,6 +165,7 @@ export default function ChatPage() {
         timestamp: Date.now(),
         encrypted,
         status: 'sent',
+        ...(attachment && { attachment }),
       });
     } catch (error) {
       console.error('[ChatPage] Failed to send message:', error);

@@ -1,6 +1,6 @@
 // 간소화된 Chat Store - Redis API 사용, IndexedDB 제거
 import { create } from 'zustand';
-import type { MessageStatus } from '../../types/index.js';
+import type { MessageStatus, MessageAttachment } from '../../types/index.js';
 
 interface Message {
   id: string;
@@ -10,6 +10,7 @@ interface Message {
   timestamp: number;
   encrypted: boolean;
   status: MessageStatus;
+  attachment?: MessageAttachment;
   replyTo?: {
     id: string;
     senderId: string;
