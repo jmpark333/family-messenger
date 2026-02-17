@@ -106,16 +106,12 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
         {/* 메시지 버블 */}
         <div
           className={`message-bubble ${isMine ? 'message-sent' : 'message-received'} ${
-            !isMine ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer' : ''
+            !isMine && !message.attachment ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer' : ''
           } ${isLongPressing ? 'scale-95' : ''}`}
-          onClick={handleClick}
           onKeyDown={handleKeyDown}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onTouchMove={handleTouchMove}
-          role={onReplyClick && !isMine ? 'button' : undefined}
-          tabIndex={onReplyClick && !isMine ? 0 : undefined}
-          aria-label={onReplyClick && !isMine ? 'Reply to message' : undefined}
         >
           {/* Quoted message (if this is a reply) */}
           {message.replyTo && onScrollToOriginal && (
@@ -127,7 +123,7 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
 
           {/* Attachment (image or PDF) */}
           {message.attachment && (
-            <div className="mt-2 mb-2">
+            <div className="mt-2 mb-2" onClick={(e) => e.stopPropagation()}>
               {message.attachment.type === 'image' ? (
                 <img
                   src={`data:image/${message.attachment.name.split('.').pop()};base64,${message.attachment.data}`}
@@ -162,7 +158,15 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
 
           {/* Text content */}
           {message.content && (
-            <p className="text-sm whitespace-pre-wrap break-words">
+            <p
+              className={`text-sm whitespace-pre-wrap break-words ${
+                !isMine ? 'cursor-pointer' : ''
+              }`}
+              onClick={handleClick}
+              role={onReplyClick && !isMine ? 'button' : undefined}
+              tabIndex={onReplyClick && !isMine ? 0 : undefined}
+              aria-label={onReplyClick && !isMine ? 'Reply to message' : undefined}
+            >
               {message.content}
             </p>
           )}
