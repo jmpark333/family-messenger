@@ -50,16 +50,18 @@ export interface DataMessage {
   type: 'text' | 'key-exchange' | 'typing' | 'presence' | 'encrypted' | 'auth-challenge' | 'auth-response';
   senderId: string;
   timestamp: number;
-  data: any;
+  data: unknown;
   encrypted?: boolean;
   ciphertext?: Uint8Array;
 }
 
 // ============ 채팅 관련 타입 ============
+export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read' | 'pending';
+
 export interface ReplyToInfo {
-  messageId: string;
+  id: string;
+  senderId: string;
   content: string;
-  senderName: string;
 }
 
 export interface ChatMessage {
@@ -68,7 +70,7 @@ export interface ChatMessage {
   recipientId?: string; // undefined = broadcast to all family members
   content: string;
   timestamp: number;
-  status: 'sending' | 'sent' | 'delivered' | 'read';
+  status: MessageStatus;
   encrypted: boolean;
   replyTo?: ReplyToInfo;
 }
@@ -179,7 +181,7 @@ export type KeyPairType = {
 export interface AppError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
 }
 
 export type ErrorCode =
