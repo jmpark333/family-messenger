@@ -9,6 +9,23 @@ import MessageInput from '@/components/chat/MessageInput';
 import ReplyModal from '@/components/chat/ReplyModal';
 import Toaster from '@/components/shared/Toaster';
 import { useToast } from '@/lib/hooks/useToast';
+import { ReplyToInfo } from '@/types/index';
+
+/**
+ * Helper function to convert a Message to ReplyToInfo type.
+ * This ensures type safety when passing message data to ReplyModal.
+ *
+ * @param message - The message object from the chat store
+ * @returns A ReplyToInfo object with only the required fields
+ */
+function toReplyToInfo(message: { id: string; senderId: string; senderName: string; content: string }): ReplyToInfo {
+  return {
+    id: message.id,
+    senderId: message.senderId,
+    senderName: message.senderName,
+    content: message.content,
+  };
+}
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -94,7 +111,7 @@ export default function ChatPage() {
     pollMessages(); // 초기 로딩
 
     return () => clearInterval(interval);
-  }, [isAuthenticated, familyId, messages.length, myMemberId, myPrivateKey]);
+  }, [isAuthenticated, familyId, myMemberId, myPrivateKey]);
 
   // 자동 스크롤
   useEffect(() => {
@@ -158,6 +175,9 @@ export default function ChatPage() {
     const originalMessage = messages.find((msg) => msg.id === replyToId);
     if (!originalMessage) {
       console.error('[ChatPage] Original message not found:', replyToId);
+      // Clear the reply state since the message is no longer available
+      clearReplyToMessage();
+      toast.error('원본 메시지를 찾을 수 없습니다');
       throw new Error('Original message not found');
     }
 
@@ -171,18 +191,15 @@ export default function ChatPage() {
         senderName: myName,
         content,
         encrypted,
-        replyTo: {
-          id: originalMessage.id,
-          senderId: originalMessage.senderId,
-          senderName: originalMessage.senderName,
-          content: originalMessage.content,
-        },
+        replyTo: toReplyToInfo(originalMessage),
       };
 
       console.log('[ChatPage] Sending reply with replyTo:', replyData.replyTo);
 
-      // Note: API client needs to support replyTo field
-      // For now, send as regular message (API will be updated in Task 10)
+      // TODO: Task 10 - Update API integration to support replyTo field
+      // The API client sendMessage method needs to be updated to accept and handle
+      // the replyTo parameter. Currently sending as a regular message without replyTo.
+      // See: /tasks/10-update-api-client-for-reply-support.md
       const response = await apiClient.sendMessage({
         familyId,
         senderId: myMemberId,
@@ -202,12 +219,7 @@ export default function ChatPage() {
         timestamp: Date.now(),
         encrypted,
         status: 'sent',
-        replyTo: {
-          id: originalMessage.id,
-          senderId: originalMessage.senderId,
-          senderName: originalMessage.senderName,
-          content: originalMessage.content,
-        },
+        replyTo: toReplyToInfo(originalMessage),
       });
 
       // Clear the reply state
@@ -283,12 +295,7 @@ export default function ChatPage() {
         <ReplyModal
           isOpen={isReplyModalOpen}
           onClose={clearReplyToMessage}
-          originalMessage={{
-            id: replyToMessage.id,
-            senderId: replyToMessage.senderId,
-            senderName: replyToMessage.senderName,
-            content: replyToMessage.content,
-          }}
+          originalMessage={toReplyToInfo(replyToMessage)}
           onSendReply={handleSendReply}
         />
       )}
