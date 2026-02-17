@@ -14,6 +14,7 @@ import { initP2PManager, getP2PManager } from '../../lib/webrtc/peer';
 import { initMessageQueue, getMessageQueue } from '../../lib/offline/message-queue';
 import { initPeerDiscovery, destroyPeerDiscovery } from '../../lib/firebase/peer-discovery';
 import type { DataMessage, PeerInfo, DiscoveredPeer } from '../../types';
+import { dbHelpers, isDatabaseAvailable } from '../../lib/db/indexed-db';
 
 export default function ChatPage() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function ChatPage() {
     addMessage,
     addPeer,
     additionalPin,
+    setReplyTo,
   } = useChatStore();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -344,6 +346,60 @@ export default function ChatPage() {
     }
   };
 
+  // Handle send message
+  const handleSendMessage = (content: string, replyTo?: any) => {
+    const p2pManager = getP2PManager();
+    if (!p2pManager) {
+      toast.error('P2P 매니저가 초기화되지 않았습니다.');
+      return;
+    }
+
+    const messageId = crypto.randomUUID();
+    const timestamp = Date.now();
+
+    const message: DataMessage = {
+      id: messageId,
+      type: 'text',
+      senderId: myPeerId,
+      timestamp,
+      data: {
+        content,
+        replyTo: replyTo ? {
+          id: replyTo.id,
+          content: replyTo.content,
+          senderName: replyTo.senderName || replyTo.senderId.slice(0, 8),
+        } : undefined,
+      },
+      encrypted: false,
+    };
+
+    try {
+      p2pManager.broadcast(message);
+      const chatMessage = {
+        id: messageId,
+        senderId: myPeerId,
+        content,
+        timestamp,
+        status: 'sent' as const,
+        encrypted: false,
+        replyTo: replyTo ? {
+          id: replyTo.id,
+          content: replyTo.content,
+          senderName: replyTo.senderName || replyTo.senderId.slice(0, 8),
+        } : undefined,
+      };
+      useChatStore.getState().saveMessage(chatMessage);
+    } catch (error) {
+      console.error('[ChatPage] Send message failed:', error);
+      toast.error('메시지 전송 실패');
+    }
+  };
+
+  // Handle reply to message
+  const handleReply = (message: any) => {
+    setReplyTo(message);
+  };
+
   if (!isAuthenticated) {
     return null;
   }
@@ -392,11 +448,13 @@ export default function ChatPage() {
               <p className="text-sm text-gray-500 mt-2">모든 메시지는 End-to-End 암호화됩니다</p>
             </div>
           ) : (
-            messages.map((message) => (
+            messages.map((message, index) => (
               <ChatMessage
                 key={message.id}
                 message={message}
                 isMine={message.senderId === myPeerId}
+                previousMessage={index > 0 ? messages[index - 1] : undefined}
+                onReply={handleReply}
               />
             ))
           )}
@@ -511,7 +569,7 @@ export default function ChatPage() {
       {/* Message Input */}
       <footer className="bg-white border-t border-gray-200 shadow-lg">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <MessageInput />
+          <MessageInput onSend={handleSendMessage} />
         </div>
       </footer>
 
