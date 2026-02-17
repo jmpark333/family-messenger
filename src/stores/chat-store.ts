@@ -9,6 +9,11 @@ interface Message {
   timestamp: number;
   encrypted: boolean;
   status: 'pending' | 'sent' | 'delivered';
+  replyTo?: {
+    id: string;
+    content: string;
+    senderName: string;
+  };
 }
 
 interface ChatStore {
@@ -28,6 +33,9 @@ interface ChatStore {
   messages: Message[];
   processedMessageIds: Set<string>;
 
+  // 답장
+  replyTo: Message | null;
+
   // 액션
   setAuthenticated: (authenticated: boolean) => void;
   setFamilyId: (familyId: string) => void;
@@ -39,6 +47,8 @@ interface ChatStore {
   saveMessage: (message: Message) => Promise<void>;
   loadMessages: () => Promise<void>;
   clearMessages: () => void;
+  setReplyTo: (message: Message | null) => void;
+  updateMessageStatus: (messageId: string, status: 'pending' | 'sent' | 'delivered') => void;
   logout: () => Promise<void>;
 }
 
@@ -53,6 +63,7 @@ const initialState = {
   membersPublicKeys: {},
   messages: [],
   processedMessageIds: new Set<string>(),
+  replyTo: null as Message | null,
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -122,6 +133,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   clearMessages: () =>
     set({ messages: [], processedMessageIds: new Set() }),
 
+  setReplyTo: (message) =>
+    set({ replyTo: message }),
+
+  updateMessageStatus: (messageId, status) =>
+    set((state) => ({
+      messages: state.messages.map((msg) =>
+        msg.id === messageId ? { ...msg, status } : msg
+      ),
+    })),
+
   logout: async () => {
     set({
       isAuthenticated: false,
@@ -134,6 +155,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       membersPublicKeys: {},
       messages: [],
       processedMessageIds: new Set(),
+      replyTo: null,
     });
   },
 }));
