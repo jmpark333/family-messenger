@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { ChatMessage as MessageType } from '@/types';
 import { QuotedMessage } from './QuotedMessage';
 
@@ -19,10 +19,30 @@ export default function ChatMessage({ message, isMine, onReplyClick }: ChatMessa
     minute: '2-digit',
   });
 
+  // Cleanup effect for longPressTimerRef to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current);
+        longPressTimerRef.current = null;
+      }
+    };
+  }, []);
+
   // Click handler for received messages (short click)
   const handleClick = () => {
     if (!isMine && onReplyClick) {
       onReplyClick(message);
+    }
+  };
+
+  // Keyboard navigation handler for accessibility (Enter/Space)
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isMine && onReplyClick) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onReplyClick(message);
+      }
     }
   };
 
@@ -86,6 +106,7 @@ export default function ChatMessage({ message, isMine, onReplyClick }: ChatMessa
             !isMine ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer' : ''
           } ${isLongPressing ? 'scale-95' : ''}`}
           onClick={handleClick}
+          onKeyDown={handleKeyDown}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onTouchMove={handleTouchMove}
