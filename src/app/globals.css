@@ -24,6 +24,7 @@
 
   .message-bubble {
     @apply rounded-2xl px-4 py-2 break-words;
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
   .message-sent {

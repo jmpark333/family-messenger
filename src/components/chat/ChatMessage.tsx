@@ -1,17 +1,72 @@
 'use client';
 
+import { useState, useRef } from 'react';
 import type { ChatMessage as MessageType } from '@/types';
+import { QuotedMessage } from './QuotedMessage';
 
 interface ChatMessageProps {
   message: MessageType;
   isMine: boolean;
+  onReplyClick?: (message: MessageType) => void;
 }
 
-export default function ChatMessage({ message, isMine }: ChatMessageProps) {
+export default function ChatMessage({ message, isMine, onReplyClick }: ChatMessageProps) {
+  const [isLongPressing, setIsLongPressing] = useState(false);
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const timeString = new Date(message.timestamp).toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
   });
+
+  // Click handler for received messages (short click)
+  const handleClick = () => {
+    if (!isMine && onReplyClick) {
+      onReplyClick(message);
+    }
+  };
+
+  // Long press handlers (touch events)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isMine) {
+      e.preventDefault(); // Prevent text selection
+      setIsLongPressing(true);
+
+      // Vibrate on supported devices
+      if ('vibrate' in navigator) {
+        navigator.vibrate(50);
+      }
+
+      // Start long press timer (500ms)
+      longPressTimerRef.current = setTimeout(() => {
+        if (onReplyClick) {
+          onReplyClick(message);
+        }
+        setIsLongPressing(false);
+      }, 500);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isMine) {
+      setIsLongPressing(false);
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current);
+        longPressTimerRef.current = null;
+      }
+    }
+  };
+
+  const handleTouchMove = () => {
+    // Cancel long press if user moves finger
+    if (!isMine && isLongPressing) {
+      setIsLongPressing(false);
+      if (longPressTimerRef.current) {
+        clearTimeout(longPressTimerRef.current);
+        longPressTimerRef.current = null;
+      }
+    }
+  };
 
   return (
     <div
@@ -26,7 +81,23 @@ export default function ChatMessage({ message, isMine }: ChatMessageProps) {
         )}
 
         {/* 메시지 버블 */}
-        <div className={`message-bubble ${isMine ? 'message-sent' : 'message-received'}`}>
+        <div
+          className={`message-bubble ${isMine ? 'message-sent' : 'message-received'} ${
+            !isMine ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer' : ''
+          } ${isLongPressing ? 'scale-95' : ''}`}
+          onClick={handleClick}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchMove={handleTouchMove}
+          role={onReplyClick && !isMine ? 'button' : undefined}
+          tabIndex={onReplyClick && !isMine ? 0 : undefined}
+          aria-label={onReplyClick && !isMine ? 'Reply to message' : undefined}
+        >
+          {/* Quoted message (if this is a reply) */}
+          {message.replyTo && (
+            <QuotedMessage originalMessage={message.replyTo} />
+          )}
+
           <p className="text-sm whitespace-pre-wrap break-words">
             {message.content}
           </p>
