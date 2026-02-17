@@ -21,6 +21,11 @@ export interface Message {
   content: string;
   timestamp: number;
   encrypted: boolean;
+  replyTo?: {
+    messageId: string;
+    content: string;
+    senderName: string;
+  };
 }
 
 export interface CreateFamilyRequest {

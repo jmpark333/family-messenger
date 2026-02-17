@@ -56,6 +56,12 @@ export interface DataMessage {
 }
 
 // ============ 채팅 관련 타입 ============
+export interface ReplyToInfo {
+  messageId: string;
+  content: string;
+  senderName: string;
+}
+
 export interface ChatMessage {
   id: string;
   senderId: string;
@@ -64,6 +70,7 @@ export interface ChatMessage {
   timestamp: number;
   status: 'sending' | 'sent' | 'delivered' | 'read';
   encrypted: boolean;
+  replyTo?: ReplyToInfo;
 }
 
 export interface TypingIndicator {

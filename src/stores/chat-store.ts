@@ -9,6 +9,11 @@ interface Message {
   timestamp: number;
   encrypted: boolean;
   status: 'pending' | 'sent' | 'delivered';
+  replyTo?: {
+    messageId: string;
+    content: string;
+    senderName: string;
+  };
 }
 
 interface ChatStore {
