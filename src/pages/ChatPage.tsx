@@ -100,6 +100,7 @@ export default function ChatPage() {
             timestamp: msg.timestamp,
             encrypted: msg.encrypted,
             status: 'delivered',
+            ...(msg.attachment && { attachment: msg.attachment }),
             ...(msg.replyTo && { replyTo: msg.replyTo }),
           });
         }
