@@ -156,8 +156,13 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   // 답장 상태 액션
-  setReplyToMessage: (message) =>
-    set({ replyToMessage: message, isReplyModalOpen: true }),
+  setReplyToMessage: (message) => {
+    if (message === null) {
+      set({ replyToMessage: null, isReplyModalOpen: false });
+      return;
+    }
+    set({ replyToMessage: message, isReplyModalOpen: true });
+  },
 
   clearReplyToMessage: () =>
     set({ replyToMessage: null, isReplyModalOpen: false }),

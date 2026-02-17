@@ -8,8 +8,12 @@ export interface MessageSchema {
   encrypted: boolean;
   file?: FileAttachment;
   status: 'pending' | 'sent' | 'delivered' | 'failed';
-  replyToMessageId?: string;
-  replyToContent?: string;
+  replyTo?: {
+    id: string;
+    senderId: string;
+    senderName: string;
+    content: string;
+  };
 }
 
 export interface FileAttachment {

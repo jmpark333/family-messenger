@@ -61,6 +61,7 @@ export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read' | 'pending
 export interface ReplyToInfo {
   id: string;
   senderId: string;
+  senderName: string;
   content: string;
 }
 

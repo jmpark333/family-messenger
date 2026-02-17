@@ -22,9 +22,10 @@ export interface Message {
   timestamp: number;
   encrypted: boolean;
   replyTo?: {
-    messageId: string;
-    content: string;
+    id: string;
+    senderId: string;
     senderName: string;
+    content: string;
   };
 }
 
