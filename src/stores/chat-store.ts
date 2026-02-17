@@ -35,6 +35,10 @@ interface ChatStore {
   messages: Message[];
   processedMessageIds: Set<string>;
 
+  // 답장 상태
+  replyToMessage: Message | null;
+  isReplyModalOpen: boolean;
+
   // 액션
   setAuthenticated: (authenticated: boolean) => void;
   setFamilyId: (familyId: string) => void;
@@ -47,6 +51,9 @@ interface ChatStore {
   loadMessages: () => Promise<void>;
   clearMessages: () => void;
   logout: () => Promise<void>;
+  setReplyToMessage: (message: Message | null) => void;
+  clearReplyToMessage: () => void;
+  setIsReplyModalOpen: (open: boolean) => void;
 }
 
 const initialState = {
@@ -60,6 +67,8 @@ const initialState = {
   membersPublicKeys: {},
   messages: [],
   processedMessageIds: new Set<string>(),
+  replyToMessage: null,
+  isReplyModalOpen: false,
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -141,6 +150,18 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       membersPublicKeys: {},
       messages: [],
       processedMessageIds: new Set(),
+      replyToMessage: null,
+      isReplyModalOpen: false,
     });
   },
+
+  // 답장 상태 액션
+  setReplyToMessage: (message) =>
+    set({ replyToMessage: message, isReplyModalOpen: true }),
+
+  clearReplyToMessage: () =>
+    set({ replyToMessage: null, isReplyModalOpen: false }),
+
+  setIsReplyModalOpen: (open) =>
+    set({ isReplyModalOpen: open }),
 }));
