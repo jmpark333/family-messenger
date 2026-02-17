@@ -49,6 +49,8 @@ export default function ChatPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastScrollTimeRef = useRef<number>(0);
 
   // 인증 체크
   useEffect(() => {
@@ -117,6 +119,16 @@ export default function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Cleanup scroll timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSendMessage = async (content: string) => {
     console.log('[ChatPage] handleSendMessage called:', { content, familyId, myMemberId, myName });
@@ -237,17 +249,48 @@ export default function ChatPage() {
   };
 
   const scrollToMessage = (messageId: string) => {
+    // Debouncing: Prevent rapid clicks (300ms debounce)
+    const now = Date.now();
+    if (now - lastScrollTimeRef.current < 300) {
+      return;
+    }
+    lastScrollTimeRef.current = now;
+
     const messageElement = document.getElementById(`message-${messageId}`);
     if (messageElement) {
-      messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Add highlight effect
-      messageElement.classList.add('highlight-pulse');
+      // Scroll with appropriate behavior based on user preferences
+      messageElement.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'center',
+      });
+
+      // Add highlight effect (respect reduced motion preference)
+      if (!prefersReducedMotion) {
+        messageElement.classList.add('highlight-pulse');
+      } else {
+        // For reduced motion, just add a temporary highlight class
+        messageElement.classList.add('highlight-static');
+      }
+
+      // Find focusable element within the message for accessibility
+      const focusableElement = messageElement.querySelector('[tabindex="0"]') as HTMLElement;
+      if (focusableElement) {
+        focusableElement.focus({ preventScroll: true });
+      }
+
+      // Clean up existing timeout if any
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
 
       // Remove highlight class after animation completes
-      setTimeout(() => {
-        messageElement.classList.remove('highlight-pulse');
-      }, 1500);
+      scrollTimeoutRef.current = setTimeout(() => {
+        messageElement.classList.remove('highlight-pulse', 'highlight-static');
+        scrollTimeoutRef.current = null;
+      }, prefersReducedMotion ? 1000 : 1500);
     } else {
       toast.error('원본 메시지를 찾을 수 없습니다');
     }

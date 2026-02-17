@@ -125,6 +125,11 @@
       transform: scale(1);
     }
   }
+
+  /* Static highlight for users preferring reduced motion */
+  .highlight-static {
+    background-color: rgb(253 224 71) !important; /* yellow-300 */
+  }
 }
 
 @layer utilities {
