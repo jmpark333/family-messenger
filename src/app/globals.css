@@ -57,6 +57,19 @@
     }
   }
 
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
   .connection-dot {
     @apply w-2 h-2 rounded-full;
   }
