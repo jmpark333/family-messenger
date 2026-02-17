@@ -6,6 +6,7 @@ import { useChatStore } from '../../stores/chat-store';
 import { useToast } from '../../lib/hooks/useToast';
 import ChatMessage from '../../components/chat/ChatMessage';
 import MessageInput from '../../components/chat/MessageInput';
+import ReplyModal from '../../components/chat/ReplyModal';
 import Toaster from '../../components/shared/Toaster';
 import SecurityIndicator from '../../components/security/SecurityIndicator';
 import PeerConnection from '../../components/p2p/PeerConnection';
@@ -25,6 +26,9 @@ export default function ChatPage() {
   const [peerIdInput, setPeerIdInput] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionError, setConnectionError] = useState('');
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const [replyMessage, setReplyMessage] = useState<any>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const myPeerIdRef = useRef<string>('');
   const {
     isAuthenticated,
@@ -46,6 +50,21 @@ export default function ChatPage() {
   useEffect(() => {
     myPeerIdRef.current = myPeerId;
   }, [myPeerId]);
+
+  // 모바일 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia('(hover: none)').matches || window.innerWidth < 768);
+    };
+
+    checkMobile();
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    mediaQuery.addEventListener('change', checkMobile);
+
+    return () => {
+      mediaQuery.removeEventListener('change', checkMobile);
+    };
+  }, []);
 
   // additionalPin이 설정되지 않은 경우 IndexedDB에서 로드 또는 자동 생성
   useEffect(() => {
@@ -397,7 +416,17 @@ export default function ChatPage() {
 
   // Handle reply to message
   const handleReply = (message: any) => {
-    setReplyTo(message);
+    if (isMobile) {
+      setReplyMessage(message);
+      setIsReplyModalOpen(true);
+    } else {
+      setReplyTo(message);
+    }
+  };
+
+  // Handle send from modal
+  const handleModalSend = (content: string) => {
+    handleSendMessage(content, replyMessage);
   };
 
   if (!isAuthenticated) {
@@ -575,6 +604,17 @@ export default function ChatPage() {
 
       {/* Toaster */}
       <Toaster />
+
+      {/* Reply Modal for Mobile */}
+      <ReplyModal
+        isOpen={isReplyModalOpen}
+        message={replyMessage}
+        onSend={handleModalSend}
+        onClose={() => {
+          setIsReplyModalOpen(false);
+          setReplyMessage(null);
+        }}
+      />
 
       {/* Peer Connection Modal */}
       <PeerConnection
