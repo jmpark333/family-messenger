@@ -18,6 +18,7 @@ export interface MessageAttachment {
   name: string;
   data: string;
   size: number;
+  encryptedData?: Record<string, string>; // memberId -> encrypted attachment data
 }
 
 export interface Message {

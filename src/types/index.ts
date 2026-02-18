@@ -10,8 +10,9 @@ export interface ReplyToInfo {
 export interface MessageAttachment {
   type: 'image' | 'pdf';
   name: string;
-  data: string; // Base64 encoded data
+  data: string; // Base64 encoded data (decrypted on client)
   size: number; // File size in bytes
+  encryptedData?: Record<string, string>; // memberId -> encrypted data (server-side)
 }
 
 export const MAX_FILE_SIZE = {

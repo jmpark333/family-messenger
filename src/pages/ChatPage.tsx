@@ -98,6 +98,30 @@ export default function ChatPage() {
             }
           }
 
+          // 첨부파일 복호화
+          let decryptedAttachment = undefined;
+          if (msg.attachment && msg.attachment.encryptedData && myPrivateKey && myMemberId) {
+            try {
+              const encryptedData = msg.attachment.encryptedData[myMemberId];
+              if (encryptedData) {
+                const attachmentData = await decryptMessage(encryptedData, myPrivateKey);
+                decryptedAttachment = {
+                  type: msg.attachment.type,
+                  name: msg.attachment.name,
+                  size: msg.attachment.size,
+                  data: attachmentData,
+                };
+              } else {
+                console.warn('[ChatPage] Encrypted attachment data not found for member:', myMemberId);
+              }
+            } catch (error) {
+              console.error('[ChatPage] Attachment decryption failed:', error);
+            }
+          } else if (msg.attachment && !msg.attachment.encryptedData) {
+            // 레거시: 암호화되지 않은 첨부파일 (하위 호환)
+            decryptedAttachment = msg.attachment;
+          }
+
           addMessage({
             id: msg.id,
             senderId: msg.senderId,
@@ -106,7 +130,7 @@ export default function ChatPage() {
             timestamp: msg.timestamp,
             encrypted: msg.encrypted,
             status: 'delivered',
-            ...(msg.attachment && { attachment: msg.attachment }),
+            ...(decryptedAttachment && { attachment: decryptedAttachment }),
             ...(msg.replyTo && { replyTo: msg.replyTo }),
           });
         }
@@ -184,6 +208,20 @@ export default function ChatPage() {
 
       console.log('[ChatPage] Encrypted message for', Object.keys(encryptedContents).length, 'members');
 
+      // 첨부파일도 암호화
+      let encryptedAttachment = undefined;
+      if (attachment && attachment.data) {
+        const encryptedAttachmentData = await encryptMessageForGroup(attachment.data, membersPublicKeys);
+        encryptedAttachment = {
+          type: attachment.type,
+          name: attachment.name,
+          size: attachment.size,
+          data: '', // Placeholder, 실제 데이터는 encryptedData에
+          encryptedData: encryptedAttachmentData,
+        };
+        console.log('[ChatPage] Encrypted attachment for', Object.keys(encryptedAttachmentData).length, 'members');
+      }
+
       console.log('[ChatPage] Calling apiClient.sendMessage...');
       const response = await apiClient.sendMessage({
         familyId,
@@ -192,7 +230,7 @@ export default function ChatPage() {
         content, // Placeholder, 실제 내용은 encryptedContents에
         encrypted,
         encryptedContents,
-        ...(attachment && { attachment }),
+        ...(encryptedAttachment && { attachment: encryptedAttachment }),
       });
 
       console.log('[ChatPage] Message sent successfully:', response);
