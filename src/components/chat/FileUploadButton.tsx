@@ -1,21 +1,19 @@
 'use client';
 
 import { useRef } from 'react';
+import { MAX_FILE_SIZE } from '@/types';
 
 interface FileUploadButtonProps {
   onFileSelect: (file: File) => void;
   disabled?: boolean;
-  maxSize?: number; // in bytes, default 10MB
   accept?: string; // MIME types to accept
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const DEFAULT_ACCEPT = 'image/*,application/pdf,.doc,.docx,.txt,.zip';
 
 export default function FileUploadButton({
   onFileSelect,
   disabled = false,
-  maxSize = MAX_FILE_SIZE,
   accept = DEFAULT_ACCEPT,
 }: FileUploadButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,10 +26,14 @@ export default function FileUploadButton({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Determine max size based on file type
+    const isImage = file.type.startsWith('image/');
+    const maxSize = isImage ? MAX_FILE_SIZE.image : MAX_FILE_SIZE.pdf;
+
     // Check file size
     if (file.size > maxSize) {
-      const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
-      alert(`파일 크기가 ${maxSizeMB}MB를 초과했습니다. 현재 크기: ${(file.size / (1024 * 1024)).toFixed(2)}MB`);
+      const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(0);
+      alert(`파일 크기가 ${maxSizeMB}MB를 초과했습니다. 현재 크기: ${(file.size / (1024 * 1024)).toFixed(2)}MB\n(E2E 암호화로 인해 제한됨)`);
       return;
     }
 
@@ -58,7 +60,7 @@ export default function FileUploadButton({
         disabled={disabled}
         className="p-3 text-gray-500 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
         aria-label="파일 첨부"
-        title="파일 첨부 (최대 10MB)"
+        title="파일 첨부 (최대 2-3MB, 암호화로 인해 제한)"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

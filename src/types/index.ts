@@ -15,9 +15,13 @@ export interface MessageAttachment {
   encryptedData?: Record<string, string>; // memberId -> encrypted data (server-side)
 }
 
+// Vercel free tier: 4.5MB request limit
+// Pro tier: 10MB request limit
+// E2E encryption multiplies size by (member_count * 4/3) due to base64 + per-member encryption
+// Safe limits for 2-4 member families:
 export const MAX_FILE_SIZE = {
-  image: 5 * 1024 * 1024, // 5MB
-  pdf: 10 * 1024 * 1024, // 10MB
+  image: 2 * 1024 * 1024, // 2MB (conservative for encryption overhead)
+  pdf: 3 * 1024 * 1024, // 3MB (may need Pro tier for larger families)
 };
 
 // Message status type for ChatMessage component

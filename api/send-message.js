@@ -40,11 +40,14 @@ module.exports = async function handler(req, res) {
       }
 
       // Validate attachment size
+      // Note: Due to E2E encryption overhead (base64 encoding + per-member encryption),
+      // actual payload is much larger than the original file size.
+      // Vercel free tier: 4.5MB limit, Pro tier: 10MB limit
       if (attachment) {
-        const maxSize = attachment.type === 'image' ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+        const maxSize = attachment.type === 'image' ? 2 * 1024 * 1024 : 3 * 1024 * 1024;
         if (attachment.size > maxSize) {
           return res.status(400).json({
-            error: `File too large. Maximum size for ${attachment.type} is ${maxSize / (1024 * 1024)}MB`
+            error: `파일이 너무 큽니다. ${attachment.type === 'image' ? '이미지' : 'PDF'} 최대 ${maxSize / (1024 * 1024)}MB (E2E 암호화로 인해 제한됨)`
           });
         }
       }

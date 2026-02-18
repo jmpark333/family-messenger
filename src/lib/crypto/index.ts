@@ -4,6 +4,33 @@
 import type { KeyPair } from './types';
 
 /**
+ * Helper function to convert binary data to base64 without stack overflow.
+ * Using spread operator (...) on large arrays causes Maximum call stack size exceeded.
+ * This function processes chunks of 8192 bytes at a time.
+ */
+function binaryToBase64(buffer: Uint8Array): string {
+  const CHUNK_SIZE = 0x8000; // 8192 bytes (must be multiple of 3 for base64)
+  let result = '';
+  for (let i = 0; i < buffer.length; i += CHUNK_SIZE) {
+    const chunk = buffer.subarray(i, i + CHUNK_SIZE);
+    result += String.fromCharCode.apply(null, Array.from(chunk));
+  }
+  return btoa(result);
+}
+
+/**
+ * Helper function to convert base64 to binary data without stack overflow.
+ */
+function base64ToBinary(base64: string): Uint8Array {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+/**
  * ECDH P-256 키 쌍 생성
  */
 export async function generateKeyPair(): Promise<KeyPair> {
@@ -17,8 +44,8 @@ export async function generateKeyPair(): Promise<KeyPair> {
   const privateKey = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
 
   return {
-    publicKey: btoa(String.fromCharCode(...new Uint8Array(publicKey))),
-    privateKey: btoa(String.fromCharCode(...new Uint8Array(privateKey))),
+    publicKey: binaryToBase64(new Uint8Array(publicKey)),
+    privateKey: binaryToBase64(new Uint8Array(privateKey)),
   };
 }
 
@@ -29,11 +56,8 @@ export async function encryptMessage(
   message: string,
   recipientPublicKeyBase64: string
 ): Promise<string> {
-  // 수신자 공개키 import
-  const publicKeyBuffer = Uint8Array.from(
-    atob(recipientPublicKeyBase64),
-    c => c.charCodeAt(0)
-  );
+  // 수신자 공개키 import - use helper for consistency
+  const publicKeyBuffer = base64ToBinary(recipientPublicKeyBase64);
   const publicKey = await crypto.subtle.importKey(
     'spki',
     publicKeyBuffer,
@@ -81,7 +105,8 @@ export async function encryptMessage(
   combined.set(iv, ephemeralPublicKeyArray.length);
   combined.set(new Uint8Array(encrypted), ephemeralPublicKeyArray.length + iv.length);
 
-  return btoa(String.fromCharCode(...combined));
+  // Use binaryToBase64 helper for large data to avoid stack overflow
+  return binaryToBase64(combined);
 }
 
 /**
@@ -91,11 +116,8 @@ export async function decryptMessage(
   encryptedBase64: string,
   privateKeyBase64: string
 ): Promise<string> {
-  // 개인키 import
-  const privateKeyBuffer = Uint8Array.from(
-    atob(privateKeyBase64),
-    c => c.charCodeAt(0)
-  );
+  // 개인키 import - use helper for consistency
+  const privateKeyBuffer = base64ToBinary(privateKeyBase64);
   const privateKey = await crypto.subtle.importKey(
     'pkcs8',
     privateKeyBuffer,
@@ -104,11 +126,8 @@ export async function decryptMessage(
     ['deriveKey']
   );
 
-  // 암호화된 데이터 파싱
-  const combined = Uint8Array.from(
-    atob(encryptedBase64),
-    c => c.charCodeAt(0)
-  );
+  // 암호화된 데이터 파싱 - use helper for large data
+  const combined = base64ToBinary(encryptedBase64);
 
   // P-256 공개키 크기는 약 91바이트 (ASN.1 DER 인코딩)
   const ephemeralPublicKeyArray = combined.slice(0, 91);
