@@ -21,13 +21,15 @@ module.exports = async function handler(req, res) {
   req.on('end', async () => {
     try {
       const data = JSON.parse(body);
-      const { familyId, senderId, senderName, content, attachment, replyTo } = data;
+      const { familyId, senderId, senderName, content, encrypted, encryptedContents, attachment, replyTo } = data;
 
       console.log('[API] Send message request:', {
         familyId,
         senderId,
         senderName,
         contentLength: content?.length,
+        encrypted,
+        encryptedContentsCount: encryptedContents ? Object.keys(encryptedContents).length : 0,
         hasAttachment: !!attachment,
         attachmentType: attachment?.type,
         hasReplyTo: !!replyTo
@@ -61,6 +63,8 @@ module.exports = async function handler(req, res) {
         senderId,
         senderName,
         content: content || '', // Allow empty content if attachment exists
+        encrypted: encrypted || false,
+        ...(encryptedContents && { encryptedContents }),
         timestamp: Date.now(),
         ...(attachment && { attachment }),
         ...(replyTo && { replyTo: { id: replyTo.messageId, senderId: replyTo.senderId, senderName: replyTo.senderName, content: replyTo.content } }),
@@ -75,7 +79,7 @@ module.exports = async function handler(req, res) {
       // 7일 TTL 설정
       await redis.expire(`messages:${familyId}`, 7 * 24 * 60 * 60);
 
-      console.log('[API] Message saved:', { messageId, familyId });
+      console.log('[API] Message saved:', { messageId, familyId, encrypted });
 
       return res.status(200).json({ success: true, messageId });
     } catch (error) {

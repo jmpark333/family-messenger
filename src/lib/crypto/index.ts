@@ -142,3 +142,20 @@ export async function decryptMessage(
 
   return new TextDecoder().decode(decrypted);
 }
+
+/**
+ * 그룹 멤버별 메시지 암호화 (멀티캐스트 E2E)
+ * 각 멤버의 공개키로 별도 암호화하여 반환
+ */
+export async function encryptMessageForGroup(
+  message: string,
+  publicKeys: Record<string, string> // memberId -> publicKey
+): Promise<Record<string, string>> {
+  const encryptedContents: Record<string, string> = {};
+
+  for (const [memberId, publicKey] of Object.entries(publicKeys)) {
+    encryptedContents[memberId] = await encryptMessage(message, publicKey);
+  }
+
+  return encryptedContents;
+}

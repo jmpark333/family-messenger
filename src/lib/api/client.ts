@@ -62,6 +62,7 @@ class ApiClient {
       senderName: request.senderName,
       content: request.content,
       encrypted: request.encrypted,
+      ...(request.encryptedContents && { encryptedContents: request.encryptedContents }),
       ...(request.attachment && { attachment: request.attachment }),
       replyTo: request.replyTo
         ? {
@@ -73,7 +74,7 @@ class ApiClient {
         : undefined,
     };
 
-    console.log('[apiClient] Sending payload:', { hasReplyTo: !!payload.replyTo, hasAttachment: !!payload.attachment });
+    console.log('[apiClient] Sending payload:', { hasReplyTo: !!payload.replyTo, hasAttachment: !!payload.attachment, encrypted: payload.encrypted });
 
     const response = await this.fetchApi('/send-message', {
       method: 'POST',

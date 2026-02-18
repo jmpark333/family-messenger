@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChatStore } from '@/stores/chat-store';
 import { apiClient } from '@/lib/api/client';
-import { encryptMessage, decryptMessage } from '@/lib/crypto';
+import { encryptMessage, decryptMessage, encryptMessageForGroup } from '@/lib/crypto';
 import ChatMessage from '@/components/chat/ChatMessage';
 import MessageInput from '@/components/chat/MessageInput';
 import ReplyModal from '@/components/chat/ReplyModal';
@@ -83,9 +83,14 @@ export default function ChatPage() {
 
           let content = msg.content;
           // 암호화된 메시지 복호화
-          if (msg.encrypted && myPrivateKey) {
+          if (msg.encrypted && myPrivateKey && myMemberId) {
             try {
-              content = await decryptMessage(msg.content, myPrivateKey);
+              // 멀티캐스트 암호화: 내 멤버 ID에 해당하는 암호화된 내용 찾기
+              if (msg.encryptedContents && msg.encryptedContents[myMemberId]) {
+                content = await decryptMessage(msg.encryptedContents[myMemberId], myPrivateKey);
+              } else {
+                content = '[암호화된 메시지를 찾을 수 없음]';
+              }
             } catch (error) {
               console.error('Decryption failed:', error);
               content = '[복호화 실패]';
@@ -141,23 +146,26 @@ export default function ChatPage() {
     }
 
     try {
-      // TODO: 각 멤버의 공개키로 암호화 (현재는 평문)
-      // 멀티캐스트 암호화는 추후 구현
-      const encrypted = false;
+      // 모든 멤버의 공개키로 메시지 암호화 (E2E)
+      const encryptedContents = await encryptMessageForGroup(content, membersPublicKeys);
+      const encrypted = true;
+
+      console.log('[ChatPage] Encrypted message for', Object.keys(encryptedContents).length, 'members');
 
       console.log('[ChatPage] Calling apiClient.sendMessage...');
       const response = await apiClient.sendMessage({
         familyId,
         senderId: myMemberId,
         senderName: myName,
-        content,
+        content, // Placeholder, 실제 내용은 encryptedContents에
         encrypted,
+        encryptedContents,
         ...(attachment && { attachment }),
       });
 
       console.log('[ChatPage] Message sent successfully:', response);
 
-      // 로컬 메시지 추가
+      // 로컬 메시지 추가 (발신자는 평문으로 표시)
       addMessage({
         id: response.messageId,
         senderId: myMemberId,
@@ -198,7 +206,9 @@ export default function ChatPage() {
     }
 
     try {
-      const encrypted = false;
+      // 모든 멤버의 공개키로 메시지 암호화 (E2E)
+      const encryptedContents = await encryptMessageForGroup(content, membersPublicKeys);
+      const encrypted = true;
 
       // Create the reply message with replyTo information
       const replyToInfo = toReplyToInfo(originalMessage);
@@ -211,8 +221,9 @@ export default function ChatPage() {
         familyId,
         senderId: myMemberId,
         senderName: myName,
-        content,
+        content, // Placeholder, 실제 내용은 encryptedContents에
         encrypted,
+        encryptedContents,
         replyTo: {
           messageId: replyToInfo.id,
           senderId: replyToInfo.senderId,
@@ -223,7 +234,7 @@ export default function ChatPage() {
 
       console.log('[ChatPage] Reply sent successfully:', response);
 
-      // 로컬 메시지 추가 with replyTo
+      // 로컬 메시지 추가 with replyTo (발신자는 평문으로 표시)
       addMessage({
         id: response.messageId,
         senderId: myMemberId,

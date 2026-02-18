@@ -28,6 +28,7 @@ export interface Message {
   content: string;
   timestamp: number;
   encrypted: boolean;
+  encryptedContents?: Record<string, string>; // memberId -> encrypted content
   attachment?: MessageAttachment;
   replyTo?: {
     id: string;
@@ -56,6 +57,7 @@ export interface SendMessageRequest {
   senderName: string;
   content: string;
   encrypted: boolean;
+  encryptedContents?: Record<string, string>; // memberId -> encrypted content
   attachment?: MessageAttachment;
   replyTo?: {
     messageId: string;
