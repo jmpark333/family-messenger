@@ -106,12 +106,16 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
         {/* 메시지 버블 */}
         <div
           className={`message-bubble ${isMine ? 'message-sent' : 'message-received'} ${
-            !isMine && !message.attachment ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer' : ''
+            !isMine ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer' : ''
           } ${isLongPressing ? 'scale-95' : ''}`}
+          onClick={handleClick}
           onKeyDown={handleKeyDown}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onTouchMove={handleTouchMove}
+          role={onReplyClick && !isMine ? 'button' : undefined}
+          tabIndex={onReplyClick && !isMine ? 0 : undefined}
+          aria-label={onReplyClick && !isMine ? 'Reply to message' : undefined}
         >
           {/* Quoted message (if this is a reply) */}
           {message.replyTo && onScrollToOriginal && (
@@ -123,13 +127,14 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
 
           {/* Attachment (image or PDF) */}
           {message.attachment && (
-            <div className="mt-2 mb-2" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-2 mb-2">
               {message.attachment.type === 'image' ? (
                 <img
                   src={`data:image/${message.attachment.name.split('.').pop()};base64,${message.attachment.data}`}
                   alt={message.attachment.name}
                   className="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     // Open image in new tab
                     const win = window.open();
                     if (win) {
@@ -142,6 +147,7 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
                   href={`data:application/pdf;base64,${message.attachment.data}`}
                   download={message.attachment.name}
                   className="flex items-center gap-3 p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <File className="w-8 h-8 text-red-600 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -158,15 +164,7 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
 
           {/* Text content */}
           {message.content && (
-            <p
-              className={`text-sm whitespace-pre-wrap break-words ${
-                !isMine ? 'cursor-pointer' : ''
-              }`}
-              onClick={handleClick}
-              role={onReplyClick && !isMine ? 'button' : undefined}
-              tabIndex={onReplyClick && !isMine ? 0 : undefined}
-              aria-label={onReplyClick && !isMine ? 'Reply to message' : undefined}
-            >
+            <p className="text-sm whitespace-pre-wrap break-words">
               {message.content}
             </p>
           )}
