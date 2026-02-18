@@ -98,8 +98,8 @@ export default function ChatMessage({ message, isMine, onReplyClick, onScrollToO
       <div className={`max-w-[90%] ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
         {/* 발신자 이름 (내 메시지는 표시 안함) */}
         {!isMine && (
-          <span className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-2">
-            {message.senderId.slice(0, 8)}...
+          <span className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-2 font-medium">
+            {message.senderName}
           </span>
         )}
 
