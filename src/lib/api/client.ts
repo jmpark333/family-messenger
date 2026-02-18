@@ -7,6 +7,7 @@ import type {
   SendMessageRequest,
   SendMessageResponse,
   PollMessagesResponse,
+  GetFamilyMembersResponse,
 } from './types';
 
 class ApiClient {
@@ -95,6 +96,11 @@ class ApiClient {
     }
 
     const response = await this.fetchApi(`/poll-messages?${params}`);
+    return response.json();
+  }
+
+  async getFamilyMembers(familyId: string): Promise<GetFamilyMembersResponse> {
+    const response = await this.fetchApi(`/get-family-members?familyId=${encodeURIComponent(familyId)}`);
     return response.json();
   }
 }

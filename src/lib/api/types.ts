@@ -88,3 +88,8 @@ export interface SendMessageResponse {
 export interface PollMessagesResponse {
   messages: Message[];
 }
+
+export interface GetFamilyMembersResponse {
+  familyId: string;
+  members: FamilyMember[];
+}

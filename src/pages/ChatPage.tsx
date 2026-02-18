@@ -39,6 +39,7 @@ export default function ChatPage() {
     membersPublicKeys,
     messages,
     addMessage,
+    addMemberPublicKey,
     loadMessages,
     logout,
     replyToMessage,
@@ -121,6 +122,37 @@ export default function ChatPage() {
 
     return () => clearInterval(interval);
   }, [isAuthenticated, familyId, myMemberId, myPrivateKey]);
+
+  // 멤버 폴링 (10초마다) - 공개키 동기화
+  useEffect(() => {
+    if (!isAuthenticated || !familyId || !myMemberId) return;
+
+    const pollMembers = async () => {
+      try {
+        const data = await apiClient.getFamilyMembers(familyId);
+
+        // 새 멤버의 공개키 추가
+        for (const member of data.members) {
+          // 자신의 공개키는 제외
+          if (member.id !== myMemberId && member.publicKey) {
+            // 이미 있는지 확인 후 추가
+            if (!membersPublicKeys[member.id]) {
+              console.log('[ChatPage] Adding new member public key:', { memberId: member.id, name: member.name });
+              addMemberPublicKey(member.id, member.publicKey);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to poll members:', error);
+      }
+    };
+
+    // 초기 로딩 및 주기적 폴링
+    pollMembers();
+    const interval = setInterval(pollMembers, 10000); // 10초마다 폴링
+
+    return () => clearInterval(interval);
+  }, [isAuthenticated, familyId, myMemberId]);
 
   // 자동 스크롤
   useEffect(() => {
