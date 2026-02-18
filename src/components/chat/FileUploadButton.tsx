@@ -60,7 +60,7 @@ export default function FileUploadButton({
         disabled={disabled}
         className="p-3 text-gray-500 hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
         aria-label="파일 첨부"
-        title="파일 첨부 (최대 2-3MB, 암호화로 인해 제한)"
+        title="파일 첨부 (최대 1.5MB, 암호화로 인해 제한)"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
